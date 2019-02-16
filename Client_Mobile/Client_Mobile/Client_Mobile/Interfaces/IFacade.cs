@@ -10,15 +10,19 @@ namespace Client_Mobile.Interfaces
 
     interface IFacade
     {
-        ResponseBase Lock(LockerActionEnum action);
-        ResponseBase Unlock(LockerActionEnum action);
-        ResponseBase SendPinToLocker(Pin newPin);
+        bool Lock(LockerActionEnum action);
+        bool Unlock(LockerActionEnum action);
+        bool SendPinToLocker(Pin newPin);
         ResponseBase LoginUser(string password);
         ResponseBase CreateUser(string email, string pass);
 
         ResponseData<List<Parcel>> GetDeliveryHistory(string profileId);
 
         ResponseData<List<Pin>> GetActivePins(string profileId);
+
+        ResponseData<List<Locker>> GetLockers(string profileId);
+
+        ResponseBase AddLockerToProfile(string profileId, Locker newLocker);
 
 
 

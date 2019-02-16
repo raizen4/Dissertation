@@ -17,9 +17,7 @@ namespace Client_Mobile.Interfaces
 
         Task<HttpResponseMessage> CreateUser(RegisterRequest request);
 
-        Task<HttpResponseMessage> UpdatePost(Post postToUpdate);
-
-        Task<HttpResponseMessage> CreatePost(Post newPost);
+     
 
     }
 }
