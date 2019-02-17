@@ -12,9 +12,8 @@ namespace Client_Mobile.Interfaces
     interface IIoTHub
     {
 
-         bool IsConnectedToCloud();
-
-        Task<bool> LockAsync(string deviceId, LockerActionEnum action);
+        Task<bool> CheckConnection();
+        Task<bool> Lock(string deviceId, LockerActionEnum action);
         Task<bool> Unlock(string deviceId, LockerActionEnum action);
         Task<bool> SendPinToLocker(string deviceId, LockerActionEnum action, Pin pin);
 

@@ -9,6 +9,9 @@ namespace Client_Mobile.Enums
         Opened=1,
         Closed=0,
         NewPinGenerated=2,
+        Close=3,
+        Open=4,
+        CheckConnection=5,
 
 
 

@@ -4,25 +4,27 @@ using System.Text;
 
 namespace Client_Mobile.Interfaces
 {
+    using System.Threading.Tasks;
     using Enums;
     using Models;
     using ServiceModels;
 
-    interface IFacade
+    public interface IFacade
     {
-        bool Lock(LockerActionEnum action);
-        bool Unlock(LockerActionEnum action);
-        bool SendPinToLocker(Pin newPin);
-        ResponseBase LoginUser(string password);
-        ResponseBase CreateUser(string email, string pass);
 
-        ResponseData<List<Parcel>> GetDeliveryHistory(string profileId);
+        Task<bool> Lock(LockerActionEnum action);
+        Task<bool> Unlock(LockerActionEnum action);
+        Task<bool> SendPinToLocker(Pin newPin);
+        Task<ResponseBase> LoginUser(string password);
+        Task<ResponseBase> CreateUser(string email, string pass);
 
-        ResponseData<List<Pin>> GetActivePins(string profileId);
+        Task<ResponseData<List<Parcel>>> GetDeliveryHistory(string profileId);
 
-        ResponseData<List<Locker>> GetLockers(string profileId);
+        Task<ResponseData<List<Pin>>> GetActivePins(string profileId);
 
-        ResponseBase AddLockerToProfile(string profileId, Locker newLocker);
+        Task<ResponseData<List<Locker>>> GetLockers(string profileId);
+
+        Task<ResponseBase> AddLockerToProfile(string profileId, Locker newLocker);
 
 
 

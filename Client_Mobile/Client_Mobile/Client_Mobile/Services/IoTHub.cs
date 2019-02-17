@@ -33,20 +33,43 @@ namespace Client_Mobile.Services
         {
             this.transportProtocol = TransportType.Amqp;
             this.connectionString = connectionString;
-            this.deviceClient = DeviceClient.CreateFromConnectionString(this.connectionString, this.transportProtocol);
+            this.deviceClient =
+                    DeviceClient.CreateFromConnectionString(this.connectionString, this.transportProtocol);
+        
         }
 
-        public bool IsConnectedToCloud()
+        public async Task<bool> CheckConnection()
         {
-            return this.deviceClient != null;
+                try
+                {
+                   await this.deviceClient.OpenAsync();
+                   await this.deviceClient.CloseAsync();
+            }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    return false;
+                }
+
+                return true;
+            
+    
+            return false;
         }
 
         /// <inheritdoc />
-        public async Task<bool> LockAsync(string deviceId, LockerActionEnum action)
+        public async Task<bool> Lock(string deviceId, LockerActionEnum action)
         {
-            if (IsConnectedToCloud())
+            if (!this.isConnected)
             {
-
+                var recheckConn = await this.CheckConnection();
+                if (recheckConn)
+                {
+                    this.isConnected = true;
+                }
+            }
+            if (this.isConnected)
+            {
                 GenericLockerRequest req = new GenericLockerRequest();
                 req.Action = action;
                 req.DeviceId = deviceId;
@@ -59,6 +82,7 @@ namespace Client_Mobile.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
+                    this.isConnected = false;
                     return false;
                 }
 
@@ -73,9 +97,16 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> Unlock(string deviceId, LockerActionEnum action)
         {
-            if (IsConnectedToCloud())
+            if (this.isConnected)
             {
-
+                if (!this.isConnected)
+                {
+                    var recheckConn = await this.CheckConnection();
+                    if (recheckConn)
+                    {
+                        this.isConnected = true;
+                    }
+                }
                 GenericLockerRequest req = new GenericLockerRequest();
                 req.Action = action;
                 req.DeviceId = deviceId;
@@ -88,6 +119,7 @@ namespace Client_Mobile.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
+                    this.isConnected = false;
                     return false;
                 }
 
@@ -100,7 +132,15 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> SendPinToLocker(string deviceId, LockerActionEnum action, Pin pin)
         {
-            if (IsConnectedToCloud())
+            if (!this.isConnected)
+            {
+                var recheckConn = await this.CheckConnection();
+                if (recheckConn)
+                {
+                    this.isConnected = true;
+                }
+            }
+            if (this.isConnected)
             {
                 PayloadLockerRequest<Pin> req=new PayloadLockerRequest<Pin>();
                 req.Action = action;
@@ -115,12 +155,12 @@ namespace Client_Mobile.Services
                 catch (Exception e)
                 {
                    Console.WriteLine(e.Message);
+                    this.isConnected = false;
                     return false;
                 }
                 
                 return true;
             }
-
             return false;
         }
     }

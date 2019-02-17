@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Client_Mobile.Models
 {
-    class Locker
+    public class Locker
     {
         public string Id { get; set; }
         public string Name { get; set; }
