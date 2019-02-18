@@ -6,14 +6,15 @@ namespace Client_Mobile.Interfaces
 {
     using System.Threading.Tasks;
     using Enums;
+    using Microsoft.Azure.Devices.Client;
     using Models;
     using ServiceModels;
 
     public interface IFacade
     {
 
-        Task<bool> Lock(LockerActionEnum action);
-        Task<bool> Unlock(LockerActionEnum action);
+        Task<bool> Lock();
+        Task<bool> Unlock();
         Task<bool> SendPinToLocker(Pin newPin);
         Task<ResponseBase> LoginUser(string password);
         Task<ResponseBase> CreateUser(string email, string pass);
@@ -25,6 +26,7 @@ namespace Client_Mobile.Interfaces
         Task<ResponseData<List<Locker>>> GetLockers(string profileId);
 
         Task<ResponseBase> AddLockerToProfile(string profileId, Locker newLocker);
+        Task<Message> GetPendingMessagesFromHub();
 
 
 

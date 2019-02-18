@@ -9,8 +9,9 @@
         <Label Text="Welcome to Xamarindd  and Prism!" />
 
         <Label Text="Welcome to Xamarin Forms    !" />
+        <Button Text="Lock" Command="{Binding LockCommand}"></Button>
+        <Button Text="Unlock"  Command="{Binding UnlockCommand}"></Button>
 
-       
     </StackLayout>
 
 </ContentPage>

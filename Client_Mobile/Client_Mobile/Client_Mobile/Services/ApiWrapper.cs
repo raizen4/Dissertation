@@ -18,13 +18,37 @@ namespace Client_Mobile.Services
         }
 
         /// <inheritdoc />
-        public Task<HttpResponseMessage> LoginUser(LoginRequest request)
+        public Task<HttpResponseMessage> LoginUser()
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
-        public Task<HttpResponseMessage> CreateUser(RegisterRequest request)
+        public Task<HttpResponseMessage> CreateUser()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public Task<HttpResponseMessage> GetDeliveryHistory()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public Task<HttpResponseMessage> GetActivePins()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public Task<HttpResponseMessage> GetLockers()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public Task<HttpResponseMessage> AddLockerToProfile()
         {
             throw new NotImplementedException();
         }

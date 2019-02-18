@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Client_Mobile.Services
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Enums;
     using Interfaces;
@@ -19,7 +20,7 @@ namespace Client_Mobile.Services
 
         private TransportType transportProtocol;
         private string connectionString;
-        private DeviceClient deviceClient;
+        private static DeviceClient deviceClient;
         private bool isConnected = false;
 
         /// <inheritdoc />
@@ -29,12 +30,11 @@ namespace Client_Mobile.Services
         ///
         ///
 
-        public IoTHub(string connectionString, TransportType transportType)
+        public IoTHub()
         {
-            this.transportProtocol = TransportType.Amqp;
-            this.connectionString = connectionString;
-            this.deviceClient =
-                    DeviceClient.CreateFromConnectionString(this.connectionString, this.transportProtocol);
+            this.transportProtocol = TransportType.Http1; ;
+            deviceClient =
+                    DeviceClient.CreateFromConnectionString(Constants.IotHubConnectionString, this.transportProtocol);
         
         }
 
@@ -42,19 +42,14 @@ namespace Client_Mobile.Services
         {
                 try
                 {
-                   await this.deviceClient.OpenAsync();
-                   await this.deviceClient.CloseAsync();
+                   await deviceClient.OpenAsync();                 
+                   return true;
             }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                     return false;
                 }
-
-                return true;
-            
-    
-            return false;
         }
 
         /// <inheritdoc />
@@ -77,7 +72,7 @@ namespace Client_Mobile.Services
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
                 try
                 {
-                    await this.deviceClient.SendEventAsync(message);
+                    await deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
@@ -114,7 +109,7 @@ namespace Client_Mobile.Services
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
                 try
                 {
-                    await this.deviceClient.SendEventAsync(message);
+                    await deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
@@ -150,7 +145,7 @@ namespace Client_Mobile.Services
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
                 try
                 {
-                    await this.deviceClient.SendEventAsync(message);
+                    await deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
@@ -162,6 +157,28 @@ namespace Client_Mobile.Services
                 return true;
             }
             return false;
+        }
+
+        /// <inheritdoc />
+        public async Task<Message> GetPendingMessages()
+        {
+            Message receivedMessage;
+            string messageData;
+
+        
+                receivedMessage = await deviceClient.ReceiveAsync().ConfigureAwait(false);
+
+                if (receivedMessage != null)
+                {
+                   
+                    
+                    await  deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false);
+                    Console.WriteLine(receivedMessage);
+                    return receivedMessage;
+                }
+
+            return null;
+
         }
     }
 }

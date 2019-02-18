@@ -12,12 +12,16 @@ namespace Client_Mobile.Interfaces
     {
         void InitialiseApi();
 
-        Task<HttpResponseMessage> LoginUser(LoginRequest request);
+        Task<HttpResponseMessage> LoginUser();
+        Task<HttpResponseMessage> CreateUser();
 
+        Task<HttpResponseMessage> GetDeliveryHistory();
 
-        Task<HttpResponseMessage> CreateUser(RegisterRequest request);
+        Task<HttpResponseMessage> GetActivePins();
 
-     
+        Task<HttpResponseMessage> GetLockers();
+
+        Task<HttpResponseMessage> AddLockerToProfile();
 
     }
 }

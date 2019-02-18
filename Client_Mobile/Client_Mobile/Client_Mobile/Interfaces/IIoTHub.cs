@@ -7,15 +7,18 @@ namespace Client_Mobile.Interfaces
 {
     using System.Threading.Tasks;
     using Enums;
+    using Microsoft.Azure.Devices.Client;
     using Models;
 
-    interface IIoTHub
+    public interface IIoTHub
     {
 
         Task<bool> CheckConnection();
         Task<bool> Lock(string deviceId, LockerActionEnum action);
         Task<bool> Unlock(string deviceId, LockerActionEnum action);
         Task<bool> SendPinToLocker(string deviceId, LockerActionEnum action, Pin pin);
+
+        Task<Message> GetPendingMessages();
 
 
 

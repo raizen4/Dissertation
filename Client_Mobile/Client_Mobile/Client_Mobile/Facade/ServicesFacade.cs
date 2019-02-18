@@ -7,6 +7,7 @@ namespace Client_Mobile.Facade
     using System.Threading.Tasks;
     using Enums;
     using Interfaces;
+    using Microsoft.Azure.Devices.Client;
     using Models;
     using ServiceModels;
 
@@ -28,10 +29,10 @@ namespace Client_Mobile.Facade
        
 
         /// <inheritdoc />
-        public async Task<bool> Lock(LockerActionEnum action)
+        public async Task<bool> Lock()
         {
            
-            var result = await this.iotHub.Lock("121321", action);
+            var result = await this.iotHub.Lock("121321", LockerActionEnum.Close);
             if (result)
             {
                 return true;
@@ -43,10 +44,10 @@ namespace Client_Mobile.Facade
         }
 
         /// <inheritdoc />
-        public async Task<bool> Unlock(LockerActionEnum action)
+        public async Task<bool> Unlock()
         {
           
-                var result = await this.iotHub.Unlock("121321", action);
+                var result = await this.iotHub.Unlock("121321", LockerActionEnum.Open);
                 if (result)
                 {
                     return true;
@@ -67,6 +68,28 @@ namespace Client_Mobile.Facade
                 }
 
             return false;
+        }
+        public async Task<Message> GetPendingMessagesFromHub()
+        {
+            try
+            {
+                var result = await this.iotHub.GetPendingMessages();
+                if (result != null)
+                {
+                    return result;
+                }
+
+                return null;
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+          
+          
+
+           
         }
 
         /// <inheritdoc />
