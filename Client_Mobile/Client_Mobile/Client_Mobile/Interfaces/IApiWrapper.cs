@@ -12,8 +12,10 @@ namespace Client_Mobile.Interfaces
     {
         void InitialiseApi();
 
-        Task<HttpResponseMessage> LoginUser();
-        Task<HttpResponseMessage> CreateUser();
+        Task<HttpResponseMessage> LoginUser(LoginRequest request);
+
+
+        Task<HttpResponseMessage> CreateUser(RegisterRequest request);
 
         Task<HttpResponseMessage> GetDeliveryHistory();
 

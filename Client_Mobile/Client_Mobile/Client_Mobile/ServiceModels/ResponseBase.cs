@@ -6,7 +6,7 @@ namespace Client_Mobile.ServiceModels
 {
     public class ResponseBase
     {
-        public string IsSuccessful { get; set; }
+        public bool IsSuccessful { get; set; }
         public string Error { get; set; }
     }
 }

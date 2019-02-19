@@ -2,12 +2,57 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Client_Mobile.Views.LoginPage">
-    <StackLayout>
-        
-        <Label Text="dadsa"></Label>
-        <Label Text="12dada13"></Label>
-    </StackLayout>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Help"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+        <primitives:RadBusyIndicator x:Name="radBusyIndicator"
+                                           AnimationType="Animation4"
+                                         AnimationContentHeightRequest="80"
+                                 AnimationContentWidthRequest="80"
+                                 AnimationContentColor="DodgerBlue"
+                                 
+                                           IsBusy="{Binding IsLoading}"
+                               
+                               >
+            <primitives:RadBusyIndicator.Content>
+                <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+
+                    <Image  HeightRequest="190"  Source="app_logo.png"></Image>
+
+                    <StackLayout Orientation="Vertical" Margin="0,30,0,0">
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="0,20,0,0">
+                            <Label AutomationId="EmailLabel"  HorizontalOptions="Center" TextColor="WhiteSmoke" Text="Email:" VerticalOptions="Center" FontSize="25" FontAttributes="Bold"  ></Label>
+                            <Entry  AutomationId="EntryEmail"  TextColor="WhiteSmoke"  Placeholder="Email goes here" Text="{Binding Email, Mode=TwoWay}"></Entry>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"  >
+                            <Label AutomationId="EntryLabel" HorizontalOptions="Center" TextColor="WhiteSmoke" Text="Password:" VerticalOptions="Center"  FontSize="25" FontAttributes="Bold"></Label>
+                            <Entry AutomationId="EntryPassword" IsPassword="True" HorizontalOptions="CenterAndExpand" TextColor="WhiteSmoke" Placeholder="Password goes here" Text="{Binding Password, Mode=TwoWay}"></Entry>
+                        </StackLayout>
+                        <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                            <Button AutomationId="ForgotButton" Text="Forgot password" TextColor="WhiteSmoke"  HorizontalOptions="Center" BackgroundColor="Transparent" CornerRadius="10"></Button>
+                        </StackLayout>
+                        <StackLayout AutomationId="ActionsLayout"  Margin="0,120,0,0">
+                            <Button AutomationId="SignInButton" Text="Sign In" BackgroundColor="Transparent" TextColor="WhiteSmoke" BorderWidth="2"  BorderColor="WhiteSmoke" Command="{Binding LogInCommand}" CornerRadius="15"></Button>
+                            <Button  AutomationId="SignUpButton" Text="Sign Up" BackgroundColor="Transparent" BorderColor="WhiteSmoke" BorderWidth="2" TextColor="WhiteSmoke" Font="Medium"  Command="{Binding RegisterCommand}" CornerRadius="15"></Button>
+                            <Button  AutomationId="GuestButton" Text="Continue as Guest" BackgroundColor="Transparent" TextColor="WhiteSmoke"  BorderWidth="2" BorderColor="WhiteSmoke" Command="{Binding GoToPostsPageCommand}" CornerRadius="15"></Button>
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+            </primitives:RadBusyIndicator.Content>
+            <primitives:RadBusyIndicator.BusyContent>
+                <StackLayout  >
+                    <Label HorizontalOptions="Center"
+                       Text="Working hard on it..."
+                       VerticalOptions="Center" />
+                </StackLayout>
+
+            </primitives:RadBusyIndicator.BusyContent>
+        </primitives:RadBusyIndicator>
+
 
 </ContentPage>

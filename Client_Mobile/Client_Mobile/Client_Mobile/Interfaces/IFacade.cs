@@ -16,8 +16,8 @@ namespace Client_Mobile.Interfaces
         Task<bool> Lock();
         Task<bool> Unlock();
         Task<bool> SendPinToLocker(Pin newPin);
-        Task<ResponseBase> LoginUser(string password);
-        Task<ResponseBase> CreateUser(string email, string pass);
+        Task<ResponseData<User>> LoginUser(string password, string email);
+        Task<ResponseBase> CreateUser(string email, string pass, string profileId);
 
         Task<ResponseData<List<Parcel>>> GetDeliveryHistory(string profileId);
 

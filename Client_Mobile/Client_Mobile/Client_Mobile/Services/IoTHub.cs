@@ -165,15 +165,15 @@ namespace Client_Mobile.Services
             Message receivedMessage;
             string messageData;
 
-        
-                receivedMessage = await deviceClient.ReceiveAsync().ConfigureAwait(false);
+
+            receivedMessage = await deviceClient.ReceiveAsync().ConfigureAwait(false);
 
                 if (receivedMessage != null)
                 {
-                   
-                    
-                    await  deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false);
-                    Console.WriteLine(receivedMessage);
+
+                    messageData = Encoding.ASCII.GetString(receivedMessage.GetBytes());
+                    await deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false); 
+                    Console.WriteLine(messageData);
                     return receivedMessage;
                 }
 

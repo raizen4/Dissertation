@@ -46,6 +46,7 @@ namespace Client_Mobile
             containerRegistry.Register<IFacade, ServicesFacade>();
             containerRegistry.Register<IApiWrapper, ApiWrapper>();
             containerRegistry.RegisterSingleton<IIoTHub,IoTHub>();
+            containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
         }
     }
 }

@@ -116,11 +116,12 @@ namespace Client_Mobile.ViewModels
             }
         }
 
-        public async void ListenForMessages(int poolingRate)
+        private async void ListenForMessages(int poolingRate)
         {
-            var newMesasgeReceived = await this.facade.GetPendingMessagesFromHub();
+         
             while (true)
             {
+                var newMesasgeReceived = await this.facade.GetPendingMessagesFromHub();
                 if (newMesasgeReceived != null)
                 {
                     string stringifiedAction;
