@@ -4,7 +4,7 @@ require('mongoose');
 const jwt = require('jsonwebtoken');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const bcrypt = require('bcrypt');
-const constants = require('../Constants');
+const constants = require('../Constants').default;
 const User = require('../DbSchemas/UserSchema');
 
 
@@ -44,15 +44,12 @@ async function login(email, password) {
       if (matchPass) {
         foundUser.HashedPass = null;
         const token = await signToken(foundUser);
-        const formattedSavedArticles = [];
-        for (let i = 0; i < foundUser.SavedArticles.length; i += 1) {
-          formattedSavedArticles.push(foundUser.SavedArticles[i].Id);
-        }
+
         const userToSendBack = {
-          Email: user.Email,
-          ProfileName: user.ProfileName,
-          Locker: user.AccountLocker,
-          Id: user._id,
+          Email: foundUser.Email,
+          ProfileName: foundUser.ProfileName,
+          AccountLocker: foundUser.AccountLocker,
+          Id: foundUser._id,
           Token: token,
         };
         return userToSendBack;
@@ -64,12 +61,14 @@ async function login(email, password) {
   return null;
 }
 
-async function DeleteLockerFromProfile(userId) {
+async function AddPin(userId, pin) {
   try {
     const result = await User.findOneAndUpdate(
       { _id: userId },
 
-      { $set: { AccountLocker: undefined } },
+      {
+        $push: { 'AccountLocker.ActivePins': pin },
+      },
 
 
     );
@@ -81,15 +80,14 @@ async function DeleteLockerFromProfile(userId) {
   }
 }
 
-async function AddLockerToProfile(userId, locker) {
+async function RemovePin(userId, pin) {
   try {
     const result = await User.findByIdAndUpdate(
       userId,
       {
-        $set: {
-          AccountLocker: locker,
-        },
+        $pull: { 'AccountLocker.ActivePins': { Code: pin } },
       },
+
     );
     if (result != null) {
       return result;
@@ -101,10 +99,27 @@ async function AddLockerToProfile(userId, locker) {
 
 async function AddNewActionForLocker(userId, action) {
   try {
+    const currentDate = Date().toISOString()
+      .replace(/T/, ' ') // replace T with a space
+      .replace(/\..+/, '');
+    let newAction = '';
+    switch (action.Code) {
+    case constants.Actions.Open:
+      newAction = `Opened at ${currentDate}`;
+      break;
+    case constants.Actions.Close:
+      newAction = `Closed at ${currentDate}`;
+      break;
+    case constants.Actions.Delivery:
+      newAction = `Delivered by ${action.DeliveryCompany} At ${currentDate} using pin ${action.Pin.Code}`;
+      break;
+    default:
+      break;
+    }
     const result = await User.findByIdAndUpdate(
       userId,
       {
-        $push: { 'AccountLocker.$.History': action },
+        $push: { 'AccountLocker.History': newAction },
       },
     );
     if (result != null) {
@@ -131,8 +146,8 @@ async function GetLockerHistory(userId) {
 module.exports = {
   register,
   login,
+  AddPin,
+  RemovePin,
   AddNewActionForLocker,
-  DeleteLockerFromProfile,
-  AddLockerToProfile,
   GetLockerHistory,
 };

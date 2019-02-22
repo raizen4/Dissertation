@@ -16,12 +16,28 @@ const LockerActivity = new Schema({
   },
 
 });
+const Pin = new Schema({
+  Code: {
+    type: String,
+    required: true,
+  },
+  Ttl: {
+    type: String,
+    required: true,
+  },
+  Created: {
+    type: Date,
+    default: Date.now,
+  },
+
+});
 const Locker = new Schema({
   DeviceId: {
     type: String,
     required: true,
   },
   History: [LockerActivity],
+  ActivePins: [Pin],
 });
 
 const UserSchema = new Schema({

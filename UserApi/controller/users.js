@@ -28,10 +28,11 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
   console.log(`register hit${req.body}`);
   const User = {
+    ProfileName: req.body.ProfileName,
     Email: req.body.Email,
     Password: req.body.Password,
-    Username: req.body.Username,
-    DisplayName: req.body.DiplayName,
+    AccountLocker: req.body.AccountLocker,
+
   };
   console.log(User);
   try {
@@ -55,36 +56,13 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/AddLockerToProfile', jwtChecker.checkToken, async (req, res) => {
-  try {
-    // const parsedBody = JSON.parse(req.body);
-    const userId = req.body.User.Id;
-    const newLocker = req.body.Locker;
-    const managerResult = await userManager.AddLockerToProfile(userId, newLocker);
-    if (managerResult) {
-      const newResp = new BaseResponse();
-      newResp.HasBeenSuccessful = true;
-      newResp.Errors = null;
-      res.send(newResp);
-    } else {
-      const newResp = new BaseResponse();
-      newResp.HasBeenSuccessful = false;
-      newResp.Errors = 'Internal server error';
-      res.send(newResp);
-    }
-  } catch (err) {
-    const newResp = new BaseResponse();
-    newResp.HasBeenSuccessful = false;
-    newResp.Errors = err;
-    res.send(newResp);
-  }
-});
 
-router.post('/DeleteLockerFromProfile', jwtChecker.checkToken, async (req, res) => {
+router.post('/RemovePinFromLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
     const userId = req.body.User.Id;
-    const managerResult = await userManager.DeleteLockerFromProfile(userId);
+    const pinToRemove = req.body.Pin.Code;
+    const managerResult = await userManager.RemovePin(userId, pinToRemove);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;
@@ -107,8 +85,36 @@ router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => 
   try {
     // const parsedBody = JSON.parse(req.body);
     const userId = req.body.User.Id;
-    const action = req.body.Action;
+    const action = {
+      Action: req.body.Action.Type,
+      Pin: req.body.Pin,
+    };
     const managerResult = await userManager.AddNewActionForLocker(userId, action);
+    if (managerResult) {
+      const newResp = new BaseResponse();
+      newResp.HasBeenSuccessful = true;
+      newResp.Errors = null;
+      res.send(newResp);
+    } else {
+      const newResp = new BaseResponse();
+      newResp.HasBeenSuccessful = false;
+      newResp.Errors = 'Internal server error';
+      res.send(newResp);
+    }
+  } catch (err) {
+    const newResp = new BaseResponse();
+    newResp.HasBeenSuccessful = false;
+    newResp.Errors = err;
+    res.send(newResp);
+  }
+});
+
+router.put('/AddNewPinForLocker', jwtChecker.checkToken, async (req, res) => {
+  try {
+    // const parsedBody = JSON.parse(req.body);
+    const userId = req.body.User.Id;
+    const pinToAdd = req.body.Pin;
+    const managerResult = await userManager.AddPin(userId, pinToAdd);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;

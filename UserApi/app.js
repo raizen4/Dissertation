@@ -7,7 +7,7 @@ require('./DbSchemas/UserSchema');
 const cors = require('cors');
 const logger = require('./basic-logger');
 
-const port = 4001;
+const port = 4000;
 const server = restify.createServer({
   name: 'UserApi',
   version: '1.0.0',

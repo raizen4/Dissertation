@@ -5,12 +5,13 @@ const BaseResponse = require('../serviceModels/BaseResponse');
 
 // eslint-disable-next-line consistent-return
 function checkToken(req, res, next) {
-  let parsedBody;
+  const parsedBody = req.body;
+  /*
   try {
     parsedBody = JSON.parse(req.body);
   } catch (err) {
     parsedBody = null;
-  }
+  } */
   let token = req.headers.authorization; // Express headers are auto converted to lowercase
   if (token) {
     if (token.startsWith('Bearer ')) {

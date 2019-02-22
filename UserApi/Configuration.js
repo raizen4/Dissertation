@@ -1,3 +1,2 @@
-const mongoConnection = 'mongodb://admin:bogdan95@ds024548.mlab.com:24548/user-database';
-
+const mongoConnection = 'mongodb://bogdan:bogdan95@ds016148.mlab.com:16148/dissertation-user-database';
 module.exports = { mongoConnection };
