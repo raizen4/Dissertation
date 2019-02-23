@@ -43,7 +43,7 @@ namespace Client_Mobile
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage,MainPageViewModel>();
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
-            containerRegistry.Register<IFacade, ServicesFacade>();
+            containerRegistry.Register<IFacade, Facade>();
             containerRegistry.Register<IApiWrapper, ApiWrapper>();
             containerRegistry.RegisterSingleton<IIoTHub,IoTHub>();
             containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();

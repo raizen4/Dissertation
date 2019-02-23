@@ -73,10 +73,11 @@ async function AddPin(userId, pin) {
 
     );
     if (result != null) {
-      return result;
+      return true;
     }
+    return false;
   } catch (err) {
-    return null;
+    return false;
   }
 }
 
@@ -90,10 +91,11 @@ async function RemovePin(userId, pin) {
 
     );
     if (result != null) {
-      return result;
+      return true;
     }
+    return false;
   } catch (err) {
-    return null;
+    return false;
   }
 }
 
@@ -111,7 +113,12 @@ async function AddNewActionForLocker(userId, action) {
       newAction = `Closed at ${currentDate}`;
       break;
     case constants.Actions.Delivery:
-      newAction = `Delivered by ${action.DeliveryCompany} At ${currentDate} using pin ${action.Pin.Code}`;
+      newAction = `Delivery code used on ${currentDate} by ${action.DeliveryCompany} courier using pin ${action.Pin.Code}`;
+      RemovePin(action.Pin.Code);
+      break;
+    case constants.Actions.PickingUp:
+      newAction = `Picked up code used on ${currentDate} using pin ${action.Pin.Code}`;
+      RemovePin(action.Pin.Code);
       break;
     default:
       break;
@@ -123,10 +130,11 @@ async function AddNewActionForLocker(userId, action) {
       },
     );
     if (result != null) {
-      return result;
+      return true;
     }
+    return false;
   } catch (err) {
-    return null;
+    return false;
   }
 }
 
@@ -138,6 +146,21 @@ async function GetLockerHistory(userId) {
       const history = result.History;
       return history;
     }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function GetActivePins(userId) {
+  try {
+    const result = await User.findOne({ _id: userId });
+
+    if (result != null) {
+      const history = result.ActivePins;
+      return history;
+    }
+    return null;
   } catch (err) {
     return null;
   }
@@ -146,6 +169,7 @@ async function GetLockerHistory(userId) {
 module.exports = {
   register,
   login,
+  GetActivePins,
   AddPin,
   RemovePin,
   AddNewActionForLocker,

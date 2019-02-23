@@ -82,31 +82,48 @@ namespace Client_Mobile.Services
         }
 
         /// <inheritdoc />
-        public Task<HttpResponseMessage> GetDeliveryHistory()
+        public async Task<HttpResponseMessage> GetDeliveryHistory()
         {
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
-            throw new NotImplementedException();
+            
+            var result = await this.API.GetDeliveryHistory();
+            return result;
         }
 
         /// <inheritdoc />
-        public Task<HttpResponseMessage> GetActivePins()
+        public async Task<HttpResponseMessage> GetActivePins()
         {
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
-            throw new NotImplementedException();
+           
+            var result = await this.API.GetActivePins();
+            return result;
         }
 
         /// <inheritdoc />
-        public Task<HttpResponseMessage> GetLockers()
+        public async Task<HttpResponseMessage> AddPinForLocker(PinRequest req)
         {
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
-            throw new NotImplementedException();
+            var jsonToSend = JsonConvert.SerializeObject(req);
+            var result = await this.API.AddPinForLocker(Constants.Headers.ContentType, jsonToSend);
+            return result;
         }
 
         /// <inheritdoc />
-        public Task<HttpResponseMessage> AddLockerToProfile()
+        public async Task<HttpResponseMessage> RemovePinForLocker(PinRequest req)
         {
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
-            throw new NotImplementedException();
+            var jsonToSend = JsonConvert.SerializeObject(req);
+            var result = await this.API.RemovePinForLocker(Constants.Headers.ContentType, jsonToSend);
+            return result;
+        }
+
+        /// <inheritdoc />
+        public async Task<HttpResponseMessage> AddNewActionForLocker(ActionRequest req)
+        {
+            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
+            var jsonToSend = JsonConvert.SerializeObject(req);
+            var result = await this.API.AddNewActionForLocker(Constants.Headers.ContentType, jsonToSend);
+            return result;
         }
     }
 }

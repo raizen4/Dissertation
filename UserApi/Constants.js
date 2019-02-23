@@ -3,6 +3,7 @@ const secret = 'dSDer3rfsdgvasvhjopdy73621d';
 const Actions = {
   Open: 'Open',
   Close: 'Close',
-  Delivery: 'Delivery By',
+  Delivery: 'Delivery',
+  PickingUp: 'PickingUp',
 };
 export default { secret, Actions };

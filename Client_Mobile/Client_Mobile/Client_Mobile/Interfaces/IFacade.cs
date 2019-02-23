@@ -19,14 +19,18 @@ namespace Client_Mobile.Interfaces
         Task<ResponseData<User>> LoginUser(string password, string email);
         Task<ResponseBase> CreateUser(string email, string pass, string profileId);
 
-        Task<ResponseData<List<Parcel>>> GetDeliveryHistory(string profileId);
+        Task<ResponseData<List<HistoryAction>>> GetDeliveryHistory();
 
-        Task<ResponseData<List<Pin>>> GetActivePins(string profileId);
+        Task<ResponseData<List<Pin>>> GetActivePins();
 
-        Task<ResponseData<List<Locker>>> GetLockers(string profileId);
-
-        Task<ResponseBase> AddLockerToProfile(string profileId, Locker newLocker);
+      
         Task<Message> GetPendingMessagesFromHub();
+
+        Task<ResponseBase> AddPinForLocker(Pin newPin);
+
+        Task<ResponseBase> RemovePinForLocker(Pin newPin);
+
+        Task<ResponseBase> AddNewActionForLocker(LockerActionEnum type);
 
 
 

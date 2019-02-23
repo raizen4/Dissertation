@@ -57,7 +57,7 @@ router.post('/register', async (req, res) => {
 });
 
 
-router.post('/RemovePinFromLocker', jwtChecker.checkToken, async (req, res) => {
+router.post('/RemovePinForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
     const userId = req.body.User.Id;
@@ -109,7 +109,7 @@ router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => 
   }
 });
 
-router.put('/AddNewPinForLocker', jwtChecker.checkToken, async (req, res) => {
+router.put('/AddPinForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
     const userId = req.body.User.Id;
@@ -133,5 +133,56 @@ router.put('/AddNewPinForLocker', jwtChecker.checkToken, async (req, res) => {
     res.send(newResp);
   }
 });
+router.get('/GetActivePins', jwtChecker.checkToken, async (req, res) => {
+  try {
+    // const parsedBody = JSON.parse(req.body);
+    const userId = req.body.User.Id;
+    const managerResult = await userManager.GetActivePins(userId);
+    if (managerResult) {
+      const newResp = new BaseResponse();
+      newResp.HasBeenSuccessful = true;
+      newResp.Errors = null;
+      res.send(newResp);
+    } else {
+      const newResp = new BaseResponse();
+      newResp.HasBeenSuccessful = false;
+      newResp.Errors = 'Internal server error';
+      res.send(newResp);
+    }
+  } catch (err) {
+    const newResp = new BaseResponse();
+    newResp.HasBeenSuccessful = false;
+    newResp.Errors = err;
+    res.send(newResp);
+  }
+});
+router.get('/GetDeliveryHistory', jwtChecker.checkToken, async (req, res) => {
+  try {
+    // const parsedBody = JSON.parse(req.body);
+    const userId = req.body.User.Id;
+
+    const managerResult = await userManager.GetLockerHistory(userId);
+    if (managerResult != null) {
+      const newResp = new ResponseData();
+      newResp.HasBeenSuccessful = true;
+      newResp.Content = managerResult;
+      newResp.Errors = null;
+      res.send(newResp);
+    } else {
+      const newResp = new ResponseData();
+      newResp.HasBeenSuccessful = false;
+      newResp.Content = null;
+      newResp.Errors = 'Internal server error';
+      res.send(newResp);
+    }
+  } catch (err) {
+    const newResp = new ResponseData();
+    newResp.HasBeenSuccessful = false;
+    newResp.Content = null;
+    newResp.Errors = err;
+    res.send(newResp);
+  }
+});
+
 
 module.exports = router;

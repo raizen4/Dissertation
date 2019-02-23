@@ -21,6 +21,10 @@ const Pin = new Schema({
     type: String,
     required: true,
   },
+  Type: {
+    type: String,
+    required: true,
+  },
   Ttl: {
     type: String,
     required: true,
