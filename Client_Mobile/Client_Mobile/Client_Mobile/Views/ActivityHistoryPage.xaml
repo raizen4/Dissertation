@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:converters1="clr-namespace:Client_Mobile.Converters"
+             x:Class="Client_Mobile.Views.ActivityHistoryPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters1:ActionToStringConverter x:Key="ActionToStringConverter"></converters1:ActionToStringConverter>
+            <converters1:ActionToImageConverter x:Key="ActionToImageConverter"></converters1:ActionToImageConverter>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                        AnimationType="Animation4"
+                                        AnimationContentHeightRequest="100"
+                                        AnimationContentWidthRequest="100"
+                                        IsBusy="{Binding IsLoading}">
+        <StackLayout>
+
+            <ListView StyleId="ListViewPostsPage" HasUnevenRows="True"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"  ItemsSource="{Binding HistoryActions}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  Spacing="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="100*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80*"></ColumnDefinition>
+                                        <ColumnDefinition Width="20*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding Action, Converter={StaticResource ActionToStringConverter}}" FontSize="Large"></Label>
+                                    <Image Grid.Row="0" Grid.Column="1" Source="{Binding Action, Converter={StaticResource ActionToImageConverter}}" ></Image>
+                                </Grid>
+                                <Label Text="{Binding Description}" FontSize="Medium"></Label>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+        <primitives:RadBusyIndicator.BusyContent>
+            <Label HorizontalOptions="Center" 
+                   Text="Loading data..."
+                   VerticalOptions="Center" 
+            />
+        </primitives:RadBusyIndicator.BusyContent>
+    </primitives:RadBusyIndicator>
+</ContentPage>

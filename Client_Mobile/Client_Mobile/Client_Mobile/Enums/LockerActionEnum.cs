@@ -8,10 +8,12 @@ namespace Client_Mobile.Enums
     {
         Opened=1,
         Closed=0,
-        NewPinGenerated=2,
-        Close=3,
-        Open=4,
-        CheckConnection=5,
+        Delivered=2,
+        PickedUp=3,
+        NewPinGenerated=4,
+        Close=5,
+        Open=6,
+        CheckConnection=7,
 
 
 

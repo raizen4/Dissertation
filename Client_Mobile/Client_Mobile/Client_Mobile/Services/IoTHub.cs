@@ -18,10 +18,10 @@ namespace Client_Mobile.Services
     public class IoTHub : IIoTHub
     {
 
-        private TransportType transportProtocol;
-        private string connectionString;
-        private static DeviceClient deviceClient;
-        private bool isConnected = false;
+        private TransportType _transportProtocol;
+        private string _connectionString;
+        private static DeviceClient _deviceClient;
+        private bool _isConnected = false;
 
         /// <inheritdoc />
         ///
@@ -32,9 +32,9 @@ namespace Client_Mobile.Services
 
         public IoTHub()
         {
-            this.transportProtocol = TransportType.Http1; ;
-            deviceClient =
-                    DeviceClient.CreateFromConnectionString(Constants.IotHubConnectionString, this.transportProtocol);
+            this._transportProtocol = TransportType.Http1; ;
+            _deviceClient =
+                    DeviceClient.CreateFromConnectionString(Constants.IotHubConnectionString, this._transportProtocol);
         
         }
 
@@ -42,7 +42,7 @@ namespace Client_Mobile.Services
         {
                 try
                 {
-                   await deviceClient.OpenAsync();                 
+                   await _deviceClient.OpenAsync();                 
                    return true;
             }
                 catch (Exception e)
@@ -55,15 +55,15 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> Lock(string deviceId, LockerActionEnum action)
         {
-            if (!this.isConnected)
+            if (!this._isConnected)
             {
                 var recheckConn = await this.CheckConnection();
                 if (recheckConn)
                 {
-                    this.isConnected = true;
+                    this._isConnected = true;
                 }
             }
-            if (this.isConnected)
+            if (this._isConnected)
             {
                 GenericLockerRequest req = new GenericLockerRequest();
                 req.Action = action;
@@ -72,12 +72,12 @@ namespace Client_Mobile.Services
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
                 try
                 {
-                    await deviceClient.SendEventAsync(message);
+                    await _deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    this.isConnected = false;
+                    this._isConnected = false;
                     return false;
                 }
 
@@ -92,14 +92,14 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> Unlock(string deviceId, LockerActionEnum action)
         {
-            if (this.isConnected)
+            if (this._isConnected)
             {
-                if (!this.isConnected)
+                if (!this._isConnected)
                 {
                     var recheckConn = await this.CheckConnection();
                     if (recheckConn)
                     {
-                        this.isConnected = true;
+                        this._isConnected = true;
                     }
                 }
                 GenericLockerRequest req = new GenericLockerRequest();
@@ -109,12 +109,12 @@ namespace Client_Mobile.Services
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
                 try
                 {
-                    await deviceClient.SendEventAsync(message);
+                    await _deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    this.isConnected = false;
+                    this._isConnected = false;
                     return false;
                 }
 
@@ -127,15 +127,15 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> SendPinToLocker(string deviceId, LockerActionEnum action, Pin pin)
         {
-            if (!this.isConnected)
+            if (!this._isConnected)
             {
                 var recheckConn = await this.CheckConnection();
                 if (recheckConn)
                 {
-                    this.isConnected = true;
+                    this._isConnected = true;
                 }
             }
-            if (this.isConnected)
+            if (this._isConnected)
             {
                 PayloadLockerRequest<Pin> req=new PayloadLockerRequest<Pin>();
                 req.Action = action;
@@ -145,12 +145,12 @@ namespace Client_Mobile.Services
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
                 try
                 {
-                    await deviceClient.SendEventAsync(message);
+                    await _deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
                    Console.WriteLine(e.Message);
-                    this.isConnected = false;
+                    this._isConnected = false;
                     return false;
                 }
                 
@@ -166,13 +166,13 @@ namespace Client_Mobile.Services
             string messageData;
 
 
-            receivedMessage = await deviceClient.ReceiveAsync().ConfigureAwait(false);
+            receivedMessage = await _deviceClient.ReceiveAsync().ConfigureAwait(false);
 
                 if (receivedMessage != null)
                 {
 
                     messageData = Encoding.ASCII.GetString(receivedMessage.GetBytes());
-                    await deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false); 
+                    await _deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false); 
                     Console.WriteLine(messageData);
                     return receivedMessage;
                 }

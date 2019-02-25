@@ -6,24 +6,19 @@ namespace Client_Mobile.Models
 {
     public class Pin
     {
-        private string code;
-        private string issuerId;
-        private string ttl;
+        private string _code;
+        private string _ttl;
 
         public string Code
         {
-            get => this.code;
-            set => this.code = value;
+            get => this._code;
+            set => this._code = value;
         }
-        public string IssuerId
-        {
-            get => this.issuerId;
-            set => this.issuerId = value;
-        }
+       
         public string Ttl
         {
-            get => this.ttl;
-            set => this.ttl = value;
+            get => this._ttl;
+            set => this._ttl = value;
         }
     }
 }

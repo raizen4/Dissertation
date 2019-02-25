@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:input="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="Client_Mobile.Views.PinPage">
+  
+
+    <StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="85*"></RowDefinition>
+                <RowDefinition Height="15*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <StackLayout IsVisible="{Binding ForCourier}" Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <Label Text="Make syre you copy this pin to the courier's delivery instructions."></Label>
+                    <Label Text="{Binding PinCode}"></Label>
+                    <Label Text="Do not lose this pin!"></Label>
+                </StackLayout>
+
+            </StackLayout>
+
+            <StackLayout IsVisible="{Binding ForFriend}" Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand">
+                    
+                    <Label HorizontalOptions="CenterAndExpand" Text="Make sure you do copy this pin before you press 'Finish' "></Label>
+                    <Label HorizontalOptions="CenterAndExpand" Text="{Binding PinNumber}"></Label>
+                    <Label Text="Friend's Details:"></Label>
+                    <input:RadEntry x:Name="EmailEntry" WatermarkText="Email goes here" Text="{Binding FriendEmail}"/>
+                    <Label Text="or" FontSize="Bold"></Label>
+                    <input:RadEntry x:Name="SmsEntry" WatermarkText="SMS goes here" Text="{Binding FriendSms}"/>
+                </StackLayout>
+            </StackLayout>
+
+            <Button Grid.Row="1" Grid.Column="0" Text="Finish"></Button>
+        </Grid>
+    </StackLayout>
+</ContentPage>

@@ -16,12 +16,12 @@ namespace Client_Mobile.Services
 
     class ApiWrapper:IApiWrapper
     {
-        private IApiMatchingEndpoints API;
+        private IApiMatchingEndpoints _api;
         /// <summary>
         /// The HTTP client
         /// </summary>
         /// <inheritdoc />
-        private HttpClient client;
+        private HttpClient _client;
 
         public ApiWrapper()
         {
@@ -42,7 +42,7 @@ namespace Client_Mobile.Services
         public void InitialiseApi()
         {
 
-            this.client = new HttpClient(new NativeMessageHandler())
+            this._client = new HttpClient(new NativeMessageHandler())
             {
 
                 DefaultRequestHeaders = { Authorization = new AuthenticationHeaderValue("Bearer", "") },
@@ -53,7 +53,7 @@ namespace Client_Mobile.Services
 
             try
             {
-                this.API = RestService.For<IApiMatchingEndpoints>(this.client);
+                this._api = RestService.For<IApiMatchingEndpoints>(this._client);
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace Client_Mobile.Services
         public async Task<HttpResponseMessage> LoginUser(LoginRequest request)
         {
             var jsonToSend = JsonConvert.SerializeObject(request);
-            var result = await this.API.LoginUser(Constants.Headers.ContentType, jsonToSend);
+            var result = await this._api.LoginUser(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
 
@@ -77,52 +77,52 @@ namespace Client_Mobile.Services
         {
 
             var jsonToSend = JsonConvert.SerializeObject(request);
-            var result = await this.API.CreateUser(Constants.Headers.ContentType, jsonToSend);
+            var result = await this._api.CreateUser(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
 
         /// <inheritdoc />
         public async Task<HttpResponseMessage> GetDeliveryHistory()
         {
-            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
             
-            var result = await this.API.GetDeliveryHistory();
+            var result = await this._api.GetDeliveryHistory();
             return result;
         }
 
         /// <inheritdoc />
         public async Task<HttpResponseMessage> GetActivePins()
         {
-            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
            
-            var result = await this.API.GetActivePins();
+            var result = await this._api.GetActivePins();
             return result;
         }
 
         /// <inheritdoc />
         public async Task<HttpResponseMessage> AddPinForLocker(PinRequest req)
         {
-            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
-            var result = await this.API.AddPinForLocker(Constants.Headers.ContentType, jsonToSend);
+            var result = await this._api.AddPinForLocker(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
 
         /// <inheritdoc />
         public async Task<HttpResponseMessage> RemovePinForLocker(PinRequest req)
         {
-            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
-            var result = await this.API.RemovePinForLocker(Constants.Headers.ContentType, jsonToSend);
+            var result = await this._api.RemovePinForLocker(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
 
         /// <inheritdoc />
         public async Task<HttpResponseMessage> AddNewActionForLocker(ActionRequest req)
         {
-            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.CurrentLoggedInUser.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
-            var result = await this.API.AddNewActionForLocker(Constants.Headers.ContentType, jsonToSend);
+            var result = await this._api.AddNewActionForLocker(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
     }

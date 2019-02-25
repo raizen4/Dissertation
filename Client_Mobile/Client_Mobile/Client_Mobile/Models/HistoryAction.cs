@@ -6,10 +6,17 @@ namespace Client_Mobile.Models
 {
     public class HistoryAction
     {
-        private string action;
+        private string _action;
+        private string _description;
         public string Action {
-            get =>this.action;
-            set => this.action = value;
+            get =>this._action;
+            set => this._action = value;
         }
+        public string Description
+        {
+            get => this._description;
+            set => this._description = value;
+        }
+        
     }
 }

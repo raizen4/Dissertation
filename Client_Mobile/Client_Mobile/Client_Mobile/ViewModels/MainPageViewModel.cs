@@ -19,11 +19,14 @@ namespace Client_Mobile.ViewModels
 
     public class MainPageViewModel : ViewModelBase
     {
-        private readonly IFacade facade;
-        private readonly IPageDialogService dialogService;    
-        private int poolingRate = 10000;
+        private readonly IFacade _facade;
+        private readonly IPageDialogService _dialogService;
+        private readonly INavigationService _navService;
+        private int _poolingRate = 10000;
         public DelegateCommand LockCommand { get; set; }
         public DelegateCommand UnlockCommand { get; set; }
+        public DelegateCommand NavigateToActivityHistory { get; set; }
+        public DelegateCommand NavigateToPinGenerator { get; set; }
         public DelegateCommand SendNewPinCommand { get; set; }
 
      
@@ -31,13 +34,15 @@ namespace Client_Mobile.ViewModels
             : base(navigationService)
         {
             Title = "Main Page";
-            this.dialogService = dialogService;
-            this.facade = facade;
-           
+            this._dialogService = dialogService;
+            this._facade = facade;
+            this._navService = navigationService;
             LockCommand=new DelegateCommand(Lock);
             UnlockCommand = new DelegateCommand(Unlock);
             SendNewPinCommand = new DelegateCommand(SendNewPin);
-            this.ListenForMessages(this.poolingRate);
+            NavigateToActivityHistory=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.ActivityHistoryPage)));
+            NavigateToPinGenerator = new DelegateCommand(async () => await this._navService.NavigateAsync(nameof(Views.PinPage)));
+            this.ListenForMessages(this._poolingRate);
         }
 
 
@@ -45,22 +50,22 @@ namespace Client_Mobile.ViewModels
         {
             try
             {
-                var result = await this.facade.Lock();
+                var result = await this._facade.Lock();
                 if (result)
                 {
-                    await this.dialogService.DisplayAlertAsync("Successful", "Message successfully sent!",
+                    await this._dialogService.DisplayAlertAsync("Successful", "Message successfully sent!",
                         "OK");
                 }
                 else
                 {
-                    await this.dialogService.DisplayAlertAsync("Failed", "The command has not succeded! Please try again",
+                    await this._dialogService.DisplayAlertAsync("Failed", "The command has not succeded! Please try again",
                         "OK");
                 }
 
             }
             catch (Exception e)
             {
-                await this.dialogService.DisplayAlertAsync("Failed", "The system encountered an error. Make sure there is a connection to the hub and locker adn try again",
+                await this._dialogService.DisplayAlertAsync("Failed", "The system encountered an error. Make sure there is a connection to the hub and locker adn try again",
                     "OK");
             }
 
@@ -70,50 +75,43 @@ namespace Client_Mobile.ViewModels
         {
             try
             {
-                var result = await this.facade.Lock();
+                var result = await this._facade.Lock();
                 if (result)
                 {
-                    await this.dialogService.DisplayAlertAsync("Successful", "Message successfully sent!",
+                    await this._dialogService.DisplayAlertAsync("Successful", "Message successfully sent!",
                         "OK");
                 }
                 else
                 {
-                    await this.dialogService.DisplayAlertAsync("Failed", "The command has not succeded! Please try again",
+                    await this._dialogService.DisplayAlertAsync("Failed", "The command has not succeded! Please try again",
                         "OK");
                 }
 
             }
             catch (Exception e)
             {
-                await this.dialogService.DisplayAlertAsync("Failed", "The system encountered an error. Make sure there is a connection  locker adn try again",
+                await this._dialogService.DisplayAlertAsync("Failed", "The system encountered an error. Make sure there is a connection  locker adn try again",
                     "OK");
             }
         }
 
         public async void SendNewPin()
         {
-            try
+            var dialogResult =await this._dialogService.DisplayAlertAsync("Generate Pin",
+                "Please choose who should use this pin", "Courier", "A friend");
+            NavigationParameters navParams = new NavigationParameters();
+            if (dialogResult)
             {
-               Pin newPin=new Pin(){Code = "12331", IssuerId = "21434123", Ttl = "24"};
-
-                var result = await this.facade.SendPinToLocker(newPin);
-                if (result)
-                {
-                    await this.dialogService.DisplayAlertAsync("Successful", "Message successfully sent!",
-                        "OK");
-                }
-                else
-                {
-                    await this.dialogService.DisplayAlertAsync("Failed", "The command has not succeded! Please try again",
-                        "OK");
-                }
-
+               
+                navParams.Add(LockerAccessEnum.Courier.ToString(),true);
+                navParams.Add(LockerAccessEnum.Friend.ToString(), false);
+                await this._navService.NavigateAsync(nameof(Views.PinPage));
             }
-            catch (Exception e)
-            {
-                await this.dialogService.DisplayAlertAsync("Failed", "The system encountered an error. Make sure there is a connection to the hub and locker adn try again",
-                    "OK");
-            }
+
+            navParams.Add(LockerAccessEnum.Courier.ToString(), false);
+            navParams.Add(LockerAccessEnum.Friend.ToString(), true);
+            await this._navService.NavigateAsync(nameof(Views.PinPage));
+
         }
 
         private async void ListenForMessages(int poolingRate)
@@ -121,7 +119,7 @@ namespace Client_Mobile.ViewModels
          
             while (true)
             {
-                var newMesasgeReceived = await this.facade.GetPendingMessagesFromHub();
+                var newMesasgeReceived = await this._facade.GetPendingMessagesFromHub();
                 if (newMesasgeReceived != null)
                 {
                     string stringifiedAction;
@@ -143,17 +141,17 @@ namespace Client_Mobile.ViewModels
                     }
                     else if (normalizedAction == (int)LockerActionEnum.Opened)
                     {
-                        await this.dialogService.DisplayAlertAsync("Successful", " Locker has been opened!",
+                        await this._dialogService.DisplayAlertAsync("Successful", " Locker has been opened!",
                             "OK");
                     }
                     else if (normalizedAction == (int)LockerActionEnum.Closed)
                     {
-                        await this.dialogService.DisplayAlertAsync("Successful", " Locker has been closed!",
+                        await this._dialogService.DisplayAlertAsync("Successful", " Locker has been closed!",
                             "OK");
                     }
                     else if (normalizedAction == (int)LockerActionEnum.NewPinGenerated)
                     {
-                        await this.dialogService.DisplayAlertAsync("Successful", " New pin has been added to the locker.",
+                        await this._dialogService.DisplayAlertAsync("Successful", " New pin has been added to the locker.",
                             "OK");
                     }
 

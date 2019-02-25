@@ -8,7 +8,6 @@ using Xamarin.Forms.Xaml;
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Client_Mobile
 {
-    using Facade;
     using Interfaces;
     using Services;
 
@@ -43,10 +42,12 @@ namespace Client_Mobile
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage,MainPageViewModel>();
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
-            containerRegistry.Register<IFacade, Facade>();
+            containerRegistry.Register<IFacade,Facade>();
             containerRegistry.Register<IApiWrapper, ApiWrapper>();
             containerRegistry.RegisterSingleton<IIoTHub,IoTHub>();
             containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
+            containerRegistry.RegisterForNavigation<ActivityHistoryPage, ActivityHistoryPageViewModel>();
+            containerRegistry.RegisterForNavigation<PinPage, PinPageViewModel>();
         }
     }
 }

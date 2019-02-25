@@ -8,7 +8,7 @@
              BackgroundImage="bg2.png">
 
 
-    <Grid>
+    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <Grid.RowDefinitions>
             <RowDefinition Height="30*"></RowDefinition>
             <RowDefinition Height="50*"></RowDefinition>
@@ -23,11 +23,11 @@
         <StackLayout VerticalOptions="FillAndExpand"  Grid.Row="1" HorizontalOptions="FillAndExpand">
 
             <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center"  >
-                <Label TextColor="WhiteSmoke" HorizontalOptions="Center" Text="Display Name:" VerticalOptions="Center" FontSize="20" FontAttributes="Bold"></Label>
+                <Label TextColor="WhiteSmoke" HorizontalOptions="Center" Text="Profile Name:" VerticalOptions="Center" FontSize="20" FontAttributes="Bold"></Label>
                 <Entry TextColor="WhiteSmoke" HorizontalOptions="Center" Opacity="0.5" PlaceholderColor="WhiteSmoke" Placeholder="Display name goes here" Text="{Binding DisplayName, Mode=TwoWay}"></Entry>
             </StackLayout>
             <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center">
-                <Label TextColor="WhiteSmoke" HorizontalOptions="Center" VerticalOptions="Center" Text="Username:" FontSize="20" FontAttributes="Bold"></Label>
+                <Label TextColor="WhiteSmoke" HorizontalOptions="Center" VerticalOptions="Center" Text="Locker Id:" FontSize="20" FontAttributes="Bold"></Label>
                 <Entry TextColor="WhiteSmoke" HorizontalOptions="Center" Opacity="0.5" PlaceholderColor="WhiteSmoke" Placeholder="Username goes here" Text="{Binding Username, Mode=TwoWay}"></Entry>
             </StackLayout>
             <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Center"  >

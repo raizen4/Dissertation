@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Client_Mobile.Facade
+namespace Client_Mobile.Services
 {
     using System.Net;
     using System.Threading.Tasks;
@@ -16,13 +16,13 @@ namespace Client_Mobile.Facade
     class Facade:IFacade
     {
 
-        private readonly IApiWrapper apiWrapper;
+        private readonly IApiWrapper _apiWrapper;
 
-        private readonly IIoTHub iotHub;
+        private readonly IIoTHub _iotHub;
         public Facade(IApiWrapper apiWrapper, IIoTHub iotHub)
         {
-            this.apiWrapper = apiWrapper;
-            this.iotHub = iotHub;
+            this._apiWrapper = apiWrapper;
+            this._iotHub = iotHub;
 
 
         }
@@ -34,7 +34,7 @@ namespace Client_Mobile.Facade
         public async Task<bool> Lock()
         {
            
-            var result = await this.iotHub.Lock("121321", LockerActionEnum.Close);
+            var result = await this._iotHub.Lock("121321", LockerActionEnum.Close);
             if (result)
             {
                 return true;
@@ -49,7 +49,7 @@ namespace Client_Mobile.Facade
         public async Task<bool> Unlock()
         {
           
-                var result = await this.iotHub.Unlock("121321", LockerActionEnum.Open);
+                var result = await this._iotHub.Unlock("121321", LockerActionEnum.Open);
                 if (result)
                 {
                     return true;
@@ -62,7 +62,7 @@ namespace Client_Mobile.Facade
         /// <inheritdoc />
         public async Task<bool> SendPinToLocker(Pin newPin)
         {
-                var result = await this.iotHub.SendPinToLocker("121321", LockerActionEnum.NewPinGenerated,
+                var result = await this._iotHub.SendPinToLocker("121321", LockerActionEnum.NewPinGenerated,
                    newPin);
                 if (result)
                 {
@@ -82,7 +82,7 @@ namespace Client_Mobile.Facade
         {
             try
             {
-                var result = await this.iotHub.GetPendingMessages();
+                var result = await this._iotHub.GetPendingMessages();
                 if (result != null)
                 {
                     return result;
@@ -111,7 +111,7 @@ namespace Client_Mobile.Facade
             {
                 IsSuccessful = false
             };
-            var result = await this.apiWrapper.AddPinForLocker(request);
+            var result = await this._apiWrapper.AddPinForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -156,7 +156,7 @@ namespace Client_Mobile.Facade
             {
                 IsSuccessful = false
             };
-            var result = await this.apiWrapper.RemovePinForLocker(request);
+            var result = await this._apiWrapper.RemovePinForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -201,7 +201,7 @@ namespace Client_Mobile.Facade
             {
                 IsSuccessful = false
             };
-            var result = await this.apiWrapper.AddNewActionForLocker(request);
+            var result = await this._apiWrapper.AddNewActionForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -247,7 +247,7 @@ namespace Client_Mobile.Facade
                 IsSuccessful = false
             };
 
-            var result = await this.apiWrapper.LoginUser(newLoginRequest);
+            var result = await this._apiWrapper.LoginUser(newLoginRequest);
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -291,18 +291,19 @@ namespace Client_Mobile.Facade
 
 
         /// <inheritdoc />
-        public async Task<ResponseBase> CreateUser(string email, string pass, string profileId)
+        public async Task<ResponseBase> CreateUser(string email, string pass, string profileId, string lockerId)
         {
            var request=new RegisterRequest();
             request.ProfileId = profileId;
             request.Password = pass;
             request.Email = email;
+            request.LockerId = lockerId;
 
             var responseData = new ResponseBase()
             {
                 IsSuccessful = false
             };
-            var result = await this.apiWrapper.CreateUser(request);
+            var result = await this._apiWrapper.CreateUser(request);
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -347,7 +348,7 @@ namespace Client_Mobile.Facade
                 IsSuccessful = false
             };
 
-            var result = await this.apiWrapper.GetDeliveryHistory();
+            var result = await this._apiWrapper.GetDeliveryHistory();
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -395,7 +396,7 @@ namespace Client_Mobile.Facade
                 IsSuccessful = false
             };
 
-            var result = await this.apiWrapper.GetActivePins();
+            var result = await this._apiWrapper.GetActivePins();
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {

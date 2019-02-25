@@ -8,6 +8,7 @@ namespace Client_Mobile.ViewModels
 {
     using System.Threading.Tasks;
     using Interfaces;
+    using Models;
     using Prism.Navigation;
     using Prism.Services;
     using ServiceModels;
@@ -15,7 +16,11 @@ namespace Client_Mobile.ViewModels
     public class RegisterPageViewModel : ViewModelBase
     {
         #region private variables
-        private RegisterRequest _registerRequest;
+
+        private string _profileName;
+        private string _password;
+        private string _lockerId;
+        private string _email;
         private IFacade _facade;
         private IPageDialogService _dialogService;
         #endregion
@@ -29,20 +34,26 @@ namespace Client_Mobile.ViewModels
        
         public string Password
         {
-            get => this._registerRequest.Password ?? (this._registerRequest.Password = "");
-            set => this._registerRequest.Password = value;
+            get => this._password;
+            set => this._password = value;
         }
 
-        public string ProfileId
+        public string DeviceProfileName
         {
-            get => this._registerRequest.ProfileId ?? (this._registerRequest.ProfileId = "");
-            set => this._registerRequest.ProfileId = value;
+            get => this._profileName;
+            set => this._profileName = value;
         }
 
         public string Email
         {
-            get => this._registerRequest.Email ?? (this._registerRequest.Email = "");
-            set => this._registerRequest.Email = value;
+            get => this._email ;
+            set => this._email = value;
+        }
+
+        public string LockerId
+        {
+            get => this._lockerId;
+            set => this._lockerId = value;
         }
         #endregion
 
@@ -53,27 +64,22 @@ namespace Client_Mobile.ViewModels
             Title = "Register Form";
             this._facade = facade;
             this._dialogService = dialogService;
-            this._registerRequest = new RegisterRequest();
+           
             this.RegisterCommand = new DelegateCommand(async () => await RegisterUser());
 
         }
 
         public async Task RegisterUser()
         {
-            if ( Password.Length == 0 || Email.Length == 0 || ProfileId.Length == 0)
+            if ( Password.Length == 0 || Email.Length == 0 || DeviceProfileName.Length == 0 || LockerId.Length==0)
             {
                 await this._dialogService.DisplayAlertAsync("Error",
                     "All fields are mandatory. Please fill them all before submitting.", "OK");
             }
             else
             {
-                var registerForm = new RegisterRequest();
-              
-                registerForm.Password = Password.Trim();
-                registerForm.ProfileId = ProfileId.Trim();
-                registerForm.Email = Email.Trim();
-
-                var result = await this._facade.CreateUser(Email,Password,ProfileId);
+                
+                var result = await this._facade.CreateUser(Email,Password,DeviceProfileName,LockerId);
                 if (result.Error == null && result.IsSuccessful)
                 {
                     await this._dialogService.DisplayAlertAsync("Successful", "The registration has been successful", "OK");
