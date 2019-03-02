@@ -8,6 +8,7 @@ namespace Client_Mobile.Enums
     {
         public static string DeviceName = "DeviceName";
         public static string Email = "Email";
-        
+        public static string Token = "Token";
+
     }
 }

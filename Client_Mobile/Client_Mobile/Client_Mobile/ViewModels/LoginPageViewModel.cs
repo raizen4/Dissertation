@@ -66,7 +66,7 @@ namespace Client_Mobile.ViewModels
                 IsLoading = true;
                 var currentUser = await this._facade.LoginUser(Password,Email);
                 IsLoading = false;
-                if (currentUser.IsSuccessful && currentUser.Content.Email != null)
+                if (currentUser.IsSuccessful && currentUser.Content.ProfileName != null)
                 {
                     Constants.CurrentLoggedInUser = currentUser.Content;
                     await this.NavigationService.NavigateAsync(nameof(Views.MainPage));
