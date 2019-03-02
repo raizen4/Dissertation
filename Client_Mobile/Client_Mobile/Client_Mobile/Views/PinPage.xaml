@@ -20,7 +20,7 @@
 
             <StackLayout IsVisible="{Binding ForCourier}" Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                 <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                    <Label Text="Make syre you copy this pin to the courier's delivery instructions."></Label>
+                    <Label Text="Make sure you copy this pin to the courier's delivery instructions."></Label>
                     <Label Text="{Binding PinCode}"></Label>
                     <Label Text="Do not lose this pin!"></Label>
                 </StackLayout>

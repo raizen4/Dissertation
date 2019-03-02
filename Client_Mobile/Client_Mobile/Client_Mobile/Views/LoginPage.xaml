@@ -39,8 +39,7 @@
                         <StackLayout AutomationId="ActionsLayout"  Margin="0,120,0,0">
                             <Button AutomationId="SignInButton" Text="Sign In" BackgroundColor="Transparent" TextColor="WhiteSmoke" BorderWidth="2"  BorderColor="WhiteSmoke" Command="{Binding LogInCommand}" CornerRadius="15"></Button>
                             <Button  AutomationId="SignUpButton" Text="Sign Up" BackgroundColor="Transparent" BorderColor="WhiteSmoke" BorderWidth="2" TextColor="WhiteSmoke" Font="Medium"  Command="{Binding RegisterCommand}" CornerRadius="15"></Button>
-                            <Button  AutomationId="GuestButton" Text="Continue as Guest" BackgroundColor="Transparent" TextColor="WhiteSmoke"  BorderWidth="2" BorderColor="WhiteSmoke" Command="{Binding GoToPostsPageCommand}" CornerRadius="15"></Button>
-                        </StackLayout>
+                    </StackLayout>
                     </StackLayout>
                 </StackLayout>
             </primitives:RadBusyIndicator.Content>

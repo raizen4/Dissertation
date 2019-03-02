@@ -6,6 +6,8 @@ using Prism.Ioc;
 
 namespace Client_Mobile.Droid
 {
+    using Android.Runtime;
+
     [Activity(Label = "Client_Mobile", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -17,7 +19,14 @@ namespace Client_Mobile.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            Xamarin.Essentials.Platform.Init(this, bundle); // add this line to your code, it may also be called: bundle
             LoadApplication(new App(new AndroidInitializer()));
+        }
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 

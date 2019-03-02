@@ -10,6 +10,7 @@ namespace Client_Mobile.ViewModels
 	using System.Collections.ObjectModel;
 	using System.Reactive.Linq;
 	using System.Threading.Tasks;
+	using Enums;
 	using Interfaces;
 	using Models;
 	using Prism.Services;
@@ -34,7 +35,36 @@ namespace Client_Mobile.ViewModels
 	        this._facade = facade;
 	        this._navService = navigationService;
 	        this._dialogService = dialogService;
-			GetHistory();
+			HistoryActions= new ObservableCollection<HistoryAction>()
+			{
+				new HistoryAction()
+				{
+					Action = LockerActionEnum.PickedUp,
+					Description = "Picked up on 2019.01.07 at 19:45:20 using pin 210431"
+					
+				},
+				new HistoryAction()
+				{
+					Action = LockerActionEnum.Closed,
+					Description = "Closed on 2019.01.07 at 19:45:20"
+
+				},
+
+				new HistoryAction()
+				{
+				Action = LockerActionEnum.Opened,
+				Description = "Opened on 2019.01.07 at 19:45:20"
+
+			},
+
+	        new HistoryAction()
+	        {
+		        Action = LockerActionEnum.Delivered,
+		        Description = "Delivered on 2019.01.07 at 19:45:20 using Pin 203123"
+
+	        }
+            };
+			//GetHistory();
         }
 
 

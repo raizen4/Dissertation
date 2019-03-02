@@ -60,23 +60,10 @@ namespace Client_Mobile.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> SendPinToLocker(Pin newPin)
-        {
-                var result = await this._iotHub.SendPinToLocker("121321", LockerActionEnum.NewPinGenerated,
-                   newPin);
-                if (result)
-                {
-                    return true;
-                }
-
-            return false;
-        }
+       
 
         /// <inheritdoc />
-        public Task<ResponseData<List<Pin>>> GetActivePins()
-        {
-            throw new NotImplementedException();
-        }
+    
 
         public async Task<Message> GetPendingMessagesFromHub()
         {
@@ -291,10 +278,10 @@ namespace Client_Mobile.Services
 
 
         /// <inheritdoc />
-        public async Task<ResponseBase> CreateUser(string email, string pass, string profileId, string lockerId)
+        public async Task<ResponseBase> CreateUser(string email, string pass, string profileName, string lockerId)
         {
            var request=new RegisterRequest();
-            request.ProfileId = profileId;
+            request.ProfileId = profileName;
             request.Password = pass;
             request.Email = email;
             request.LockerId = lockerId;
@@ -388,7 +375,7 @@ namespace Client_Mobile.Services
         }
 
         /// <inheritdoc />
-        public async Task<ResponseData<List<Pin>>> GetActivePins(string profileId)
+        public async Task<ResponseData<List<Pin>>> GetActivePins()
         {
           
             var responseData = new ResponseData<List<Pin>>

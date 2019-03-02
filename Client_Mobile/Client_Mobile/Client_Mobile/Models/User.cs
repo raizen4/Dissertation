@@ -6,20 +6,24 @@ namespace Client_Mobile.Models
 {
     public class User
     { 
-        private string _email;
-        private string _profileId;
+
+        private string _profileName;
         private string _lockerId;
 
-        private List<string> _lockerActivity;
-        private string _token;
+        public string ProfileName
+        {
+            get => this._profileName;
+            set => this._profileName = value;
+        }
 
-    
+        public string LockerId
+        {
+            get => this._lockerId;
+            set => this._lockerId = value;
+        }
 
-        public string Email { get => _email; set => _email = value; }
 
-        public string ProfileId { get => _profileId; set => _profileId = value; }
 
-        public List<string> LockerActivity { get => this._lockerActivity; set => _lockerActivity = value; }
-        public string Token { get => this._token; set => _token = value; }
+
     }
 }

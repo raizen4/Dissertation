@@ -51,8 +51,6 @@ namespace Client_Mobile.ViewModels
             this._dialogService = dialogService;
             this.LogInCommand = new DelegateCommand(async () => await this.Login(this._loginRequest));
             this.RegisterCommand = new DelegateCommand(async () => await this._navService.NavigateAsync(nameof(Views.RegisterPage)));
-           
-
             this._facade = facadeImplementation;
         }
 

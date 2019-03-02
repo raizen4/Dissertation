@@ -7,11 +7,13 @@
   <ItemGroup>
     <PackageReference Include="LiveXAML" Version="2.1.63" />
     <PackageReference Include="Microsoft.Azure.Devices.Client.PCL" Version="1.0.16" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.3.0" />
     <PackageReference Include="modernhttpclient" Version="2.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Refit" Version="4.6.90" />
     <PackageReference Include="Rg.Plugins.Popup" Version="1.1.5.188" />
     <PackageReference Include="Telerik.UI.for.Xamarin" Version="2018.3.1122.3" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.0.1" />
     <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.431" />
     <PackageReference Include="Xamarin.HotReload" Version="1.1.1" />

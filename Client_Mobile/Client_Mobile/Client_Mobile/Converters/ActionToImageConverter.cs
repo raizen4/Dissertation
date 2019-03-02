@@ -14,20 +14,20 @@ namespace Client_Mobile.Converters
         {
             if ((LockerActionEnum)value == LockerActionEnum.Closed)
             {
-                return "Closed";
+                return "locked.png";
             }
 
             if ((LockerActionEnum)value == LockerActionEnum.Opened)
             {
-                return "Opened";
+                return "opened.png";
             }
 
             if ((LockerActionEnum)value == LockerActionEnum.Delivered)
             {
-                return "Delivered";
+                return "shipped.png";
             }
 
-            return "Picked Up";
+            return "picked_up.png";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

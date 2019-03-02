@@ -13,7 +13,6 @@
 		"copypaste": "jscpd -e './node_modules'"
 	},
 	"devDependencies": {
-	
 		"eslint": "^5.8.0",
 		"eslint-config-airbnb-base": "^13.1.0",
 		"eslint-plugin-import": "^2.14.0",
@@ -23,6 +22,8 @@
 		"request-promise": "^4.2.2"
 	},
 	"dependencies": {
+		"azure-iothub": "^1.9.3",
+		"bcrypt": "^3.0.2",
 		"body-parser": "^1.18.3",
 		"bunyan": "^1.8.12",
 		"cors": "^2.8.5",
@@ -31,7 +32,6 @@
 		"request": "^2.88.0",
 		"request-promise": "^4.2.2",
 		"restify": "^6.3.4",
-		"restify-router": "^0.5.0",
-		"bcrypt": "^3.0.2"
+		"restify-router": "^0.5.0"
 	}
 }

@@ -21,8 +21,8 @@ const Pin = new Schema({
     type: String,
     required: true,
   },
-  Type: {
-    type: String,
+  PickerType: {
+    type: Number,
     required: true,
   },
   Ttl: {

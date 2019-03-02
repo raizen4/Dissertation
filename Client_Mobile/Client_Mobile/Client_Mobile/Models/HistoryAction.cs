@@ -4,11 +4,13 @@ using System.Text;
 
 namespace Client_Mobile.Models
 {
+    using Enums;
+
     public class HistoryAction
     {
-        private string _action;
+        private LockerActionEnum _action;
         private string _description;
-        public string Action {
+        public LockerActionEnum Action {
             get =>this._action;
             set => this._action = value;
         }

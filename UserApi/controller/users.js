@@ -84,12 +84,12 @@ router.post('/RemovePinForLocker', jwtChecker.checkToken, async (req, res) => {
 router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
-    const userId = req.body.User.Id;
+    const user = req.body.User;
     const action = {
       Action: req.body.Action.Type,
       Pin: req.body.Pin,
     };
-    const managerResult = await userManager.AddNewActionForLocker(userId, action);
+    const managerResult = await userManager.AddNewActionForLocker(user, action);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;

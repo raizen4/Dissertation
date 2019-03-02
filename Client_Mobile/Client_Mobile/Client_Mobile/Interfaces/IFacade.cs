@@ -15,7 +15,6 @@ namespace Client_Mobile.Interfaces
 
         Task<bool> Lock();
         Task<bool> Unlock();
-        Task<bool> SendPinToLocker(Pin newPin);
         Task<ResponseData<User>> LoginUser(string password, string email);
         Task<ResponseBase> CreateUser(string email, string pass, string profileId, string lockerId);
 
@@ -28,7 +27,7 @@ namespace Client_Mobile.Interfaces
 
         Task<ResponseBase> AddPinForLocker(Pin newPin);
 
-        Task<ResponseBase> RemovePinForLocker(Pin newPin);
+        Task<ResponseBase> RemovePinForLocker(Pin pinToRemove);
 
         Task<ResponseBase> AddNewActionForLocker(LockerActionEnum type);
 

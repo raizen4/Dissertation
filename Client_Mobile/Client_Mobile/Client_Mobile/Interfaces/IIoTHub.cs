@@ -16,7 +16,7 @@ namespace Client_Mobile.Interfaces
         Task<bool> CheckConnection();
         Task<bool> Lock(string deviceId, LockerActionEnum action);
         Task<bool> Unlock(string deviceId, LockerActionEnum action);
-        Task<bool> SendPinToLocker(string deviceId, LockerActionEnum action, Pin pin);
+     
 
         Task<Message> GetPendingMessages();
 

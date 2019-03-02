@@ -6,4 +6,15 @@ const Actions = {
   Delivery: 'Delivery',
   PickingUp: 'PickingUp',
 };
-export default { secret, Actions };
+
+const ApiEndpoints = {
+  Email: 'http://localhost:4003/EmailApi/SendEmail',
+  Sms: 'http://localhost:4004/SmsApi/SendSmss',
+};
+const PickerTypes = {
+  Friend: 1,
+  Courier: 2,
+};
+export default {
+  secret, Actions, PickerTypes, ApiEndpoints,
+};

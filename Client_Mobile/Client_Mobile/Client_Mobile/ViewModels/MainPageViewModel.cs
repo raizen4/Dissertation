@@ -39,9 +39,8 @@ namespace Client_Mobile.ViewModels
             this._navService = navigationService;
             LockCommand=new DelegateCommand(Lock);
             UnlockCommand = new DelegateCommand(Unlock);
-            SendNewPinCommand = new DelegateCommand(SendNewPin);
             NavigateToActivityHistory=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.ActivityHistoryPage)));
-            NavigateToPinGenerator = new DelegateCommand(async () => await this._navService.NavigateAsync(nameof(Views.PinPage)));
+            NavigateToPinGenerator = new DelegateCommand(SendNewPin);
             this.ListenForMessages(this._poolingRate);
         }
 
@@ -105,12 +104,12 @@ namespace Client_Mobile.ViewModels
                
                 navParams.Add(LockerAccessEnum.Courier.ToString(),true);
                 navParams.Add(LockerAccessEnum.Friend.ToString(), false);
-                await this._navService.NavigateAsync(nameof(Views.PinPage));
+                await this._navService.NavigateAsync(nameof(Views.PinPage), navParams);
             }
 
             navParams.Add(LockerAccessEnum.Courier.ToString(), false);
             navParams.Add(LockerAccessEnum.Friend.ToString(), true);
-            await this._navService.NavigateAsync(nameof(Views.PinPage));
+            await this._navService.NavigateAsync(nameof(Views.PinPage),navParams);
 
         }
 

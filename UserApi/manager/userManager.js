@@ -1,20 +1,27 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable complexity */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-undef */
 require('mongoose');
 const jwt = require('jsonwebtoken');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const bcrypt = require('bcrypt');
-const constants = require('../Constants').default;
+const constants = require('../Constants');
 const User = require('../DbSchemas/UserSchema');
-
+const IotHub = require('../IotHub/hub');
+const responses = require('../serviceModels/Responses');
 
 async function register(userToRegister) {
   const newUser = new User(userToRegister);
   newUser.HashedPass = bcrypt.hashSync(userToRegister.Password, 10);
   try {
-    const responseFromDb = await newUser.save();
     if (responseFromDb != null) {
-      return true;
+      const hubIdentityCreated = await IotHub.CreateDevice(newUser.AccountDevice);
+      if (hubIdentityCreated == null) {
+        return false;
+      }
+      const responseFromDb = await newUser.save();
+      if (responseFromDb != null) { return true; }
     }
     return false;
   } catch (err) {
@@ -61,8 +68,36 @@ async function login(email, password) {
   return null;
 }
 
+// eslint-disable-next-line complexity
 async function AddPin(userId, pin) {
   try {
+    const forWho = pin.PickerType;
+    if (forWho === constants.PickerTypes.Friend) {
+      const phone = pin.ContactDetails.Phone;
+      const email = pin.ContactDetails.Email;
+      const emailBody = {
+        Phone: phone,
+        Email: email,
+      };
+      if (phone != null) {
+        const uri = constants.ApiEndpoints.Sms;
+        const httpVerb = 'POST';
+        try {
+          await responses.RequestServiceMethod(emailBody, uri, httpVerb);
+        } catch (returnErrResponse) {
+          console.log(returnErrResponse);
+        }
+      }
+      if (email != null) {
+        const uri = constants.ApiEndpoints.Email;
+        const httpVerb = 'POST';
+        try {
+          await responses.RequestServiceMethod(emailBody, uri, httpVerb);
+        } catch (returnErrResponse) {
+          console.log(returnErrResponse);
+        }
+      }
+    }
     const result = await User.findOneAndUpdate(
       { _id: userId },
 
@@ -98,9 +133,29 @@ async function RemovePin(userId, pin) {
     return false;
   }
 }
-
-async function AddNewActionForLocker(userId, action) {
+// action comes from locker. It has the following structure:
+/*
+{
+  Type:Close/Open/Delivery
+  DeliveryCompany:null/string
+  Pin:{
+    Code:
+    TTL:
+    ContactDetails:{
+      Email:...
+      SMS:...
+    }
+  }
+}
+*/
+async function AddNewActionForLocker(user, action) {
   try {
+    const emailUri = constants.ApiEndpoints.Email;
+    const httpVerb = 'POST';
+    const emailServiceBody = {
+      Receiver: user.Email,
+      Action: action.Type,
+    };
     const currentDate = Date().toISOString()
       .replace(/T/, ' ') // replace T with a space
       .replace(/\..+/, '');
@@ -114,17 +169,27 @@ async function AddNewActionForLocker(userId, action) {
       break;
     case constants.Actions.Delivery:
       newAction = `Delivery code used on ${currentDate} by ${action.DeliveryCompany} courier using pin ${action.Pin.Code}`;
+      try {
+        await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);
+      } catch (returnErrResponse) {
+        console.log(returnErrResponse);
+      }
       RemovePin(action.Pin.Code);
       break;
     case constants.Actions.PickingUp:
       newAction = `Picked up code used on ${currentDate} using pin ${action.Pin.Code}`;
+      try {
+        await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);
+      } catch (returnErrResponse) {
+        console.log(returnErrResponse);
+      }
       RemovePin(action.Pin.Code);
       break;
     default:
       break;
     }
     const result = await User.findByIdAndUpdate(
-      userId,
+      user.Id,
       {
         $push: { 'AccountLocker.History': newAction },
       },
