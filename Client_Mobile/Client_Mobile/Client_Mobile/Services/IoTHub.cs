@@ -55,17 +55,8 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> Lock(string targetedDeviceId, LockerActionEnum action)
         {
-            if (!this._isConnected)
-            {
-                var recheckConn = await this.CheckConnection();
-                if (recheckConn)
-                {
-                    this._isConnected = true;
-                }
-            }
-            if (this._isConnected)
-            {
-                GenericLockerRequest req = new GenericLockerRequest();
+           
+                LockerMessage req = new LockerMessage();
                 req.Action = action;
                 req.TargetedDeviceId = targetedDeviceId;
                 req.IotHubEndpoint = IotEndpointsEnum.D2DEndpoint;       
@@ -86,9 +77,8 @@ namespace Client_Mobile.Services
                 }
 
                 return true;
-            }
+            
 
-            return false;
 
 
         }
@@ -106,7 +96,7 @@ namespace Client_Mobile.Services
                         this._isConnected = true;
                     }
                 }
-                    GenericLockerRequest req = new GenericLockerRequest();
+                    LockerMessage req = new LockerMessage();
                     req.Action = action;
                     req.SenderDeviceId=
                     req.TargetedDeviceId = targetedDeviceId;

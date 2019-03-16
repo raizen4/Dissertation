@@ -9,10 +9,12 @@ using System.Text;
 namespace Client_Mobile.ViewModels
 {
     using System.Threading;
+    using Client_Mobile.ServiceModels;
     using Enums;
     using Interfaces;
     using Microsoft.Azure.Devices.Client;
     using Models;
+    using Newtonsoft.Json;
     using Prism.Services;
     using Services;
     using Xamarin.Forms;
@@ -121,39 +123,14 @@ namespace Client_Mobile.ViewModels
                 var newMesasgeReceived = await this._facade.GetPendingMessagesFromHub();
                 if (newMesasgeReceived != null)
                 {
-                    string stringifiedAction;
-                    int normalizedAction = 0;
-
-                    try
+                    var stringMessage = newMesasgeReceived.ToString();
+                    var deserializedMessage = JsonConvert.DeserializeObject<ResponseBase>(stringMessage);
+                    if (deserializedMessage.IsSuccessful)
                     {
-                        newMesasgeReceived.Properties.TryGetValue("Action", out stringifiedAction);
-                        normalizedAction = int.Parse(stringifiedAction);
+                        await this._dialogService.DisplayAlertAsync("Successful", " Operation has been successful",
+                           "OK");
                     }
-                    catch (Exception e)
-                    {
-                        //silently fail
-                    }
-
-                    if (normalizedAction == 0)
-                    {
-                        //
-                    }
-                    else if (normalizedAction == (int)LockerActionEnum.Opened)
-                    {
-                        await this._dialogService.DisplayAlertAsync("Successful", " Locker has been opened!",
-                            "OK");
-                    }
-                    else if (normalizedAction == (int)LockerActionEnum.Closed)
-                    {
-                        await this._dialogService.DisplayAlertAsync("Successful", " Locker has been closed!",
-                            "OK");
-                    }
-                    else if (normalizedAction == (int)LockerActionEnum.NewPinGenerated)
-                    {
-                        await this._dialogService.DisplayAlertAsync("Successful", " New pin has been added to the locker.",
-                            "OK");
-                    }
-
+              
                     Thread.Sleep(poolingRate);
                 }
             }

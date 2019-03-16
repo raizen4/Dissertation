@@ -133,10 +133,33 @@ async function RemovePin(userId, pin) {
     return false;
   }
 }
+
+async function CheckPin(userId,pinCode){
+  try {
+    const result = await User.findOne({ _id: userId });
+
+    if (result != null) {
+      let history = result.ActivePins;
+      let found=null;
+      history.forEach(function(Pin){
+       if(Pin.Code==pinCode){
+         found=Pin;
+         break;
+       }      
+      });
+      if(found!=null){
+        return found;
+      } 
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
 // action comes from locker. It has the following structure:
 /*
 {
-  Type:Close/Open/Delivery
+  Type:UserClose/UserOpen/Delivery
   DeliveryCompany:null/string
   Pin:{
     Code:
@@ -239,4 +262,5 @@ module.exports = {
   RemovePin,
   AddNewActionForLocker,
   GetLockerHistory,
+  CheckPin
 };

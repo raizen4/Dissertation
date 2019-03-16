@@ -34,7 +34,7 @@ namespace Client_Mobile.Services
         public async Task<bool> Lock()
         {
            
-            var result = await this._iotHub.Lock("121321", LockerActionEnum.Close);
+            var result = await this._iotHub.Lock("121321", LockerActionEnum.UserAppClosed);
             if (result)
             {
                 return true;
@@ -49,7 +49,7 @@ namespace Client_Mobile.Services
         public async Task<bool> Unlock()
         {
           
-                var result = await this._iotHub.Unlock("121321", LockerActionEnum.Open);
+                var result = await this._iotHub.Unlock("121321", LockerActionEnum.UserAppOpened);
                 if (result)
                 {
                     return true;

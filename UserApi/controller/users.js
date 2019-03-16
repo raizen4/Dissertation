@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
   } catch (err) {
     const newResp = new BaseResponse();
     newResp.HasBeenSuccessful = false;
-    newResp.Errors = 'Email already exists. Please change the email';
+    newResp.Errors = 'Internal server error';
     res.send(newResp);
   }
 });
@@ -76,6 +76,35 @@ router.post('/RemovePinForLocker', jwtChecker.checkToken, async (req, res) => {
     }
   } catch (err) {
     const newResp = new BaseResponse();
+    newResp.HasBeenSuccessful = false;
+    newResp.Errors = err;
+    res.send(newResp);
+  }
+});
+
+router.put('/CheckPin', jwtChecker.checkToken, async (req, res)=>{
+  try{
+   // const parsedBody = JSON.parse(req.body);
+   const userId = req.body.User.Id;
+   const pinToCheck = req.body.PinCode;
+   const managerResult = await userManager.CheckPin(userId, pinToCheck);
+   if (managerResult!=null) {
+     const newResp = new ResponseData();
+     newResp.HasBeenSuccessful = true;
+     newResp.Content=managerResult;
+     newResp.Errors = null;
+     res.send(newResp);
+   } else {
+    const newResp = new ResponseData();
+     newResp.HasBeenSuccessful = false;
+     newResp.Content=null;
+     newResp.Errors = 'Pin not valid';
+     res.send(newResp);
+   }
+  }
+  catch(err){
+    const newResp = new ResponseData();
+    newResp.Content=null;
     newResp.HasBeenSuccessful = false;
     newResp.Errors = err;
     res.send(newResp);

@@ -12,12 +12,12 @@ namespace Client_Mobile.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((LockerActionEnum)value == LockerActionEnum.Closed)
+            if ((LockerActionEnum)value == LockerActionEnum.UserAppClosed)
             {
                 return "locked.png";
             }
 
-            if ((LockerActionEnum)value == LockerActionEnum.Opened)
+            if ((LockerActionEnum)value == LockerActionEnum.UserAppOpen)
             {
                 return "opened.png";
             }
@@ -34,11 +34,11 @@ namespace Client_Mobile.Converters
         {
             if ((string)value == "Closed")
             {
-                return LockerActionEnum.Closed;
+                return LockerActionEnum.UserAppClosed;
             }
             if ((string)value == "Opened")
             {
-                return LockerActionEnum.Opened;
+                return LockerActionEnum.UserAppOpened;
             }
             if ((string)value == "Delivered")
             {

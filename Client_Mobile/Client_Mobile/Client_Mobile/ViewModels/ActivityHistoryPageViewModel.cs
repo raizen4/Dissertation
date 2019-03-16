@@ -45,14 +45,14 @@ namespace Client_Mobile.ViewModels
 				},
 				new HistoryAction()
 				{
-					Action = LockerActionEnum.Closed,
+					Action = LockerActionEnum.UserAppClosed,
 					Description = "Closed on 2019.01.07 at 19:45:20"
 
 				},
 
 				new HistoryAction()
 				{
-				Action = LockerActionEnum.Opened,
+				Action = LockerActionEnum.UserAppOpened,
 				Description = "Opened on 2019.01.07 at 19:45:20"
 
 			},
