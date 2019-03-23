@@ -27,7 +27,58 @@ namespace LockerApp.Services
 
         }
 
-       
+
+        public async Task<ResponseData<Locker>> AddNewLocker(string newLockerId)
+        {
+            var newLockerRequest = new NewLockerRequest();
+            newLockerRequest.NewLockerId = newLockerId;
+;
+            var responseData = new ResponseData<Locker>
+            {
+                IsSuccessful = false
+            };
+
+            var result = await this._apiWrapper.AddNewLocker(newLockerRequest);
+            string content = await result.Content.ReadAsStringAsync();
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                try
+                {
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<Locker>>(content);
+                    if (deserializedContent.IsSuccessful == false)
+                    {
+                        responseData.IsSuccessful = false;
+                        responseData.Error = deserializedContent.Error;
+                        responseData.Content = null;
+                        return responseData;
+                    }
+
+                    responseData.IsSuccessful = true;
+                    responseData.Error = null;
+                    responseData.Content = deserializedContent.Content;
+                    return responseData;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    responseData.IsSuccessful = false;
+                    responseData.Error = "Deserialization Error";
+                    responseData.Content = null;
+                    return responseData;
+                }
+
+            }
+            else
+            {
+                responseData.IsSuccessful = false;
+                responseData.Error = "Internal server error";
+                responseData.Content = null;
+                return responseData;
+            }
+
+        }
+
+
         public async Task<ResponseData<User>> LoginUser(string password, string email)
         {
             var newLoginRequest = new LoginRequest();

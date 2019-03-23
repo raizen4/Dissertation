@@ -17,7 +17,7 @@ namespace Client_Mobile.Helpers
             cryptoRng.GetBytes(buffer);
             var num = BitConverter.ToUInt64(buffer, 0);
             var pin = num % 100000;
-            return pin.ToString();
+            return pin.ToString("D5");
         }
     }
 }

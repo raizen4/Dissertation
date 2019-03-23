@@ -16,6 +16,8 @@ namespace LockerApp.Interfaces
 
         Task<ResponseData<Pin>> CheckPin(Pin pin);
 
+        Task<ResponseData<Locker>> AddNewLocker(string newLockerId);
+
         Task<ResponseBase> AddNewActionForLocker(LockerActionRequestsEnum actionRequested, Pin pin);
 
         Task<LockerMessage> GetPendingMessagesFromHub();

@@ -12,6 +12,7 @@ using LockerApp.Services;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using Prism.Windows.Navigation;
+using Windows.UI.Xaml;
 
 namespace LockerApp.ViewModels
 {
@@ -20,7 +21,10 @@ namespace LockerApp.ViewModels
         private readonly INavigationService navService;
         private readonly IFacade facade;
         private string pin;
+        private int lockerOpenedCounter;
         private static DeviceClient _deviceClient;
+        private DispatcherTimer timer;
+
 
         public string Pin { get; set; }
         public MainPageViewModel(INavigationService navigationService, IFacade facade) : base(navigationService,facade)
@@ -28,6 +32,7 @@ namespace LockerApp.ViewModels
             this.navService = navigationService;
             this.facade = facade;
             this.IsLoading = false;
+            this.lockerOpenedCounter = 30;
         }
 
 
@@ -58,7 +63,7 @@ namespace LockerApp.ViewModels
                         }
                         else
                         {
-                            var dialog = await this.DisplayDialog("Succeded", "Locker Opened", 1, "OK", null);
+                            this.navService.Navigate(Constants.NavigationPages.PinAcceptedPage,null);
                         }
 
                     }
@@ -71,7 +76,7 @@ namespace LockerApp.ViewModels
                         }
                         else
                         {
-                            var dialog = await this.DisplayDialog("Succeded", "Locker Opened", 1, "OK", null);
+                            this.navService.Navigate(Constants.NavigationPages.PinAcceptedPage, null);
                         }
                     }
                 }
@@ -81,11 +86,35 @@ namespace LockerApp.ViewModels
                 Console.WriteLine(e.Message);
             }
         }
+        void InitializeTimer()
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Tick += TimerTick;
+        }
+        void StartTimer()
+        {
+            timer.Start();
+        }
+        void TimerTick(object sender, object e)
+        {
+            this.lockerOpenedCounter--;
+           
+            if (lockerOpenedCounter == 0)
+            {
+                timer.Stop();
+                this.CloseLocker();
+                this.lockerOpenedCounter = 30;
+               
+            }
 
-       
+
+        }
+
         private async void ListenForMessages(int poolingRate)
         {
-
+            var shouldClose = false;
+            var shouldOpen = false;
             while (true)
             {
                 var newMesasgeReceived = await this.facade.GetPendingMessagesFromHub();
@@ -104,7 +133,7 @@ namespace LockerApp.ViewModels
                         {
                             deserializedMessage.ActionResult = LockerActionRequestsEnum.UserAppClosed;
                         }
-                        this.CloseLocker();
+                        
                         deserializedMessage.HasBeenSuccessful = true;
                         var messageString = JsonConvert.SerializeObject(deserializedMessage);
                         byte[] messageBytes = Encoding.UTF8.GetBytes(messageString);
@@ -113,12 +142,19 @@ namespace LockerApp.ViewModels
                         try
                         {
                             await _deviceClient.SendEventAsync(message);
+                            if (shouldClose)
+                            {
+                                this.CloseLocker();
+                            }
+                            else
+                            {
+                                this.OpenLocker();
+                            }
+
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e.Message);
-
-                            
+                            Console.WriteLine(e.Message);                           
                         }
 
                     }

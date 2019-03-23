@@ -63,7 +63,7 @@ const UserSchema = new Schema({
   },
   AccountLocker: {
     type: Locker,
-    required: true,
+    required: false,
     default: undefined,
   },
   Created: {

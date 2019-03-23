@@ -1,4 +1,5 @@
-﻿using Refit;
+﻿using LockerApp.ServiceModels;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace LockerApp.Interfaces
         [Post("/UserApi/users/AddActionToLocker")]
         Task<HttpResponseMessage> SendRequestToLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] string body);
 
+        [Post("/UserApi/users/CreateLocker")]
+        Task<HttpResponseMessage> AddNewLocker(NewLockerRequest req);
 
 
 

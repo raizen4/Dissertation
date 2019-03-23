@@ -29,6 +29,37 @@ async function register(userToRegister) {
     return false;
   }
 }
+
+async function RegisterLocker(userId,lockerId) {
+  try {
+      const hubIdentityCreated = await IotHub.CreateDevice(lockerId);
+      if (hubIdentityCreated == null) {
+        return null;
+      }
+      else{
+        const newLocker={
+          DeviceId:hubIdentityCreated.DeviceId
+        }
+        const result = await User.findOneAndUpdate(
+          { _id: userId },
+    
+          {
+            $push: { 'AccountLocker': newLocker },
+          },
+        );
+        if (result != null) {
+          return hubIdentityCreated;
+        }
+        return null;
+      }
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+
+
 async function signToken(user) {
   const jwtToken = await jwt.sign({
     Email: user.Email,
@@ -74,16 +105,15 @@ async function AddPin(userId, pin) {
     const forWho = pin.PickerType;
     if (forWho === constants.PickerTypes.Friend) {
       const phone = pin.ContactDetails.Phone;
-      const email = pin.ContactDetails.Email;
-      const emailBody = {
-        Phone: phone,
-        Email: email,
-      };
+      const email = pin.ContactDetails.Email;   
       if (phone != null) {
         const uri = constants.ApiEndpoints.Sms;
         const httpVerb = 'POST';
+        const body={
+          Phone:phone
+        }
         try {
-          await responses.RequestServiceMethod(emailBody, uri, httpVerb);
+          await responses.RequestServiceMethod(body, uri, httpVerb);
         } catch (returnErrResponse) {
           console.log(returnErrResponse);
         }
@@ -91,8 +121,11 @@ async function AddPin(userId, pin) {
       if (email != null) {
         const uri = constants.ApiEndpoints.Email;
         const httpVerb = 'POST';
+        const body={
+          Email:email
+        }
         try {
-          await responses.RequestServiceMethod(emailBody, uri, httpVerb);
+          await responses.RequestServiceMethod(body, uri, httpVerb);
         } catch (returnErrResponse) {
           console.log(returnErrResponse);
         }
@@ -262,5 +295,6 @@ module.exports = {
   RemovePin,
   AddNewActionForLocker,
   GetLockerHistory,
-  CheckPin
+  CheckPin,
+  RegisterLocker
 };

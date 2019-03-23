@@ -162,6 +162,36 @@ router.put('/AddPinForLocker', jwtChecker.checkToken, async (req, res) => {
     res.send(newResp);
   }
 });
+
+router.post('/CreateLocker', jwtChecker.checkToken, async (req, res) => {
+  try {
+    // const parsedBody = JSON.parse(req.body);
+    const userId = req.body.User.Id;
+    const newLockerId = req.body.LcokerId;
+    const managerResult = await userManager.RegisterLocker(userId, newLockerId);
+    if (managerResult) {
+      const newResp = new ResponseData();
+      newResp.HasBeenSuccessful = true;
+      newResp.Content=managerResult;
+      newResp.Errors = null;
+      res.send(newResp);
+    } else {
+      const newResp = new ResponseData();
+      newResp.Content=null;
+      newResp.HasBeenSuccessful = false;
+      newResp.Errors = 'Internal server error';
+      res.send(newResp);
+    }
+  } catch (err) {
+    const newResp = new ResponseData();
+    newResp.HasBeenSuccessful = false;
+    newResp.Content=null;
+    newResp.Errors = err;
+    res.send(newResp);
+  }
+});
+
+
 router.get('/GetActivePins', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);

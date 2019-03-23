@@ -18,6 +18,9 @@ namespace LockerApp.Interfaces
 
         Task<HttpResponseMessage> CheckPin(CheckPinRequest req);
 
+        Task<HttpResponseMessage> AddNewLocker(NewLockerRequest req);
+
+
 
     }
 }
