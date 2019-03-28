@@ -33,13 +33,23 @@ namespace Client_Mobile.ViewModels
         public bool ForCourier
         {
             get => this._forCourier;
-            set => this._forCourier = value;
+            set
+            {
+                this._forCourier = value;
+                RaisePropertyChanged();
+
+            }
         }
 
         public bool ForFriend
         {
             get => this._forFriend;
-            set => this._forFriend = value;
+            set
+            {
+                this._forFriend = value;
+                RaisePropertyChanged();
+            }
+
         }
 
         public string FriendSms
@@ -51,7 +61,7 @@ namespace Client_Mobile.ViewModels
         public string FriendEmail
         {
             get => this._friendEmail;
-            set => this._friendEmail = value;
+            set =>this._friendEmail = value;
         }
 
         public string PinCode
@@ -62,12 +72,13 @@ namespace Client_Mobile.ViewModels
 
         public PinPageViewModel(INavigationService navigationService, IFacade facade,
             IPageDialogService dialogService)
-            : base(navigationService)
+            : base(navigationService,facade, dialogService)
         {
+            Title = "New Pin";
             this._dialogService = dialogService;
             this._navService = navigationService;
             this._facade = facade;
-            FinishCommand = new DelegateCommand(SendPin);
+            FinishCommand = new DelegateCommand(async()=>await this.SendPin());
             PinCode = PinGenerator.GeneratePin();
         }
 
@@ -79,19 +90,19 @@ namespace Client_Mobile.ViewModels
             ForFriend = parameters.GetValue<bool>(LockerAccessEnum.Friend.ToString());
         }
 
-        private async void SendPin()
+        private async Task SendPin()
         {
             if (ForCourier)
             {
-                FinishCourier();
+               await FinishCourier();
             }
             else
             {
-                FinishFriend();
+               await FinishFriend();
             }
         }
 
-        private async void FinishFriend()
+        private async Task FinishFriend()
         {
             IsLoading = true;
             if (FriendSms.Length == 0 && FriendEmail.Length == 0)
@@ -130,7 +141,7 @@ namespace Client_Mobile.ViewModels
             }
         }
 
-        private async void FinishCourier()
+        private async Task FinishCourier()
         {
             IsLoading = true;
             var newPin = new Pin();

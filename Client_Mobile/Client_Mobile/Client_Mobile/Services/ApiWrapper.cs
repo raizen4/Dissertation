@@ -77,7 +77,7 @@ namespace Client_Mobile.Services
 
         public async Task<HttpResponseMessage> CreateUser(RegisterRequest request)
         {
-            var token = SecureStorage.GetAsync(PreferencesEnum.Token).GetAwaiter().GetResult();
+            var token = SecureStorage.GetAsync(Constants.Token).GetAwaiter().GetResult();
             var jsonToSend = JsonConvert.SerializeObject(request);
             var result = await this._api.CreateUser(Constants.Headers.ContentType, jsonToSend);
             return result;
@@ -86,7 +86,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<HttpResponseMessage> GetDeliveryHistory()
         {
-            var token = SecureStorage.GetAsync(PreferencesEnum.Token).GetAwaiter().GetResult();
+            var token = SecureStorage.GetAsync(Constants.Token).GetAwaiter().GetResult();
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);         
             var result = await this._api.GetDeliveryHistory();
             return result;
@@ -95,7 +95,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<HttpResponseMessage> GetActivePins()
         {
-            var token = SecureStorage.GetAsync(PreferencesEnum.Token).GetAwaiter().GetResult();
+            var token = SecureStorage.GetAsync(Constants.Token).GetAwaiter().GetResult();
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);       
             var result = await this._api.GetActivePins();
             return result;
@@ -104,7 +104,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<HttpResponseMessage> AddPinForLocker(PinRequest req)
         {
-            var token = SecureStorage.GetAsync(PreferencesEnum.Token).GetAwaiter().GetResult();
+            var token = SecureStorage.GetAsync(Constants.Token).GetAwaiter().GetResult();
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonToSend = JsonConvert.SerializeObject(req);
             var result = await this._api.AddPinForLocker(Constants.Headers.ContentType, jsonToSend);
@@ -114,7 +114,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<HttpResponseMessage> RemovePinForLocker(PinRequest req)
         {
-            var token = SecureStorage.GetAsync(PreferencesEnum.Token).GetAwaiter().GetResult();
+            var token = SecureStorage.GetAsync(Constants.Token).GetAwaiter().GetResult();
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonToSend = JsonConvert.SerializeObject(req);
             var result = await this._api.RemovePinForLocker(Constants.Headers.ContentType, jsonToSend);
@@ -124,7 +124,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<HttpResponseMessage> AddNewActionForLocker(ActionRequest req)
         {
-            var token = SecureStorage.GetAsync(PreferencesEnum.Token).GetAwaiter().GetResult();
+            var token = SecureStorage.GetAsync(Constants.Token).GetAwaiter().GetResult();
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonToSend = JsonConvert.SerializeObject(req);
             var result = await this._api.AddNewActionForLocker(Constants.Headers.ContentType, jsonToSend);

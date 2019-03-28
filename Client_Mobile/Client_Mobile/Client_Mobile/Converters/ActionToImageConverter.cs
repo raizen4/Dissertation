@@ -32,15 +32,15 @@ namespace Client_Mobile.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((string)value == "Closed")
+            if ((string)value == "locked.png")
             {
                 return LockerActionEnum.UserAppClosed;
             }
-            if ((string)value == "Opened")
+            if ((string)value == "opened.png")
             {
                 return LockerActionEnum.UserAppOpened;
             }
-            if ((string)value == "Delivered")
+            if ((string)value == "shipped.png")
             {
                 return LockerActionEnum.Delivered;
             }

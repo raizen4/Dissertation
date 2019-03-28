@@ -278,15 +278,15 @@ namespace Client_Mobile.Services
 
 
         /// <inheritdoc />
-        public async Task<ResponseBase> CreateUser(string email, string pass, string profileName, string lockerId)
+        public async Task<ResponseData<CreatedUserInfo>> CreateUser(string email, string pass, string displayName, string phone)
         {
            var request=new RegisterRequest();
-            request.ProfileId = profileName;
+            request.DisplayName = displayName;
             request.Password = pass;
             request.Email = email;
-            request.LockerId = lockerId;
+            request.Phone = phone;
 
-            var responseData = new ResponseBase()
+            var responseData = new ResponseData<CreatedUserInfo>()
             {
                 IsSuccessful = false
             };
@@ -296,16 +296,19 @@ namespace Client_Mobile.Services
             {
                 try
                 {
-                    var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<CreatedUserInfo>>(content);
                     if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
                     {
                         responseData.IsSuccessful = false;
                         responseData.Error = "Internal Server Error";
+                        responseData.Content = null;
                         return responseData;
                     }
 
                     responseData.IsSuccessful = true;
                     responseData.Error = null;
+                    responseData.Content = deserializedContent.Content;
+
                     return responseData;
                 }
                 catch (Exception e)
@@ -313,6 +316,7 @@ namespace Client_Mobile.Services
                     Console.WriteLine(e.StackTrace);
                     responseData.IsSuccessful = false;
                     responseData.Error = "Deserialization Error";
+                    responseData.Content = null;
                     return responseData;
                 }
             }

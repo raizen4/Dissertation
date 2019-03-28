@@ -9,7 +9,6 @@ namespace Client_Mobile.Models
     public class Pin
     {
         private string _code;
-        private string _ttl;
         private PickerTypeEnum _pickerType;
         private ContactDetails _pickerDetails;
 
@@ -32,10 +31,6 @@ namespace Client_Mobile.Models
             set => this._pickerType = value;
         }
 
-        public string Ttl
-        {
-            get => this._ttl;
-            set => this._ttl = value;
-        }
+
     }
 }

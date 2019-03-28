@@ -9,6 +9,7 @@ using System.Text;
 namespace Client_Mobile.ViewModels
 {
     using System.Threading;
+    using System.Threading.Tasks;
     using Client_Mobile.ServiceModels;
     using Enums;
     using Interfaces;
@@ -33,7 +34,7 @@ namespace Client_Mobile.ViewModels
 
      
         public MainPageViewModel(INavigationService navigationService, IFacade facade, IPageDialogService dialogService)
-            : base(navigationService)
+            : base(navigationService,facade,dialogService)
         {
             Title = "Main Page";
             this._dialogService = dialogService;
@@ -42,7 +43,7 @@ namespace Client_Mobile.ViewModels
             LockCommand=new DelegateCommand(Lock);
             UnlockCommand = new DelegateCommand(Unlock);
             NavigateToActivityHistory=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.ActivityHistoryPage)));
-            NavigateToPinGenerator = new DelegateCommand(SendNewPin);
+            NavigateToPinGenerator = new DelegateCommand(async()=>await SendNewPin());
             this.ListenForMessages(this._poolingRate);
         }
 
@@ -96,7 +97,7 @@ namespace Client_Mobile.ViewModels
             }
         }
 
-        public async void SendNewPin()
+        public async Task SendNewPin()
         {
             var dialogResult =await this._dialogService.DisplayAlertAsync("Generate Pin",
                 "Please choose who should use this pin", "Courier", "A friend");
@@ -115,28 +116,6 @@ namespace Client_Mobile.ViewModels
 
         }
 
-        private async void ListenForMessages(int poolingRate)
-        {
-         
-            while (true)
-            {
-                var newMesasgeReceived = await this._facade.GetPendingMessagesFromHub();
-                if (newMesasgeReceived != null)
-                {
-                    var stringMessage = newMesasgeReceived.ToString();
-                    var deserializedMessage = JsonConvert.DeserializeObject<ResponseBase>(stringMessage);
-                    if (deserializedMessage.IsSuccessful)
-                    {
-                        await this._dialogService.DisplayAlertAsync("Successful", " Operation has been successful",
-                           "OK");
-                    }
-              
-                    Thread.Sleep(poolingRate);
-                }
-            }
-          
-        
-
-        }
+  
     }
 }

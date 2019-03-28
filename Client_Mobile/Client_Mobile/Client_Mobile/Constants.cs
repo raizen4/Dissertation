@@ -12,6 +12,10 @@ namespace Client_Mobile
         public static string IotHubConnectionString="HostName=Dissertation-IotHub.azure-devices.net;DeviceId=DeviceExplorerTwinSimulator;SharedAccessKey=KOGiKsfUuV+QTTAx3MKInhlBYKhiYYETQ66LXpyyzXw=";
         public static User CurrentLoggedInUser = null;
         public static  string WebApiEndpoint="http://10.2.2.0:4000";
+
+        public static string DeviceName { get; internal set; }
+        public static string Token { get; internal set; }
+
         public class Headers
         {
             /// <summary>

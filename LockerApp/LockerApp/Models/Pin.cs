@@ -32,10 +32,6 @@ namespace LockerApp.Models
             set => this._pickerType = value;
         }
 
-        public string Ttl
-        {
-            get => this._ttl;
-            set => this._ttl = value;
-        }
+ 
     }
 }

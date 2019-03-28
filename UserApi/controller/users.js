@@ -28,29 +28,33 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
   console.log(`register hit${req.body}`);
   const User = {
-    ProfileName: req.body.ProfileName,
+    DisplayName: req.body.DisplayName,
     Email: req.body.Email,
-    Password: req.body.Password,
-    AccountLocker: req.body.AccountLocker,
+    HashedPassword:req.body.Password,
+    Phone: req.body.Phone,
+    DeviceId:req.body.DeviceId
 
   };
   console.log(User);
   try {
     const managerResult = await userManager.register(User);
     if (managerResult) {
-      const newResp = new BaseResponse();
+      const newResp = new ResponseData();
       newResp.HasBeenSuccessful = true;
+      newResp.Content=managerResult;
       newResp.Errors = null;
       res.send(newResp);
     } else {
-      const newResp = new BaseResponse();
+      const newResp = new ResponseData();
       newResp.HasBeenSuccessful = false;
+      newResp.Content=null;
       newResp.Errors = 'Email already exists. Please change the email';
       res.send(newResp);
     }
   } catch (err) {
-    const newResp = new BaseResponse();
+    const newResp = new ResponseData();
     newResp.HasBeenSuccessful = false;
+    newResp.Content=null;
     newResp.Errors = 'Internal server error';
     res.send(newResp);
   }

@@ -10,6 +10,13 @@ const router = new NewRouter();
 
 router.post('/SendEmail', async (req, res) => {
   try {
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'bboldurdissertation@gmail.com',
+        pass: 'Bogdan.95'
+      }
+    });
     // const parsedBody = JSON.parse(req.body);
     const receiver = req.Email;
     const sender = 'boldurbogdan@yahoo.com';

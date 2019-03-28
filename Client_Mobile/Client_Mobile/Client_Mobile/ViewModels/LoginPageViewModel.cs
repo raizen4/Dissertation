@@ -7,10 +7,12 @@ using System.Linq;
 namespace Client_Mobile.ViewModels
 {
     using System.Threading.Tasks;
+    using Client_Mobile.Enums;
     using Interfaces;
     using Prism.Navigation;
     using Prism.Services;
     using ServiceModels;
+    using Xamarin.Essentials;
 
     public class LoginPageViewModel : ViewModelBase
 	{
@@ -43,7 +45,7 @@ namespace Client_Mobile.ViewModels
         #endregion
 
         public LoginPageViewModel(INavigationService navigationService, IFacade facadeImplementation, IPageDialogService dialogService)
-            : base(navigationService)
+            : base(navigationService, facadeImplementation, dialogService)
         {
             Title = "Login Page";
             this._loginRequest = new LoginRequest();
@@ -69,6 +71,8 @@ namespace Client_Mobile.ViewModels
                 if (currentUser.IsSuccessful && currentUser.Content.ProfileName != null)
                 {
                     Constants.CurrentLoggedInUser = currentUser.Content;
+                    Constants.IotHubConnectionString = Preferences.Get(PreferencesEnum.IoTHubConnectionString,"");
+                    Constants.DeviceName = Preferences.Get(PreferencesEnum.IoTHubConnectionString,"");
                     await this.NavigationService.NavigateAsync(nameof(Views.MainPage));
                 }
                 else

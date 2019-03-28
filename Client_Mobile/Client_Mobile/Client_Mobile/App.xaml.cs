@@ -8,7 +8,9 @@ using Xamarin.Forms.Xaml;
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Client_Mobile
 {
+    using Client_Mobile.Enums;
     using Interfaces;
+    using Prism.Navigation;
     using Services;
 
     public partial class App
@@ -32,9 +34,11 @@ namespace Client_Mobile
         {
        
             InitializeComponent();
-          
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+          var navParamas=  new NavigationParameters();
+            navParamas.Add(LockerAccessEnum.Courier.ToString(), false);
+            navParamas.Add(LockerAccessEnum.Friend.ToString(), true);
+            await NavigationService.NavigateAsync("NavigationPage/PinPage", navParamas);
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -42,12 +46,14 @@ namespace Client_Mobile
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage,MainPageViewModel>();
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
-            containerRegistry.Register<IFacade,Facade>();
-            containerRegistry.Register<IApiWrapper, ApiWrapper>();
-            containerRegistry.RegisterSingleton<IIoTHub,IoTHub>();
             containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
             containerRegistry.RegisterForNavigation<ActivityHistoryPage, ActivityHistoryPageViewModel>();
             containerRegistry.RegisterForNavigation<PinPage, PinPageViewModel>();
+            containerRegistry.Register<IFacade,Facade>();
+            containerRegistry.Register<IApiWrapper, ApiWrapper>();
+            containerRegistry.RegisterSingleton<IIoTHub,IoTHub>();
+
+            containerRegistry.RegisterForNavigation<CurrentPinsPage, CurrentPinsPageViewModel>();
         }
     }
 }

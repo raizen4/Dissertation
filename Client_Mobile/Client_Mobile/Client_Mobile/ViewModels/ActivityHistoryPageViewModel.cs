@@ -30,7 +30,7 @@ namespace Client_Mobile.ViewModels
 
         public ActivityHistoryPageViewModel(INavigationService navigationService, IFacade facade,
 			IPageDialogService dialogService)
-			: base(navigationService)
+			: base(navigationService,facade, dialogService)
         {
 	        this._facade = facade;
 	        this._navService = navigationService;

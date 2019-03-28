@@ -13,20 +13,29 @@ const responses = require('../serviceModels/Responses');
 
 async function register(userToRegister) {
   const newUser = new User(userToRegister);
-  newUser.HashedPass = bcrypt.hashSync(userToRegister.Password, 10);
+  newUser.HashedPass = bcrypt.hashSync(userToRegister.HashedPassword, 10);
   try {
-    if (responseFromDb != null) {
-      const hubIdentityCreated = await IotHub.CreateDevice(newUser.AccountDevice);
+      
+      const hubIdentityCreated = await IotHub.CreateDevice(userToRegister.DeviceId);
       if (hubIdentityCreated == null) {
-        return false;
+        return null;
       }
       const responseFromDb = await newUser.save();
-      if (responseFromDb != null) { return true; }
-    }
-    return false;
+      if (responseFromDb != null) {
+        const dataToSendBack={
+             IoTHubConnectionString:hubIdentityCreated.ConnectionString,
+             Key:hubIdentityCreated.SAK,
+             DeviceName:hubIdentityCreated.DeviceId,
+
+        }
+        return dataToSendBack;
+
+       }
+    
+    return null;
   } catch (err) {
     console.log(err);
-    return false;
+    return null;
   }
 }
 
@@ -102,48 +111,49 @@ async function login(email, password) {
 // eslint-disable-next-line complexity
 async function AddPin(userId, pin) {
   try {
-    const forWho = pin.PickerType;
-    if (forWho === constants.PickerTypes.Friend) {
-      const phone = pin.ContactDetails.Phone;
-      const email = pin.ContactDetails.Email;   
-      if (phone != null) {
-        const uri = constants.ApiEndpoints.Sms;
-        const httpVerb = 'POST';
-        const body={
-          Phone:phone
-        }
-        try {
-          await responses.RequestServiceMethod(body, uri, httpVerb);
-        } catch (returnErrResponse) {
-          console.log(returnErrResponse);
-        }
-      }
-      if (email != null) {
-        const uri = constants.ApiEndpoints.Email;
-        const httpVerb = 'POST';
-        const body={
-          Email:email
-        }
-        try {
-          await responses.RequestServiceMethod(body, uri, httpVerb);
-        } catch (returnErrResponse) {
-          console.log(returnErrResponse);
-        }
-      }
-    }
+
     const result = await User.findOneAndUpdate(
       { _id: userId },
 
       {
         $push: { 'AccountLocker.ActivePins': pin },
       },
-
-
     );
     if (result != null) {
+      const forWho = pin.PickerType;
+      if (forWho === constants.PickerTypes.Friend) {
+        const phone = pin.ContactDetails.Phone;
+        const email = pin.ContactDetails.Email;   
+        if (phone != null) {
+          const uri = constants.ApiEndpoints.Sms;
+          const httpVerb = 'POST';
+          const body={
+            Phone:phone
+          }
+          try {
+            await responses.RequestServiceMethod(body, uri, httpVerb);
+          } catch (returnErrResponse) {
+            console.log(returnErrResponse);
+          }
+        }
+        if (email != null) {
+          const uri = constants.ApiEndpoints.Email;
+          const httpVerb = 'POST';
+          const body={
+            Email:email
+          }
+          try {
+            await responses.RequestServiceMethod(body, uri, httpVerb);
+          } catch (returnErrResponse) {
+            console.log(returnErrResponse);
+          }
+        }
+      }
       return true;
     }
     return false;
+   
+    
   } catch (err) {
     return false;
   }
@@ -192,31 +202,31 @@ async function CheckPin(userId,pinCode){
 // action comes from locker. It has the following structure:
 /*
 {
-  Type:UserClose/UserOpen/Delivery
-  DeliveryCompany:null/string
+  action:Close/Open/Delivery/PickingUp
   Pin:{
     Code:
-    TTL:
     ContactDetails:{
       Email:...
       SMS:...
+      PickerName:...
+      DeliveryCompanyName:...
     }
   }
 }
 */
-async function AddNewActionForLocker(user, action) {
+async function AddNewActionForLocker(user, action, pin) {
   try {
     const emailUri = constants.ApiEndpoints.Email;
     const httpVerb = 'POST';
     const emailServiceBody = {
       Receiver: user.Email,
-      Action: action.Type,
+      Action: action,
     };
     const currentDate = Date().toISOString()
       .replace(/T/, ' ') // replace T with a space
       .replace(/\..+/, '');
     let newAction = '';
-    switch (action.Code) {
+    switch (action) {
     case constants.Actions.Open:
       newAction = `Opened at ${currentDate}`;
       break;
@@ -224,7 +234,7 @@ async function AddNewActionForLocker(user, action) {
       newAction = `Closed at ${currentDate}`;
       break;
     case constants.Actions.Delivery:
-      newAction = `Delivery code used on ${currentDate} by ${action.DeliveryCompany} courier using pin ${action.Pin.Code}`;
+      newAction = `Delivery code used on ${currentDate} by ${pin.ContactDetails.DeliveryCompanyName} courier using pin ${pin.Code}`;
       try {
         await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);
       } catch (returnErrResponse) {
@@ -233,7 +243,7 @@ async function AddNewActionForLocker(user, action) {
       RemovePin(action.Pin.Code);
       break;
     case constants.Actions.PickingUp:
-      newAction = `Picked up code used on ${currentDate} using pin ${action.Pin.Code}`;
+      newAction = `Picked up code used on ${currentDate} using pin ${pin.Code} by ${pin.ContactDetails.PickerName}`;
       try {
         await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);
       } catch (returnErrResponse) {

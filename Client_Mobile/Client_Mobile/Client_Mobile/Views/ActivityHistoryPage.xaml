@@ -32,7 +32,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <Grid>
+                                <Grid VerticalOptions="Center">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="100*"></RowDefinition>
                                     </Grid.RowDefinitions>

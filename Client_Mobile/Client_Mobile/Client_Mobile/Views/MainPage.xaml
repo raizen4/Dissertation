@@ -9,28 +9,25 @@
     <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40*"></RowDefinition>
-                <RowDefinition Height="60*"></RowDefinition>
+                <RowDefinition Height="15*"></RowDefinition>
+                <RowDefinition Height="50*"></RowDefinition>
+                <RowDefinition Height="15*"></RowDefinition>
+                <RowDefinition Height="15*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <StackLayout Grid.Row="0" Grid.Column="0" Orientation="Vertical" HorizontalOptions="StartAndExpand" Spacing="30">
+            <StackLayout Grid.Row="0"  Grid.Column="0" Orientation="Vertical" HorizontalOptions="StartAndExpand" Spacing="10">
 
-                <StackLayout Orientation="Horizontal" Margin="100,0,0,0" >
-                    <Label Text="Welcome," FontSize="Large"></Label>
+                <StackLayout Orientation="Horizontal" >
+                    <Label FontAttributes="Bold" Text="Welcome," FontSize="Large"></Label>
                     <Label Text="Bogdan" FontSize="Large"></Label>
                 </StackLayout>
 
-                <StackLayout Orientation="Vertical">
-                    <Label Text="Locker Status:" FontSize="Large"></Label>
-                    <Label Text="Locked" FontSize="Medium"></Label>
-                </StackLayout>
-
-                <StackLayout Orientation="Vertical" >
-                    <Label Text="Last Activity:" FontSize="Large"></Label>
-                    <Label Text="Opened on 01.03.2019 15:40:30" FontSize="Medium"></Label>
+                <StackLayout Orientation="Horizontal">
+                    <Label FontAttributes="Bold" Text="Locker Status:" FontSize="Large"></Label>
+                    <Label VerticalOptions="Center" Text="Locked" FontSize="Large"></Label>
                 </StackLayout>
 
             </StackLayout>
@@ -51,6 +48,9 @@
                 </Grid>
                 
             </StackLayout>
+
+            <Button Grid.Row="3" Grid.Column="0" Command="{Binding LogOutCommand}" Text="Log Out"></Button>
+
         </Grid>
     </StackLayout>
 

@@ -16,6 +16,30 @@ const LockerActivity = new Schema({
   },
 
 });
+
+const ContactDetails = new Schema({
+  PickerName: {
+    type: String,
+    required: true,
+  },
+  DeliveryCompanyName: {
+    type: String,
+    required: true,
+  },
+  Email: {
+    type: String,
+    default:undefined,
+    required:false
+  },
+  Phone: {
+    type: String,
+    default: undefined,
+    required:false
+
+  },
+
+});
+
 const Pin = new Schema({
   Code: {
     type: String,
@@ -25,14 +49,15 @@ const Pin = new Schema({
     type: Number,
     required: true,
   },
-  Ttl: {
-    type: String,
-    required: true,
-  },
   Created: {
     type: Date,
     default: Date.now,
   },
+  PickerDetails:{
+    type:ContactDetails,
+    default:undefined,
+    required:false
+  }
 
 });
 const Locker = new Schema({
@@ -45,7 +70,7 @@ const Locker = new Schema({
 });
 
 const UserSchema = new Schema({
-  ProfileName: {
+  DisplayName: {
     type: String,
     required: false,
     trim: true,
@@ -63,6 +88,11 @@ const UserSchema = new Schema({
   },
   AccountLocker: {
     type: Locker,
+    required: false,
+    default: undefined,
+  },
+  Phone: {
+    type: String,
     required: false,
     default: undefined,
   },
