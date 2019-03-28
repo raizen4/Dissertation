@@ -101,6 +101,8 @@
     <Compile Include="Enums\LockerActionRequestsEnum.cs" />
     <Compile Include="Enums\PickerTypeEnum.cs" />
     <Compile Include="Enums\PreferencesEnum.cs" />
+    <Compile Include="Helpers\PinGenerator.cs" />
+    <Compile Include="Models\Locker.cs" />
     <Compile Include="ServiceModels\CheckPinRequest.cs" />
     <Compile Include="Interfaces\IApiMatchingMethods.cs" />
     <Compile Include="Interfaces\IApiWrapper.cs" />
@@ -122,12 +124,17 @@
     <Compile Include="Services\ApiWrapper.cs" />
     <Compile Include="Services\Facade.cs" />
     <Compile Include="Services\IoTHub.cs" />
+    <Compile Include="ServiceModels\NewLockerRequest.cs" />
     <Compile Include="ViewModels\FinishPageViewModel.cs" />
+    <Compile Include="ViewModels\LockerInfoPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\StartPageViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\FinishPage.xaml.cs">
       <DependentUpon>FinishPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LockerInfoPage.xaml.cs">
+      <DependentUpon>LockerInfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -183,6 +190,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\FinishPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LockerInfoPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

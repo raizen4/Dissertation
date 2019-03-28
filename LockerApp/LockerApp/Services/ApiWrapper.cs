@@ -101,5 +101,15 @@ namespace Client_Mobile.Services
             var result = await this._api.SendRequestToLocker(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
+
+        public async Task<HttpResponseMessage> AddNewLocker(NewLockerRequest req)
+        {
+
+
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.Token);
+            var jsonToSend = JsonConvert.SerializeObject(req);
+            var result = await this._api.SendRequestToLocker(Constants.Headers.ContentType, jsonToSend);
+            return result;
+        }
     }
 }
