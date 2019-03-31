@@ -33,6 +33,7 @@
 		"request-promise": "^4.2.2",
 		"restify": "^6.3.4",
 		"restify-router": "^0.5.0",
-		"smpp": "^0.3.1"
+		"smpp": "^0.3.1",
+		"twilio": "^3.30.0"
 	}
 }

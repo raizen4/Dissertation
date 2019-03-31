@@ -68,11 +68,11 @@ namespace Client_Mobile.ViewModels
                 IsLoading = true;
                 var currentUser = await this._facade.LoginUser(Password,Email);
                 IsLoading = false;
-                if (currentUser.IsSuccessful && currentUser.Content.ProfileName != null)
+                if (currentUser.IsSuccessful && currentUser.Content.DisplayName != null)
                 {
                     Constants.CurrentLoggedInUser = currentUser.Content;
-                    Constants.IotHubConnectionString = Preferences.Get(PreferencesEnum.IoTHubConnectionString,"");
-                    Constants.DeviceName = Preferences.Get(PreferencesEnum.IoTHubConnectionString,"");
+                    Constants.DeviceName = currentUser.Content.DeviceId;
+                    Constants.IotHubConnectionString = currentUser.Content.IotHubConnectionString;
                     await this.NavigationService.NavigateAsync(nameof(Views.MainPage));
                 }
                 else

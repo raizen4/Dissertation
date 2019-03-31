@@ -19,30 +19,31 @@ namespace Client_Mobile.Services
     {
 
         private TransportType _transportProtocol;
-        private string _connectionString;
-        private static DeviceClient _deviceClient;
-        private bool _isConnected = false;
+        private  DeviceClient _deviceClient;
+       
 
-        /// <inheritdoc />
-        ///
-        ///
-        ///
-        ///
-        ///
 
-        public IoTHub()
+        public  bool  InitializeIotHub()
         {
+            try
+            {
             this._transportProtocol = TransportType.Http1; ;
-            _deviceClient =
-                    DeviceClient.CreateFromConnectionString(Constants.IotHubConnectionString, this._transportProtocol);
-        
+            this._deviceClient =
+                DeviceClient.CreateFromConnectionString(Constants.IotHubConnectionString, this._transportProtocol);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
         }
 
         public async Task<bool> CheckConnection()
         {
                 try
                 {
-                   await _deviceClient.OpenAsync();                 
+                   await this._deviceClient.OpenAsync();                 
                    return true;
             }
                 catch (Exception e)
@@ -55,7 +56,13 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> Lock(string targetedDeviceId, LockerActionEnum action)
         {
-           
+            if (this._deviceClient == null)
+            {
+               var initialized= InitializeIotHub();
+                if (!initialized)
+                    return false;
+                
+            }
                 LockerMessage req = new LockerMessage();
                 req.Action = action;
                 req.TargetedDeviceId = targetedDeviceId;
@@ -67,12 +74,12 @@ namespace Client_Mobile.Services
                 message.Properties.Add("IotHubEndpoint", IotEndpointsEnum.D2DEndpoint);          
                 try
                 {
-                    await _deviceClient.SendEventAsync(message);
+                    await this._deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    this._isConnected = false;
+                 
                     return false;
                 }
 
@@ -86,17 +93,17 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<bool> Unlock(string targetedDeviceId, LockerActionEnum action)
         {
-            if (this._isConnected)
+
+
+            if (this._deviceClient == null)
             {
-                if (!this._isConnected)
-                {
-                    var recheckConn = await this.CheckConnection();
-                    if (recheckConn)
-                    {
-                        this._isConnected = true;
-                    }
-                }
-                    LockerMessage req = new LockerMessage();
+                var initialized = InitializeIotHub();
+                if (!initialized)
+                    return false;
+
+            }
+
+            LockerMessage req = new LockerMessage();
                     req.Action = action;
                     req.SenderDeviceId=
                     req.TargetedDeviceId = targetedDeviceId;
@@ -108,19 +115,18 @@ namespace Client_Mobile.Services
                     message.Properties.Add("IotHubEndpoint", IotEndpointsEnum.D2DEndpoint);
                     try
                 {
-                    await _deviceClient.SendEventAsync(message);
+                    await this._deviceClient.SendEventAsync(message);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    this._isConnected = false;
+                    Console.WriteLine(e.Message);  
                     return false;
                 }
 
                 return true;
-            }
+            
 
-            return false;
+          
         }
 
         /// <inheritdoc />
@@ -132,13 +138,21 @@ namespace Client_Mobile.Services
             string messageData;
 
 
-            receivedMessage = await _deviceClient.ReceiveAsync().ConfigureAwait(false);
+            if (this._deviceClient == null)
+            {
+                var initialized = InitializeIotHub();
+                if (!initialized)
+                    return null;
+
+            }
+
+            receivedMessage = await this._deviceClient.ReceiveAsync().ConfigureAwait(false);
 
                 if (receivedMessage != null)
                 {
 
                     messageData = Encoding.UTF8.GetString(receivedMessage.GetBytes());
-                    await _deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false); 
+                    await this._deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false); 
                     Console.WriteLine(messageData);
                     return receivedMessage;
                 }

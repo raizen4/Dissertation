@@ -35,36 +35,7 @@ namespace Client_Mobile.ViewModels
 	        this._facade = facade;
 	        this._navService = navigationService;
 	        this._dialogService = dialogService;
-			HistoryActions= new ObservableCollection<HistoryAction>()
-			{
-				new HistoryAction()
-				{
-					Action = LockerActionEnum.PickedUp,
-					Description = "Picked up on 2019.01.07 at 19:45:20 using pin 210431"
-					
-				},
-				new HistoryAction()
-				{
-					Action = LockerActionEnum.UserAppClosed,
-					Description = "Closed on 2019.01.07 at 19:45:20"
-
-				},
-
-				new HistoryAction()
-				{
-				Action = LockerActionEnum.UserAppOpened,
-				Description = "Opened on 2019.01.07 at 19:45:20"
-
-			},
-
-	        new HistoryAction()
-	        {
-		        Action = LockerActionEnum.Delivered,
-		        Description = "Delivered on 2019.01.07 at 19:45:20 using Pin 203123"
-
-	        }
-            };
-			//GetHistory();
+			GetHistory();
         }
 
 
@@ -74,9 +45,16 @@ namespace Client_Mobile.ViewModels
 			var apiResult = await this._facade.GetDeliveryHistory();
 			if (apiResult.IsSuccessful)
 			{
-				HistoryActions = (ObservableCollection < HistoryAction >) apiResult.Content.ToObservable();
+				var observableList = new ObservableCollection<HistoryAction>(apiResult.Content);
+                HistoryActions = observableList;
 				IsLoading = false;
-			}
+				if (HistoryActions.Count == 0)
+				{
+					await this._dialogService.DisplayAlertAsync("Warning", "No Locker History present yet.", "OK");
+					await this._navService.NavigateAsync(nameof(Views.MainPage));
+
+				}
+            }
 
 			var dialogResult=await this._dialogService.DisplayAlertAsync("Failed", " Something went wrong. Try again!", "OK", "Cancel");
 			if (dialogResult)

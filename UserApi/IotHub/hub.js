@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const iothub = require('azure-iothub');
 
 const connectionString = 'HostName=Dissertation-IotHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=OM1nr8BQfYrrUGk9gMEC8P29t0tqBIxgXGvTYgeUMT4=';
@@ -10,9 +11,9 @@ async function CreateDevice(deviceId) {
   try {
     const result = await registry.create(device);
     if (result) {
-      console.log(result.responseBody.deviceId + result.responseBody.authentication.SymmetricKey);
+      console.log(result.responseBody.deviceId + result.responseBody.authentication.SymmetricKey.primaryKey);
       const AccountDeviceInfo = {
-        ConnectionString: `HostName=Dissertation-IotHub.azure-devices.net;DeviceId=${result.responseBody.deviceId};SharedAccessKey=${result.responseBody.authentication.SymmetricKey}`,
+        ConnectionString: `HostName=Dissertation-IotHub.azure-devices.net;DeviceId=${result.responseBody.deviceId};SharedAccessKey=${result.responseBody.authentication.SymmetricKey.primaryKey}`,
         DeviceId: result.responseBody.deviceId,
         SAK: result.responseBody.authentication.SymmetricKey,
       };

@@ -10,9 +10,9 @@
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <Grid.RowDefinitions>
                 <RowDefinition Height="15*"></RowDefinition>
-                <RowDefinition Height="50*"></RowDefinition>
-                <RowDefinition Height="15*"></RowDefinition>
-                <RowDefinition Height="15*"></RowDefinition>
+                <RowDefinition Height="65*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100*"></ColumnDefinition>
@@ -22,29 +22,32 @@
 
                 <StackLayout Orientation="Horizontal" >
                     <Label FontAttributes="Bold" Text="Welcome," FontSize="Large"></Label>
-                    <Label Text="Bogdan" FontSize="Large"></Label>
+                    <Label Text="{Binding DisplayName}" FontSize="Large"></Label>
                 </StackLayout>
 
                 <StackLayout Orientation="Horizontal">
                     <Label FontAttributes="Bold" Text="Locker Status:" FontSize="Large"></Label>
-                    <Label VerticalOptions="Center" Text="Locked" FontSize="Large"></Label>
+                    <Label VerticalOptions="Center" Text="{Binding LockerStatus}" FontSize="Large"></Label>
                 </StackLayout>
 
             </StackLayout>
             <StackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                 <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50*"></RowDefinition>
-                        <RowDefinition Height="50*"></RowDefinition>
+                        <RowDefinition Height="33*"></RowDefinition>
+                        <RowDefinition Height="33*"></RowDefinition>
+                        <RowDefinition Height="33*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50*"></ColumnDefinition>
                         <ColumnDefinition Width="50*"></ColumnDefinition>
+
                     </Grid.ColumnDefinitions>
                     <Button Grid.Row="0" Grid.Column="0" Command="{Binding LockCommand}" Text="Lock"></Button>
                     <Button Grid.Row="0" Grid.Column="1" Command="{Binding UnlockCommand}"  Text="Unlock"></Button>
-                    <Button Grid.Row="1" Grid.Column="0" Command="{Binding NavigateToPinGenerator}" Text="Send New Pin"></Button>
-                    <Button Grid.Row="1" Grid.Column="1" Command="{Binding NavigateToActivityHistory}" Text="See Locker Activity"></Button>
+                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding NavigateToPinGenerator}" Text="Send New Pin"></Button>
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding NavigateToActivityHistory}" Text="Locker History"></Button>
+                    <Button Grid.Row="2" Grid.Column="1" Command="{Binding NavigateToCurrentPins}" Text="Pin History"></Button>
                 </Grid>
                 
             </StackLayout>

@@ -11,7 +11,9 @@ using System.Linq;
 
 namespace Client_Mobile.ViewModels
 {
-	public class CurrentPinsPageViewModel : ViewModelBase
+    using Enums;
+
+    public class CurrentPinsPageViewModel : ViewModelBase
 	{
         private IFacade facade;
         private INavigationService navService;
@@ -30,6 +32,7 @@ namespace Client_Mobile.ViewModels
         }
         public CurrentPinsPageViewModel(INavigationService navigationService, IFacade facade, IPageDialogService dialogService) : base(navigationService, facade, dialogService)
         {
+            Title = "Active Pins";
             this.facade = facade;
             this.navService = navigationService;
             this.dialogService = dialogService;
@@ -46,6 +49,12 @@ namespace Client_Mobile.ViewModels
                 var observableList = new ObservableCollection<Pin>(apiResult.Content);
                 CurrentPins = observableList;
                 IsLoading = false;
+                if (CurrentPins.Count == 0)
+                {
+                    await this.dialogService.DisplayAlertAsync("Warning", "No pins currently active.", "OK");
+                    await this.navService.NavigateAsync(nameof(Views.MainPage));
+                    
+                }
             }
 
             var dialogResult = await this.dialogService.DisplayAlertAsync("Failed", " Something went wrong. Try again!", "OK", "Cancel");
@@ -59,5 +68,19 @@ namespace Client_Mobile.ViewModels
             }
 
         }
+
+	    internal void ShowOrHideExtension(Pin pinPressed)
+	    {
+	        var currentTaskPressedIndex = CurrentPins.IndexOf(pinPressed);
+	        var pinHasPinPressed = pinPressed;
+	        if (currentTaskPressedIndex == -1)
+	        {
+	            currentTaskPressedIndex++;
+	        }
+	        pinHasPinPressed.IsExtendedView = !pinHasPinPressed.IsExtendedView;
+	        CurrentPins.RemoveAt(currentTaskPressedIndex);
+	        CurrentPins.Insert(currentTaskPressedIndex, pinHasPinPressed);
+
+	    }
     }
 }

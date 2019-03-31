@@ -73,6 +73,7 @@ namespace Client_Mobile.ViewModels
 
         public async Task RegisterUser()
         {
+
             if ( Password.Length == 0 || Email.Length == 0 || DisplayName.Length == 0 || Phone.Length==0)
             {
                 await this._dialogService.DisplayAlertAsync("Error",
@@ -80,15 +81,14 @@ namespace Client_Mobile.ViewModels
             }
             else
             {
-                
+                IsLoading = true;
                 var result = await this._facade.CreateUser(Email,Password,DisplayName,Phone);
+                IsLoading = false;
                 if (result.Error == null && result.IsSuccessful)
                 {
                     await this._dialogService.DisplayAlertAsync("Successful", "The registration has been successful", "OK");
                     await NavigationService.NavigateAsync(nameof(Views.LoginPage));
-                    Preferences.Set(PreferencesEnum.IoTHubConnectionString, result.Content.IoTHubConnectionString);
-                    Preferences.Set(PreferencesEnum.DeviceName, result.Content.DeviceName);
-                    Preferences.Set(PreferencesEnum.SymmetricKey, result.Content.Key);
+               
                 }
                 else
                 {

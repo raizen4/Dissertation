@@ -12,6 +12,7 @@ namespace Client_Mobile.ServiceModels
 
         public string Phone { get; set; }
 
+        public string DeviceId { get; set; }
         
     }
 }

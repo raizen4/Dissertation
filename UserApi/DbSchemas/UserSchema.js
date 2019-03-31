@@ -28,13 +28,13 @@ const ContactDetails = new Schema({
   },
   Email: {
     type: String,
-    default:undefined,
-    required:false
+    default: undefined,
+    required: false,
   },
   Phone: {
     type: String,
     default: undefined,
-    required:false
+    required: false,
 
   },
 
@@ -45,7 +45,7 @@ const Pin = new Schema({
     type: String,
     required: true,
   },
-  PickerType: {
+  UserType: {
     type: Number,
     required: true,
   },
@@ -53,11 +53,11 @@ const Pin = new Schema({
     type: Date,
     default: Date.now,
   },
-  PickerDetails:{
-    type:ContactDetails,
-    default:undefined,
-    required:false
-  }
+  ParcelContactDetails: {
+    type: ContactDetails,
+    default: undefined,
+    required: false,
+  },
 
 });
 const Locker = new Schema({
@@ -65,12 +65,22 @@ const Locker = new Schema({
     type: String,
     required: true,
   },
+  IotHubConnectionString: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
   History: [LockerActivity],
   ActivePins: [Pin],
 });
 
 const UserSchema = new Schema({
   DisplayName: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  DeviceId: {
     type: String,
     required: false,
     trim: true,
@@ -92,6 +102,11 @@ const UserSchema = new Schema({
     default: undefined,
   },
   Phone: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
+  IoTHubConnectionString: {
     type: String,
     required: false,
     default: undefined,

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-case-declarations */
 /* eslint-disable complexity */
 /* eslint-disable no-underscore-dangle */
@@ -10,28 +11,28 @@ const constants = require('../Constants');
 const User = require('../DbSchemas/UserSchema');
 const IotHub = require('../IotHub/hub');
 const responses = require('../serviceModels/Responses');
+const helpers = require('../Helpers/SmsAndEmailGenerator');
 
 async function register(userToRegister) {
   const newUser = new User(userToRegister);
   newUser.HashedPass = bcrypt.hashSync(userToRegister.HashedPassword, 10);
   try {
-      
-      const hubIdentityCreated = await IotHub.CreateDevice(userToRegister.DeviceId);
-      if (hubIdentityCreated == null) {
-        return null;
-      }
-      const responseFromDb = await newUser.save();
-      if (responseFromDb != null) {
-        const dataToSendBack={
-             IoTHubConnectionString:hubIdentityCreated.ConnectionString,
-             Key:hubIdentityCreated.SAK,
-             DeviceName:hubIdentityCreated.DeviceId,
+    const hubIdentityCreated = await IotHub.CreateDevice(userToRegister.DeviceId);
+    if (hubIdentityCreated == null) {
+      return null;
+    }
+    newUser.IoTHubConnectionString = hubIdentityCreated.ConnectionString;
+    const responseFromDb = await newUser.save();
+    if (responseFromDb != null) {
+      const dataToSendBack = {
+        IoTHubConnectionString: hubIdentityCreated.ConnectionString,
+        Key: hubIdentityCreated.SAK,
+        DeviceName: hubIdentityCreated.DeviceId,
 
-        }
-        return dataToSendBack;
+      };
+      return dataToSendBack;
+    }
 
-       }
-    
     return null;
   } catch (err) {
     console.log(err);
@@ -39,46 +40,45 @@ async function register(userToRegister) {
   }
 }
 
-async function RegisterLocker(userId,lockerId) {
+async function RegisterLocker(userId, lockerId) {
   try {
-      const hubIdentityCreated = await IotHub.CreateDevice(lockerId);
-      if (hubIdentityCreated == null) {
-        return null;
-      }
-      else{
-        const newLocker={
-          DeviceId:hubIdentityCreated.DeviceId
-        }
-        const result = await User.findOneAndUpdate(
-          { _id: userId },
-    
-          {
-            $push: { 'AccountLocker': newLocker },
-          },
-        );
-        if (result != null) {
-          return hubIdentityCreated;
-        }
-        return null;
-      }
+    const hubIdentityCreated = await IotHub.CreateDevice(lockerId);
+    if (hubIdentityCreated == null) {
+      return null;
+    }
+
+    const newLocker = {
+      DeviceId: hubIdentityCreated.DeviceId,
+    };
+    const result = await User.findOneAndUpdate(
+      { _id: userId },
+
+      {
+        $push: { AccountLocker: newLocker },
+      },
+    );
+    if (result != null) {
+      return hubIdentityCreated;
+    }
+    return null;
   } catch (err) {
     console.log(err);
     return null;
   }
 }
-
 
 
 async function signToken(user) {
   const jwtToken = await jwt.sign({
+    DisplayName: user.DisplayName,
+    LockerId: user.AccountLocker.DeviceId,
+    DeviceId: user.DeviceId,
     Email: user.Email,
-    ProfileName: user.ProfileName,
-    Locker: user.AccountLocker,
     Id: user._id,
   },
   constants.secret,
   {
-    expiresIn: '10h',
+    expiresIn: '23h',
 
   });
   return jwtToken;
@@ -91,12 +91,11 @@ async function login(email, password) {
       if (matchPass) {
         foundUser.HashedPass = null;
         const token = await signToken(foundUser);
-
         const userToSendBack = {
-          Email: foundUser.Email,
-          ProfileName: foundUser.ProfileName,
-          AccountLocker: foundUser.AccountLocker,
-          Id: foundUser._id,
+          DisplayName: foundUser.DisplayName,
+          LockerId: foundUser.AccountLocker.DeviceId,
+          DeviceId: foundUser.DeviceId,
+          IotHubConnectionString: foundUser.IoTHubConnectionString,
           Token: token,
         };
         return userToSendBack;
@@ -109,51 +108,27 @@ async function login(email, password) {
 }
 
 // eslint-disable-next-line complexity
-async function AddPin(userId, pin) {
+async function AddPin(user, pin) {
   try {
-
     const result = await User.findOneAndUpdate(
-      { _id: userId },
+      { _id: user.Id },
 
       {
         $push: { 'AccountLocker.ActivePins': pin },
       },
     );
+    await helpers.GenerateConfirmPinCreation(user.Email);
     if (result != null) {
       const forWho = pin.PickerType;
       if (forWho === constants.PickerTypes.Friend) {
         const phone = pin.ContactDetails.Phone;
-        const email = pin.ContactDetails.Email;   
-        if (phone != null) {
-          const uri = constants.ApiEndpoints.Sms;
-          const httpVerb = 'POST';
-          const body={
-            Phone:phone
-          }
-          try {
-            await responses.RequestServiceMethod(body, uri, httpVerb);
-          } catch (returnErrResponse) {
-            console.log(returnErrResponse);
-          }
-        }
-        if (email != null) {
-          const uri = constants.ApiEndpoints.Email;
-          const httpVerb = 'POST';
-          const body={
-            Email:email
-          }
-          try {
-            await responses.RequestServiceMethod(body, uri, httpVerb);
-          } catch (returnErrResponse) {
-            console.log(returnErrResponse);
-          }
-        }
+        const email = pin.ContactDetails.Email;
+        await helpers.GenerateEmail(email);
+        await helpers.GenerateSms(phone);
       }
       return true;
     }
     return false;
-   
-    
   } catch (err) {
     return false;
   }
@@ -177,22 +152,21 @@ async function RemovePin(userId, pin) {
   }
 }
 
-async function CheckPin(userId,pinCode){
+async function CheckPin(userId, pinCode) {
   try {
     const result = await User.findOne({ _id: userId });
 
     if (result != null) {
-      let history = result.ActivePins;
-      let found=null;
-      history.forEach(function(Pin){
-       if(Pin.Code==pinCode){
-         found=Pin;
-         break;
-       }      
+      const history = result.ActivePins;
+      let found = null;
+      history.forEach((Pin) => {
+        if (Pin.Code === pinCode) {
+          found = Pin;
+        }
       });
-      if(found!=null){
+      if (found != null) {
         return found;
-      } 
+      }
     }
     return null;
   } catch (err) {
@@ -216,12 +190,6 @@ async function CheckPin(userId,pinCode){
 */
 async function AddNewActionForLocker(user, action, pin) {
   try {
-    const emailUri = constants.ApiEndpoints.Email;
-    const httpVerb = 'POST';
-    const emailServiceBody = {
-      Receiver: user.Email,
-      Action: action,
-    };
     const currentDate = Date().toISOString()
       .replace(/T/, ' ') // replace T with a space
       .replace(/\..+/, '');
@@ -235,21 +203,9 @@ async function AddNewActionForLocker(user, action, pin) {
       break;
     case constants.Actions.Delivery:
       newAction = `Delivery code used on ${currentDate} by ${pin.ContactDetails.DeliveryCompanyName} courier using pin ${pin.Code}`;
-      try {
-        await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);
-      } catch (returnErrResponse) {
-        console.log(returnErrResponse);
-      }
-      RemovePin(action.Pin.Code);
       break;
     case constants.Actions.PickingUp:
       newAction = `Picked up code used on ${currentDate} using pin ${pin.Code} by ${pin.ContactDetails.PickerName}`;
-      try {
-        await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);
-      } catch (returnErrResponse) {
-        console.log(returnErrResponse);
-      }
-      RemovePin(action.Pin.Code);
       break;
     default:
       break;
@@ -260,7 +216,9 @@ async function AddNewActionForLocker(user, action, pin) {
         $push: { 'AccountLocker.History': newAction },
       },
     );
-    if (result != null) {
+    if (result != null && (action === constants.Actions.PickedUp || action === constants.Actions.Delivered)) {
+      helpers.LockerActionSucceded(user.Email, action, pin);
+      RemovePin(action.Pin.Code);
       return true;
     }
     return false;
@@ -306,5 +264,5 @@ module.exports = {
   AddNewActionForLocker,
   GetLockerHistory,
   CheckPin,
-  RegisterLocker
+  RegisterLocker,
 };

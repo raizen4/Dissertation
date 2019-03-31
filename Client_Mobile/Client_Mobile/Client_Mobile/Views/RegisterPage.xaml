@@ -5,6 +5,7 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Client_Mobile.Views.RegisterPage"
              Title="Register Page"
+             BackgroundImage="bg.jpg"
              >
 
 
@@ -15,7 +16,7 @@
             <RowDefinition Height="20*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackLayout Grid.Row="0" VerticalOptions="FillAndExpand">
-            <Label Margin="20,0,0,0" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Text="Registration Form" FontSize="25"></Label>
+            <Label  TextColor="Black" Margin="20,0,0,0" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" Text="Registration Form" FontSize="25"></Label>
         </StackLayout>
 
 
@@ -24,7 +25,7 @@
             <StackLayout Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="StartAndExpand"  >
                 <Label TextColor="Black" HorizontalOptions="StartAndExpand" Text="Display Name:"  FontSize="17" FontAttributes="Bold"></Label>
                 <Entry TextColor="Black" HorizontalOptions="StartAndExpand" 
-                       Opacity="0.5"
+                       Opacity="0.8" 
                         WidthRequest="350"
                        Placeholder="Display name goes here" 
                        Text="{Binding DisplayName, Mode=TwoWay}"></Entry>
@@ -35,7 +36,7 @@
                 <Entry TextColor="Black"
                         WidthRequest="350"
                        HorizontalOptions="Center" 
-                       Opacity="0.5" 
+                       Opacity="0.8" 
                        Placeholder="Email goes here" Text="{Binding Email, Mode=TwoWay}"></Entry>
             </StackLayout>
            
@@ -45,7 +46,7 @@
                 <Entry TextColor="Black"
                        WidthRequest="350"
                        HorizontalOptions="Center" 
-                       Opacity="0.5" 
+                       Opacity="0.8" 
                        Placeholder="Password goes here" Text="{Binding Password, Mode=TwoWay}"></Entry>
             </StackLayout>
         
@@ -54,14 +55,14 @@
                 <Entry TextColor="Black"
                        WidthRequest="350"
                        HorizontalOptions="Center" 
-                       Opacity="0.5" 
+                       Opacity="0.8" 
                        Placeholder="Phone goes here" Text="{Binding Phone, Mode=TwoWay}"></Entry>
             </StackLayout>
 
         </StackLayout>
 
         <StackLayout Grid.Row="2" VerticalOptions="FillAndExpand">
-            <Button Text="Register" Command="{Binding RegisterCommand}" FontSize="20"  BackgroundColor="Gray"  BorderColor="WhiteSmoke" TextColor="WhiteSmoke" BorderWidth="2"  CornerRadius="35" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"   ></Button>
+            <Button Text="Register" Command="{Binding RegisterCommand}" FontSize="20"  BackgroundColor="CadetBlue"   TextColor="WhiteSmoke" BorderColor="AntiqueWhite" BorderWidth="1"   VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"   ></Button>
         </StackLayout>
 
 

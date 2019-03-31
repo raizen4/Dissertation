@@ -9,8 +9,10 @@ namespace Client_Mobile.Models
     public class Pin
     {
         private string _code;
-        private PickerTypeEnum _pickerType;
-        private ContactDetails _pickerDetails;
+        private PinUserTypeEnum _userType;
+        private ContactDetails _parcelContactDetails;
+        private bool isExtendedView = false;
+        private string _dateCreated;
 
 
         public string Code
@@ -19,18 +21,28 @@ namespace Client_Mobile.Models
             set => this._code = value;
         }
 
-        public ContactDetails PickerDetails
+        public ContactDetails ParcelContactDetails
         {
-            get => this._pickerDetails;
-            set => this._pickerDetails = value;
+            get => this._parcelContactDetails;
+            set => this._parcelContactDetails = value;
         }
 
-        public PickerTypeEnum PickerType
+        public PinUserTypeEnum UserType
         {
-            get => this._pickerType;
-            set => this._pickerType = value;
+            get => this._userType;
+            set => this._userType = value;
         }
 
+        public bool IsExtendedView
+        {
+            get => this.isExtendedView;
+            set => this.isExtendedView = value;
+        }
 
+        public string DateCreated
+        {
+            get => this._dateCreated;
+            set => this._dateCreated = value;
+        }
     }
 }

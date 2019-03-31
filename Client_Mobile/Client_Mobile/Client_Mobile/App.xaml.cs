@@ -35,10 +35,8 @@ namespace Client_Mobile
        
             InitializeComponent();
 
-          var navParamas=  new NavigationParameters();
-            navParamas.Add(LockerAccessEnum.Courier.ToString(), false);
-            navParamas.Add(LockerAccessEnum.Friend.ToString(), true);
-            await NavigationService.NavigateAsync("NavigationPage/PinPage", navParamas);
+          
+            await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -51,7 +49,7 @@ namespace Client_Mobile
             containerRegistry.RegisterForNavigation<PinPage, PinPageViewModel>();
             containerRegistry.Register<IFacade,Facade>();
             containerRegistry.Register<IApiWrapper, ApiWrapper>();
-            containerRegistry.RegisterSingleton<IIoTHub,IoTHub>();
+            containerRegistry.Register<IIoTHub,IoTHub>();
 
             containerRegistry.RegisterForNavigation<CurrentPinsPage, CurrentPinsPageViewModel>();
         }

@@ -7,6 +7,7 @@ namespace Client_Mobile.Services
     using System.Net;
     using System.Threading.Tasks;
     using Enums;
+    using Helpers;
     using Interfaces;
     using Microsoft.Azure.Devices.Client;
     using Models;
@@ -280,11 +281,12 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<ResponseData<CreatedUserInfo>> CreateUser(string email, string pass, string displayName, string phone)
         {
-           var request=new RegisterRequest();
+           var request= new RegisterRequest();
             request.DisplayName = displayName;
             request.Password = pass;
             request.Email = email;
             request.Phone = phone;
+            request.DeviceId = "DeviceMobile" + PinGenerator.GeneratePin();
 
             var responseData = new ResponseData<CreatedUserInfo>()
             {

@@ -114,9 +114,9 @@ namespace Client_Mobile.ViewModels
             {
                 var newPin = new Pin();
                 newPin.Code = PinCode;
-                newPin.PickerType = PickerTypeEnum.Friend;
-                newPin.PickerDetails.Email = FriendEmail;
-                newPin.PickerDetails.Phone = FriendSms;
+                newPin.UserType = PinUserTypeEnum.Friend;
+                newPin.ParcelContactDetails.Email = FriendEmail;
+                newPin.ParcelContactDetails.Phone = FriendSms;
                 var apiResult = await this._facade.AddPinForLocker(newPin);
                 if (apiResult.IsSuccessful)
                 {
@@ -131,7 +131,7 @@ namespace Client_Mobile.ViewModels
                         "OK", "Cancel");
                     if (dialogResult)
                     {
-                        FinishFriend();
+                      await FinishFriend();
                     }
                     else
                     {
@@ -146,7 +146,7 @@ namespace Client_Mobile.ViewModels
             IsLoading = true;
             var newPin = new Pin();
             newPin.Code = PinCode;
-            newPin.PickerType = PickerTypeEnum.Courier;
+            newPin.UserType = PinUserTypeEnum.Courier;
             var apiResult = await this._facade.AddPinForLocker(newPin);
             if (apiResult.IsSuccessful)
             {
@@ -162,7 +162,7 @@ namespace Client_Mobile.ViewModels
                     "OK", "Cancel");
                 if (dialogResult)
                 {
-                    FinishFriend();
+                    await FinishCourier();
                 }
                 else
                 {

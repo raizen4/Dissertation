@@ -30,9 +30,9 @@ router.post('/register', async (req, res) => {
   const User = {
     DisplayName: req.body.DisplayName,
     Email: req.body.Email,
-    HashedPassword:req.body.Password,
+    HashedPassword: req.body.Password,
     Phone: req.body.Phone,
-    DeviceId:req.body.DeviceId
+    DeviceId: req.body.DeviceId,
 
   };
   console.log(User);
@@ -41,20 +41,20 @@ router.post('/register', async (req, res) => {
     if (managerResult) {
       const newResp = new ResponseData();
       newResp.HasBeenSuccessful = true;
-      newResp.Content=managerResult;
+      newResp.Content = managerResult;
       newResp.Errors = null;
       res.send(newResp);
     } else {
       const newResp = new ResponseData();
       newResp.HasBeenSuccessful = false;
-      newResp.Content=null;
+      newResp.Content = null;
       newResp.Errors = 'Email already exists. Please change the email';
       res.send(newResp);
     }
   } catch (err) {
     const newResp = new ResponseData();
     newResp.HasBeenSuccessful = false;
-    newResp.Content=null;
+    newResp.Content = null;
     newResp.Errors = 'Internal server error';
     res.send(newResp);
   }
@@ -86,29 +86,28 @@ router.post('/RemovePinForLocker', jwtChecker.checkToken, async (req, res) => {
   }
 });
 
-router.put('/CheckPin', jwtChecker.checkToken, async (req, res)=>{
-  try{
-   // const parsedBody = JSON.parse(req.body);
-   const userId = req.body.User.Id;
-   const pinToCheck = req.body.PinCode;
-   const managerResult = await userManager.CheckPin(userId, pinToCheck);
-   if (managerResult!=null) {
-     const newResp = new ResponseData();
-     newResp.HasBeenSuccessful = true;
-     newResp.Content=managerResult;
-     newResp.Errors = null;
-     res.send(newResp);
-   } else {
+router.put('/CheckPin', jwtChecker.checkToken, async (req, res) => {
+  try {
+    // const parsedBody = JSON.parse(req.body);
+    const userId = req.body.User.Id;
+    const pinToCheck = req.body.PinCode;
+    const managerResult = await userManager.CheckPin(userId, pinToCheck);
+    if (managerResult != null) {
+      const newResp = new ResponseData();
+      newResp.HasBeenSuccessful = true;
+      newResp.Content = managerResult;
+      newResp.Errors = null;
+      res.send(newResp);
+    } else {
+      const newResp = new ResponseData();
+      newResp.HasBeenSuccessful = false;
+      newResp.Content = null;
+      newResp.Errors = 'Pin not valid';
+      res.send(newResp);
+    }
+  } catch (err) {
     const newResp = new ResponseData();
-     newResp.HasBeenSuccessful = false;
-     newResp.Content=null;
-     newResp.Errors = 'Pin not valid';
-     res.send(newResp);
-   }
-  }
-  catch(err){
-    const newResp = new ResponseData();
-    newResp.Content=null;
+    newResp.Content = null;
     newResp.HasBeenSuccessful = false;
     newResp.Errors = err;
     res.send(newResp);
@@ -145,9 +144,9 @@ router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => 
 router.put('/AddPinForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
-    const userId = req.body.User.Id;
+    const user = req.body.User;
     const pinToAdd = req.body.Pin;
-    const managerResult = await userManager.AddPin(userId, pinToAdd);
+    const managerResult = await userManager.AddPin(user, pinToAdd);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;
@@ -176,12 +175,12 @@ router.post('/CreateLocker', jwtChecker.checkToken, async (req, res) => {
     if (managerResult) {
       const newResp = new ResponseData();
       newResp.HasBeenSuccessful = true;
-      newResp.Content=managerResult;
+      newResp.Content = managerResult;
       newResp.Errors = null;
       res.send(newResp);
     } else {
       const newResp = new ResponseData();
-      newResp.Content=null;
+      newResp.Content = null;
       newResp.HasBeenSuccessful = false;
       newResp.Errors = 'Internal server error';
       res.send(newResp);
@@ -189,7 +188,7 @@ router.post('/CreateLocker', jwtChecker.checkToken, async (req, res) => {
   } catch (err) {
     const newResp = new ResponseData();
     newResp.HasBeenSuccessful = false;
-    newResp.Content=null;
+    newResp.Content = null;
     newResp.Errors = err;
     res.send(newResp);
   }

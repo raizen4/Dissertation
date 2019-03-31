@@ -30,7 +30,7 @@ namespace Client_Mobile.ViewModels
         public DelegateCommand UnlockCommand { get; set; }
         public DelegateCommand NavigateToActivityHistory { get; set; }
         public DelegateCommand NavigateToPinGenerator { get; set; }
-        public DelegateCommand SendNewPinCommand { get; set; }
+        public DelegateCommand NavigateToCurrentPins { get; set; }
 
      
         public MainPageViewModel(INavigationService navigationService, IFacade facade, IPageDialogService dialogService)
@@ -44,7 +44,8 @@ namespace Client_Mobile.ViewModels
             UnlockCommand = new DelegateCommand(Unlock);
             NavigateToActivityHistory=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.ActivityHistoryPage)));
             NavigateToPinGenerator = new DelegateCommand(async()=>await SendNewPin());
-            this.ListenForMessages(this._poolingRate);
+            NavigateToCurrentPins=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.CurrentPinsPage)));
+          //  this.ListenForMessages(this._poolingRate);
         }
 
 

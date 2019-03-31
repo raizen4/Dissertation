@@ -45,8 +45,8 @@
                                     </StackLayout>
 
                                     <StackLayout Grid.Row="0" Grid.Column="0" Orientation="Vertical" Spacing="2">
-                                        <Label Margin="20,0,0,0" Text="{Binding Action, Converter={StaticResource ActionToStringConverter}}" FontSize="Large"></Label>
-                                        <Label Margin="20,0,0,0" Text="{Binding Description}" FontSize="Medium"></Label>
+                                        <Label Margin="20,0,0,0" Text="{Binding Action, Converter={StaticResource ActionToStringConverter}}" FontSize="Medium"></Label>
+                                        <Label Margin="20,0,0,0" Text="{Binding Description}" FontSize="Small"></Label>
                                     </StackLayout>
                                 </Grid>
                             </ViewCell>

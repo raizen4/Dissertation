@@ -6,7 +6,7 @@ namespace Client_Mobile.Enums
 {
   
 
-    public enum PickerTypeEnum
+    public enum PinUserTypeEnum
     {
         Friend=1,
         Courier=2
