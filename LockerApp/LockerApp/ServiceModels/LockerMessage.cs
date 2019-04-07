@@ -5,7 +5,7 @@ using System.Text;
 namespace LockerApp.ServiceModels
 {
     using Enums;
-    using LockerApp.Models;
+    using Models;
 
     public class LockerMessage
     {

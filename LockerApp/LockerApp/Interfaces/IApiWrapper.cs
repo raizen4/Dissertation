@@ -21,8 +21,6 @@ namespace LockerApp.Interfaces
         Task<HttpResponseMessage> AddNewLocker(NewLockerRequest req);
 
 
-
-
-
+        Task<HttpResponseMessage> SendBackupBatteryNotification();
     }
 }

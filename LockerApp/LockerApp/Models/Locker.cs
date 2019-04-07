@@ -11,5 +11,6 @@ namespace LockerApp.Models
         public string ConnectionString { get; set; }
         public string SymmetricKey { get; set; }
         public string DeviceId { get; set; }
+        public string Token { get; set; }
     }
 }

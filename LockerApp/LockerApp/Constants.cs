@@ -9,10 +9,12 @@ namespace LockerApp
 
     static class Constants
     {
-        public static string IotHubConnectionString="HostName=Dissertation-IotHub.azure-devices.net;DeviceId=DeviceExplorerTwinSimulator;SharedAccessKey=KOGiKsfUuV+QTTAx3MKInhlBYKhiYYETQ66LXpyyzXw=";
-        public static string DeviceId = "";
 
-        public static string Token = null;
+        public static Locker UserLocker{ get; set; }
+
+        public static string LockerConnectionString =
+            "";
+        public static string Token ="";
         public static  string WebApiEndpoint="http://10.2.2.0:4000";
         public class Headers
         {
@@ -29,8 +31,8 @@ namespace LockerApp
             /// </summary>
             public const string MainPage = "Main";
             public const string GettingStartedPage = "Start";
-            public const string PinAcceptedPage = "FinishPage";
-            public const string InfoPage = "LockerInfoPage";
+            public const string PinAcceptedPage = "Finish";
+            public const string InfoPage = "LockerInfo";
 
         }
 

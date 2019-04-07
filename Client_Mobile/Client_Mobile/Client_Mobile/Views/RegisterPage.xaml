@@ -2,14 +2,23 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Client_Mobile.Views.RegisterPage"
              Title="Register Page"
              BackgroundImage="bg.jpg"
              >
 
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                 AnimationType="Animation4"
+                                 AnimationContentHeightRequest="100"
+                                 AnimationContentWidthRequest="100"
+                                 IsBusy="{Binding IsLoading}">
+        <primitives:RadBusyIndicator.Content>
 
-    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+        
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*"></RowDefinition>
             <RowDefinition Height="70*"></RowDefinition>
@@ -68,5 +77,16 @@
 
 
     </Grid>
+   </primitives:RadBusyIndicator.Content>
+        <primitives:RadBusyIndicator.BusyContent>
+            <StackLayout  >
+                <Label HorizontalOptions="Center"
+                       Text="Working hard on it..."
+                       VerticalOptions="Center" />
+            </StackLayout>
+
+        </primitives:RadBusyIndicator.BusyContent>
+
+    </primitives:RadBusyIndicator>
 
 </ContentPage>

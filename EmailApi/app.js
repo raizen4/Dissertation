@@ -23,9 +23,9 @@ server.use(restify.plugins.gzipResponse());
 server.use(cors());
 
 
-const emailController = require('./controller/email');
+const emailController = require('./controller/emails');
 
-router.add('/UserApi/users', emailController);
+router.add('/EmailApi/emails', emailController);
 router.applyRoutes(server);
 
 server.on('after', restify.plugins.metrics({ server }, (err, metrics) => {

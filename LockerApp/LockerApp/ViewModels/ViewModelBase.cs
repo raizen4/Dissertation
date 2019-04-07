@@ -10,19 +10,16 @@ using Windows.UI.Xaml.Controls;
 
 namespace LockerApp.ViewModels
 {
-    public class ViewModelBase : BindableBase, INavigationAware
+    using MvvmDialogs;
+
+    public class ViewModelBase :Prism.Windows.Mvvm.ViewModelBase
     {
-        protected INavigationService NavigationService { get; private set; }
-        protected IFacade Facade { get; private set; }
+        public INavigationService NavigationService { get;  set; }
+        public IFacade Facade { get;  set; }
 
 
-        private string _title;
         private bool _isLoading;
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+      
 
         public bool IsLoading
         {
@@ -34,6 +31,8 @@ namespace LockerApp.ViewModels
         {
             NavigationService = navigationService;
             Facade = facade;
+
+
         }
 
         
@@ -46,37 +45,7 @@ namespace LockerApp.ViewModels
         {
         }
 
-        public async Task<ContentDialogResult> DisplayDialog(string title, string content, int numberOfButtons, string closeButton, string positiveButton)
-        {
-            if(numberOfButtons == 1)
-            {
-                ContentDialog noWifiDialog = new ContentDialog
-                {
-                    Title = title,
-                    Content = content,
-                    CloseButtonText = closeButton
-                };
-                ContentDialogResult result = await noWifiDialog.ShowAsync();
-                return result;
-
-            }
-            else
-            {
-                ContentDialog noWifiDialog = new ContentDialog
-                {
-                    Title = title,
-                    Content = content,
-                    PrimaryButtonText = positiveButton,
-                    CloseButtonText = closeButton
-
-
-                };
-                ContentDialogResult result = await noWifiDialog.ShowAsync();
-                return result;
-            }
-
-
-        }
+      
 
         public void OpenLocker()
         {

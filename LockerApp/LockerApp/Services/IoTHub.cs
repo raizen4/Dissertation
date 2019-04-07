@@ -21,24 +21,14 @@ namespace LockerApp.Services
         private TransportType _transportProtocol;
         private string _connectionString;
         private static DeviceClient _deviceClient;
-        private bool _isConnected = false;
 
-        /// <inheritdoc />
-        ///
-        ///
-        ///
-        ///
-        ///
 
-        public IoTHub()
+        public void InitializeConnectionToHub()
         {
             this._transportProtocol = TransportType.Http1; ;
             _deviceClient =
-                    DeviceClient.CreateFromConnectionString(Constants.IotHubConnectionString, this._transportProtocol);
-        
+                DeviceClient.CreateFromConnectionString(Constants.LockerConnectionString, this._transportProtocol);
         }
-
-       
         
         /// <inheritdoc />
         public async Task<LockerMessage> GetPendingMessages()
@@ -48,7 +38,10 @@ namespace LockerApp.Services
             
             string messageData;
 
-
+            if (_deviceClient == null)
+            {
+                InitializeConnectionToHub();
+            }
             receivedMessage = await _deviceClient.ReceiveAsync().ConfigureAwait(false);
 
                 if (receivedMessage != null)
@@ -68,6 +61,10 @@ namespace LockerApp.Services
       
         public async Task<bool> SendMessageToLocker(LockerMessage lockerMessage)
         {
+            if (_deviceClient == null)
+            {
+                InitializeConnectionToHub();
+            }
             LockerMessage req = new LockerMessage();
             req.ActionRequest = lockerMessage.ActionRequest;
             req.TargetedDeviceId = lockerMessage.TargetedDeviceId;
@@ -84,7 +81,6 @@ namespace LockerApp.Services
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                this._isConnected = false;
                 return false;
             }
 

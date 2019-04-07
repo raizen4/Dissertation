@@ -16,9 +16,9 @@ namespace LockerApp.Services
     class Facade:IFacade
     {
 
-        private readonly IApiWrapper _apiWrapper;
+        private  IApiWrapper _apiWrapper;
 
-        private readonly IIoTHub _iotHub;
+        private  IIoTHub _iotHub;
         public Facade(IApiWrapper apiWrapper, IIoTHub iotHub)
         {
             this._apiWrapper = apiWrapper;
@@ -79,12 +79,12 @@ namespace LockerApp.Services
         }
 
 
-        public async Task<ResponseData<User>> LoginUser(string password, string email)
+        public async Task<ResponseData<Locker>> LoginUser(string password, string email)
         {
             var newLoginRequest = new LoginRequest();
             newLoginRequest.Password = password;
             newLoginRequest.Email = email;
-            var responseData = new ResponseData<User>
+            var responseData = new ResponseData<Locker>
             {
                 IsSuccessful = false
             };
@@ -95,7 +95,7 @@ namespace LockerApp.Services
             {
                 try
                 {
-                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<User>>(content);
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<Locker>>(content);
                     if (deserializedContent.IsSuccessful == false)
                     {
                         responseData.IsSuccessful = false;
@@ -142,6 +142,49 @@ namespace LockerApp.Services
                 IsSuccessful = false
             };
             var result = await this._apiWrapper.AddNewActionForLocker(request);
+            string content = await result.Content.ReadAsStringAsync();
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                try
+                {
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
+                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    {
+                        responseData.IsSuccessful = false;
+                        responseData.Error = "Internal Server Error";
+                        return responseData;
+                    }
+
+                    responseData.IsSuccessful = true;
+                    responseData.Error = null;
+                    return responseData;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    responseData.IsSuccessful = false;
+                    responseData.Error = "Deserialization Error";
+                    return responseData;
+                }
+            }
+            else
+            {
+                responseData.IsSuccessful = false;
+                responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
+                return responseData;
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<ResponseBase> SendBackupBatteryNotification()
+        {
+
+            
+            var responseData = new ResponseBase()
+            {
+                IsSuccessful = false
+            };
+            var result = await this._apiWrapper.SendBackupBatteryNotification();
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {

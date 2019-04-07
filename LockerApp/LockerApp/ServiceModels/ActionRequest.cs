@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LockerApp.ServiceModels
 {
-    using LockerApp.Models;
+    using Models;
     using Enums;
 
     class ActionRequest

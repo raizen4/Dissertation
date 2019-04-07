@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Client_Mobile.Services
+namespace LockerApp.Services
 {
     using System.Diagnostics;
     using System.Net.Http;
@@ -10,15 +10,14 @@ namespace Client_Mobile.Services
     using System.Threading.Tasks;
 
     using LockerApp;
-    using LockerApp.Enums;
-    using LockerApp.Interfaces;
-    using LockerApp.ServiceModels;
+    using Enums;
+    using Interfaces;
+    using ServiceModels;
     using ModernHttpClient;
     using Newtonsoft.Json;
     using Refit;
     using Windows.Security.Credentials;
     using Windows.Storage;
-    using Xamarin.Essentials;
 
     class ApiWrapper:IApiWrapper
     {
@@ -74,6 +73,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         public async Task<HttpResponseMessage> LoginUser(LoginRequest request)
         {
+            request.LoginType = "LOCKER";
             var jsonToSend = JsonConvert.SerializeObject(request);
             var result = await this._api.LoginUser(Constants.Headers.ContentType, jsonToSend);
             return result;
@@ -81,9 +81,7 @@ namespace Client_Mobile.Services
 
         public async Task<HttpResponseMessage> CheckPin(CheckPinRequest req)
         {
-            var token = "";
-            var vault = new PasswordVault();
-            vault.Retrieve(PreferencesEnum.Token, token);
+           
 
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
@@ -111,5 +109,12 @@ namespace Client_Mobile.Services
             var result = await this._api.SendRequestToLocker(Constants.Headers.ContentType, jsonToSend);
             return result;
         }
+
+        /// <inheritdoc />
+        public async Task<HttpResponseMessage> SendBackupBatteryNotification()
+        {
+            var result = await this._api.SendBackupBatteryNotification();
+            return result;
+        }
     }
-}
+    }

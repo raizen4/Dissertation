@@ -7,9 +7,13 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Client_Mobile.Views.PinPage"
              Title="{Binding Title}">
-  
-
-    <StackLayout>
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                 AnimationType="Animation4"
+                                 AnimationContentHeightRequest="100"
+                                 AnimationContentWidthRequest="100"
+                                 IsBusy="{Binding IsLoading}">
+        <primitives:RadBusyIndicator.Content>
+            <StackLayout>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50*"></RowDefinition>
@@ -57,4 +61,15 @@
             <Button HeightRequest="60" VerticalOptions="End" Grid.Row="2" Grid.Column="0" Text="Finish"></Button>
         </Grid>
     </StackLayout>
+    </primitives:RadBusyIndicator.Content>
+        <primitives:RadBusyIndicator.BusyContent>
+            <StackLayout  >
+                <Label HorizontalOptions="Center"
+                       Text="Working hard on it..."
+                       VerticalOptions="Center" />
+            </StackLayout>
+
+        </primitives:RadBusyIndicator.BusyContent>
+
+    </primitives:RadBusyIndicator>
 </ContentPage>

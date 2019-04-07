@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Client_Mobile.Helpers
+namespace LockerApp.Helpers
 {
     using System.CodeDom.Compiler;
     using System.Security.Cryptography;

@@ -10,7 +10,6 @@ const bcrypt = require('bcrypt');
 const constants = require('../Constants');
 const User = require('../DbSchemas/UserSchema');
 const IotHub = require('../IotHub/hub');
-const responses = require('../serviceModels/Responses');
 const helpers = require('../Helpers/SmsAndEmailGenerator');
 
 async function register(userToRegister) {
@@ -105,6 +104,36 @@ async function login(email, password) {
     return null;
   }
   return null;
+}
+
+async function LoginLocker(email, password) {
+  try {
+    const foundUser = await User.findOne({ Email: email });
+    if (foundUser != null) {
+      const matchPass = foundUser.comparePassword(password);
+      if (matchPass) {
+        foundUser.HashedPass = null;
+        const token = await signToken(foundUser);
+        const userToSendBack = {
+          DeviceId: foundUser.AccountLocker.DeviceId,
+          ConnectionString: foundUser.AccountLocker.ConnectionString,
+          SymmetricKey: foundUser.AccountLocker.SymmetricKey,
+          Token: token,
+        };
+        return userToSendBack;
+      }
+    }
+  } catch (err) {
+    return null;
+  }
+  return null;
+}
+async function SendPowerCutNotification(email, lockerId) {
+  try {
+    await helpers.SendPowerCutNotificationToOwner(email, lockerId);
+  } catch (exception) {
+    console.log(exception);
+  }
 }
 
 // eslint-disable-next-line complexity
@@ -265,4 +294,6 @@ module.exports = {
   GetLockerHistory,
   CheckPin,
   RegisterLocker,
+  LoginLocker,
+  SendPowerCutNotification,
 };

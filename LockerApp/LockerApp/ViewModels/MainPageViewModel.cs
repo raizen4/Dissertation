@@ -16,67 +16,96 @@ using Windows.UI.Xaml;
 
 namespace LockerApp.ViewModels
 {
-    class MainPageViewModel : ViewModelBase
+    using Windows.UI.Popups;
+    using MvvmDialogs;
+    using Prism.Commands;
+
+    class MainPageViewModel :ViewModelBase
     {
-        private readonly INavigationService navService;
-        private readonly IFacade facade;
-        private string pin;
-        private int lockerOpenedCounter;
+        private readonly INavigationService _navService;
+        private readonly IFacade _facade;
+        private  IDialogService _dialogService;
+        private readonly IGpioController _gpioController;
+        private string _pin;
+        private int _lockerOpenedCounter;
         private static DeviceClient _deviceClient;
-        private DispatcherTimer timer;
+        private DispatcherTimer _timer;
+        private bool _resetTimer;
 
-
-        public string Pin { get; set; }
-        public MainPageViewModel(INavigationService navigationService, IFacade facade) : base(navigationService,facade)
+        public DelegateCommand SendPinForCheckingCommand { get; set; }
+        public string Pin
         {
-            this.navService = navigationService;
-            this.facade = facade;
-            this.IsLoading = false;
-            this.lockerOpenedCounter = 30;
+            get => this._pin;
+            set => this._pin = value;
+        }
+
+        public MainPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService, IGpioController gpioController) : base(navigationService,facade)
+        {
+            this._gpioController = gpioController;
+            this._dialogService = dialogService;
+            this._navService = navigationService;
+            this._facade = facade;
+            Pin = "";
+            this._resetTimer = false;
+            IsLoading = false;
+            this._lockerOpenedCounter = 30;
+            SendPinForCheckingCommand=new DelegateCommand(SendPinForVerification);
+
         }
 
 
-        public async void SendPinForVerification(string pinInserted)
+        public async void SendPinForVerification()
         {
-            if (pinInserted.Length < 6)
+            if (Pin.Length < 6)
             {
-                var showDialogResult=await this.DisplayDialog("Error", "The pin must be 6 digits long", 1, "OK",null);
+                await this._dialogService.ShowMessageDialogAsync("The pin must be at least 6 digits. Please try again","Error", new[]
+                {
+                    new UICommand { Label = "OK" },
+                    
+                });
+                Pin = "";
                 return;
             }
             var pinToCheck = new Pin()
             {
-                Code = pinInserted
+                Code = Pin
             };
+            if (Pin == "OPTION")
+            {
+                this._navService.Navigate(Constants.NavigationPages.InfoPage, null);
+                return;
+            }
             try
             {
 
-               var result= await this.facade.CheckPin(pinToCheck);
+               var result= await this._facade.CheckPin(pinToCheck);
                 if (result.IsSuccessful)
                 {
                     var resultedPin = result.Content;
                     if (resultedPin.PickerType == PickerTypeEnum.Courier)
                     {
-                        var actionResult = await this.facade.AddNewActionForLocker(LockerActionRequestsEnum.Delivered, resultedPin);
+                        var actionResult = await this._facade.AddNewActionForLocker(LockerActionRequestsEnum.Delivered, resultedPin);
                         if (!actionResult.IsSuccessful)
                         {
-                            this.SendPinForVerification(pinInserted);
+                            SendPinForVerification();
                         }
                         else
                         {
-                            this.navService.Navigate(Constants.NavigationPages.PinAcceptedPage,null);
+                            this._navService.Navigate(Constants.NavigationPages.PinAcceptedPage,null);
                         }
 
                     }
                     else if (resultedPin.PickerType== PickerTypeEnum.Friend)
                     {
-                        var actionResult = await this.facade.AddNewActionForLocker(LockerActionRequestsEnum.PickedUp, resultedPin);
+                        var actionResult = await this._facade.AddNewActionForLocker(LockerActionRequestsEnum.PickedUp, resultedPin);
                         if (!actionResult.IsSuccessful)
                         {
-                            this.SendPinForVerification(pinInserted);
+                            SendPinForVerification();
                         }
                         else
                         {
-                            this.navService.Navigate(Constants.NavigationPages.PinAcceptedPage, null);
+
+                            this._navService.Navigate(Constants.NavigationPages.PinAcceptedPage, null);
                         }
                     }
                 }
@@ -88,23 +117,24 @@ namespace LockerApp.ViewModels
         }
         void InitializeTimer()
         {
-            timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 1);
-            timer.Tick += TimerTick;
+            this._timer = new DispatcherTimer();
+            this._timer.Interval = new TimeSpan(0, 0, 1);
+            this._timer.Tick += TimerTick;
+            StartTimer();
         }
         void StartTimer()
         {
-            timer.Start();
+            this._timer.Start();
         }
         void TimerTick(object sender, object e)
         {
-            this.lockerOpenedCounter--;
-           
-            if (lockerOpenedCounter == 0)
+            this._lockerOpenedCounter--;
+
+            if (this._lockerOpenedCounter == 0 || this._resetTimer) 
             {
-                timer.Stop();
-                this.CloseLocker();
-                this.lockerOpenedCounter = 30;
+                this._timer.Stop();
+                this._gpioController.CloseLocker();
+                this._lockerOpenedCounter = 30;
                
             }
 
@@ -114,24 +144,31 @@ namespace LockerApp.ViewModels
         private async void ListenForMessages(int poolingRate)
         {
             var shouldClose = false;
-            var shouldOpen = false;
             while (true)
             {
-                var newMesasgeReceived = await this.facade.GetPendingMessagesFromHub();
+                var newMesasgeReceived = await this._facade.GetPendingMessagesFromHub();
                 if (newMesasgeReceived != null)
                 {
                     var stringMessage = newMesasgeReceived.ToString();
                     var deserializedMessage = JsonConvert.DeserializeObject<LockerMessage>(stringMessage);
-                    if (deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppClose ||
+                    if (deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppClose
+                        ||
                         deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppOpen)
                     {
                         if(deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppOpen)
                         {
                             deserializedMessage.ActionResult = LockerActionRequestsEnum.UserAppOpened;
+                            deserializedMessage.TargetedDeviceId = deserializedMessage.SenderDeviceId;
+                            deserializedMessage.SenderDeviceId = Constants.UserLocker.DeviceId;
+
+
                         }
                         else
                         {
                             deserializedMessage.ActionResult = LockerActionRequestsEnum.UserAppClosed;
+                            deserializedMessage.TargetedDeviceId = deserializedMessage.SenderDeviceId;
+                            deserializedMessage.SenderDeviceId = Constants.UserLocker.DeviceId;
+                            shouldClose = true;
                         }
                         
                         deserializedMessage.HasBeenSuccessful = true;
@@ -144,11 +181,12 @@ namespace LockerApp.ViewModels
                             await _deviceClient.SendEventAsync(message);
                             if (shouldClose)
                             {
-                                this.CloseLocker();
+                                this._gpioController.CloseLocker();
                             }
                             else
                             {
-                                this.OpenLocker();
+                                this._gpioController.OpenLocker();
+                                InitializeTimer();
                             }
 
                         }
@@ -163,8 +201,6 @@ namespace LockerApp.ViewModels
                     Thread.Sleep(poolingRate);
                 }
             }
-
-
 
         }
     }

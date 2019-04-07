@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Client_Mobile.Helpers;
+using LockerApp.Helpers;
 using LockerApp.Enums;
 using LockerApp.Interfaces;
 using Prism.Commands;
@@ -13,107 +13,136 @@ using Windows.Storage;
 
 namespace LockerApp.ViewModels
 {
-    class StartPageViewModel : ViewModelBase
-    {
-        private readonly IFacade facade;
-        private readonly INavigationService navService;
-        private PasswordVault vault;
-        public DelegateCommand LoginCommand { get; set; }
-        private string password;
-        private string username;
-        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    using System.ComponentModel;
+    using Windows.UI.Popups;
+    using MvvmDialogs;
 
+    public class StartPageViewModel :ViewModelBase
+    {
+        private readonly IFacade _facade;
+        private readonly INavigationService _navService;
+        private readonly IDialogService _dialogService;
+        private PasswordVault _vault;
+        private string _password;
+        private string _username;
+      //  private IDialogService dialogService;
+        ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
+
+
+
+        public DelegateCommand LoginCommand { get; set; }
         public string Password {
-            get => this.password;
-            set => this.password = value;
+            get => this._password;
+            set => this._password = value;
         }
         public  string Username {
-            get => this.username;
-            set => this.username = value;
+            get => this._username;
+            set => this._username = value;
         }
 
-           public StartPageViewModel(INavigationService navigationService, IFacade facade) : base(navigationService, facade)
-        {
-            this.facade = facade;
-            this.navService = navigationService;
-            this.vault = new PasswordVault();
-            this.LoginCommand = new DelegateCommand(async()=> await LoginUser(Password,Username));
-            var savedCredentials = vault.RetrieveAll();
+           public StartPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService) : base(navigationService,facade)
+           {
+           this._dialogService = dialogService;
+            this._facade = facade;
+            this._navService = navigationService;
+            this._vault = new PasswordVault();
+            LoginCommand = new DelegateCommand(async()=> await LoginUser(Password,Username));
+            var savedCredentials = this._vault.RetrieveAll();
             if (savedCredentials.Count != 0)
             {
                 //check first if we already have the credetials stored, 
                 //if yes make sure you change the successfully logged in message
                 var credetialsRetrieved = savedCredentials[0];
-                this.Password = credetialsRetrieved.Password;
-                this.Username = credetialsRetrieved.UserName;
-                ApplicationDataCompositeValue composite = (ApplicationDataCompositeValue)localSettings.Values[PreferencesEnum.LockerData];
-                if (composite !=null)
-                {
-                    Constants.DeviceId = composite[PreferencesEnum.LockerDeviceName].ToString();
-                    Constants.IotHubConnectionString = composite[PreferencesEnum.LockerIotHubConnectionString].ToString();
-                }
-                this.LoginUser(Password, Username);
+                Password = credetialsRetrieved.Password;
+                Username = credetialsRetrieved.UserName;
+              
+                LoginUser(Password, Username);
 
             }
+          
 
         }
 
-        private async Task InitializeLocker(string password, string username)
+        private async Task<bool> InitializeLocker(string pass, string user)
         {
            var lockerId ="Locker"+PinGenerator.GeneratePin();
-           var lockerInit = await this.facade.AddNewLocker(lockerId);
+           var lockerInit = await this._facade.AddNewLocker(lockerId);
             if (lockerInit.IsSuccessful)
             {
-                var lockerData = lockerInit.Content;
-                ApplicationDataCompositeValue composite =new ApplicationDataCompositeValue();
-                composite[PreferencesEnum.LockerDeviceName] = lockerData.DeviceId;
-                composite[PreferencesEnum.LockerIotHubConnectionString] = lockerData.ConnectionString;
-                composite[PreferencesEnum.LockerSymmetricKey] = lockerData.SymmetricKey;
-                localSettings.Values[PreferencesEnum.LockerData] = composite;
-                await this.LoginUser(password, username);
+                return true;
             }
-            else
-            {
-                var dialogResult = this.DisplayDialog("Error", "Couldn't register locker. Please check your internet conenction", 1, "OK", null);
-                return;
-            }
+                await this._dialogService.ShowMessageDialogAsync("Couldn't register locker. Please try again", "Error", new[]
+                {
+                    new UICommand { Label = "OK" },
+
+                });
+            return false;
+
         }
 
-        public async Task LoginUser(string pass, string username)
+        public async Task LoginUser(string pass, string user)
         {
-          
-          
-            if (pass.Length == 0 || username.Length == 0)
+            if (this._vault.RetrieveAll().Count == 0)
             {
-               var dialogResult= this.DisplayDialog("Error", "All fields are mandatory", 1, "OK",null);
+                var result=await InitializeLocker(pass, user);
+                if (!result)
+                {
+                    return;
+                }
+            }
+
+                if (pass.Length == 0 || user.Length == 0)
+            {
+                await this._dialogService.ShowMessageDialogAsync("All fields are mandatory", "Error", new[]
+                {
+                    new UICommand { Label = "OK" },
+
+                });
+              
                 return;
             }
-            var loginResult = await this.facade.LoginUser(pass, username);
+            var loginResult = await this._facade.LoginUser(pass, user);
             if (loginResult.IsSuccessful)
             {
-                var savedCredentials = vault.RetrieveAll();
+                var savedCredentials = this._vault.RetrieveAll();
                 if (savedCredentials.Count != 0)
                 {
                     Constants.Token = loginResult.Content.Token;
-                    var dialogResult = this.DisplayDialog("Successful", " Auto Logging has been successful", 1, "OK", null);
-                    navService.Navigate(Constants.NavigationPages.MainPage, null);
+                    Constants.UserLocker = loginResult.Content;
+                    await this._dialogService.ShowMessageDialogAsync("Auto Logging has been successful", "Successful", new[]
+                    {
+                        new UICommand { Label = "OK" },
+
+                    });
+                  
+                    this._navService.Navigate(Constants.NavigationPages.MainPage, null);
                 }
                 else
                 {
                     PasswordCredential credentials = new PasswordCredential();
                     credentials.Resource = PreferencesEnum.AppCredentials;
                     credentials.Password = pass;
-                    credentials.UserName = username;
+                    credentials.UserName = user;
                     Constants.Token = loginResult.Content.Token;
-                    vault.Add(credentials);
-                    var dialogResult = this.DisplayDialog("Linked", "The account has been linked to this locker.", 1, "OK", null);
-                    navService.Navigate(Constants.NavigationPages.MainPage, null);
+                    this._vault.Add(credentials);
+                    await this._dialogService.ShowMessageDialogAsync("The account has been linked to this locker.", "Linked", new[]
+                    {
+                        new UICommand { Label = "OK" },
+
+                    });
+                   
+                    this._navService.Navigate(Constants.NavigationPages.MainPage, null);
                 }
                
             }
             else
             {
-                var dialogResult = this.DisplayDialog("Unsuccessful login", "Login failed. Please check the credentials and try again", 1, "OK", null);
+                await this._dialogService.ShowMessageDialogAsync("Login failed. Please check the credentials and try again", "Unsuccessful login", new[]
+                {
+                    new UICommand { Label = "OK" },
+
+                });
+               
 
             }
 

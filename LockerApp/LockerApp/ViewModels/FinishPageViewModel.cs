@@ -10,66 +10,68 @@ using Windows.UI.Xaml;
 
 namespace LockerApp.ViewModels
 {
+    using MvvmDialogs;
+
     class FinishPageViewModel : ViewModelBase
     {
 
         public DelegateCommand FinishCommand { get; set; }
         public bool ShowGoodbayMessage
         {
-            get => this.showGoodbayMessage;
-            set => this.showGoodbayMessage = value;
+            get => this._showGoodbayMessage;
+            set => this._showGoodbayMessage = value;
         }
         public int Counter
         {
-            get => this.counter;
-            set => this.counter = value;
+            get => this._counter;
+            set => this._counter = value;
         }
 
-        private bool showGoodbayMessage;
-        private int counter;
-        private DispatcherTimer timer;
-        private IFacade facade;
-        private INavigationService navService;
-
-    
+        private bool _showGoodbayMessage;
+        private int _counter;
+        private DispatcherTimer _timer;
+        private INavigationService _navService;
+        private IDialogService _dialogService;
 
 
 
-        public FinishPageViewModel(INavigationService navigationService, IFacade facade) : base(navigationService, facade)
+
+
+        public FinishPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService ) : base(navigationService, facade)
         {
-            this.navService = navigationService;
-            this.facade = facade;
-            this.FinishCommand = new DelegateCommand(() =>this.navService.Navigate(Constants.NavigationPages.MainPage,null));
-            this.OpenLocker();
-            this.Counter = 60;
-            this.InitializeTimer();
-            this.StartTimer();
+            this._navService = navigationService;
+           this._dialogService = dialogService;
+            FinishCommand = new DelegateCommand(() =>this._navService.Navigate(Constants.NavigationPages.MainPage,null));
+            OpenLocker();
+            Counter = 60;
+            InitializeTimer();
+            StartTimer();
           
         }
 
         void InitializeTimer()
         {
-            timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 1);
-            timer.Tick += TimerTick;
+            this._timer = new DispatcherTimer();
+            this._timer.Interval = new TimeSpan(0, 0, 1);
+            this._timer.Tick += TimerTick;
         }
         void StartTimer()
         {
-            timer.Start();
+            this._timer.Start();
         }
         void TimerTick(object sender, object e)
         {
             Counter--;
             if (Counter == 5)
             {
-                this.ShowGoodbayMessage = true;
+                ShowGoodbayMessage = true;
             }
 
             if (Counter == 0)
             {
-                timer.Stop();
-                this.CloseLocker();
-                this.FinishCommand.Execute();
+                this._timer.Stop();
+                CloseLocker();
+                FinishCommand.Execute();
             }
 
 

@@ -11,29 +11,40 @@ namespace LockerApp.ViewModels
 {
     class LockerInfoPageViewModel : ViewModelBase
     {
-        private INavigationService navService;
-        private IFacade facade;
-        private string lockerId;
-        private string lockerConnectionString;
+        private INavigationService _navService;
+        private IFacade _facade;
+        private string _lockerId;
+        private string _lockerConnectionString;
 
 
         public string LockerId
         {
-            get => this.lockerId;
-            set => this.lockerId = value;
+            get => this._lockerId;
+            set => this._lockerId = value;
         }
 
         public string LockerConnectionString
         {
-            get => this.lockerConnectionString;
-            set => this.lockerConnectionString = value;
+            get => this._lockerConnectionString;
+            set => this._lockerConnectionString = value;
         }
 
         public DelegateCommand GoBackToMainMenu { get; set; }
 
-        public LockerInfoPageViewModel(INavigationService navigationService, IFacade facade) : base(navigationService, facade)
+        public LockerInfoPageViewModel(INavigationService navigationService, IFacade facade ) : base(navigationService, facade)
         {
-            this.GoBackToMainMenu = new DelegateCommand(()=>navService.Navigate(Constants.NavigationPages.MainPage,null));
+            try
+            {
+                LockerConnectionString = Constants.LockerConnectionString;
+                LockerId = Constants.UserLocker.DeviceId;
+            }
+            catch (Exception e)
+            {
+                LockerConnectionString = "Error";
+                LockerId = "Error";
+            }
+          
+            GoBackToMainMenu = new DelegateCommand(()=> this._navService.Navigate(Constants.NavigationPages.MainPage,null));
 
         }
     }

@@ -25,5 +25,10 @@ namespace LockerApp.Interfaces
 
         [Post("/UserApi/users/CheckPin")]
         Task<HttpResponseMessage> CheckPin([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] string body);
+
+
+
+        [Put("/UserApi/users/SendPowerCutNotification")]
+        Task<HttpResponseMessage> SendBackupBatteryNotification();
     }
 }

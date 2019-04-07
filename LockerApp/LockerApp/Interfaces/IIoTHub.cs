@@ -7,7 +7,7 @@ namespace LockerApp.Interfaces
 {
     using System.Threading.Tasks;
     using Enums;
-    using LockerApp.Services;
+    using Services;
     using Microsoft.Azure.Devices.Client;
     using Models;
 
