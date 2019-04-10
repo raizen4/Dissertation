@@ -11,10 +11,10 @@ namespace Client_Mobile
     {
         public static string IotHubConnectionString= "";
         public static User CurrentLoggedInUser = null;
-        public static  string WebApiEndpoint="http://10.0.2.2:4000";
+        public static  string WebApiEndpoint="http://192.168.88.30:4000";
 
-        public static string DeviceName { get; internal set; }
-        public static string Token { get; internal set; }
+        public static string DeviceName { get;  set; }
+        public static string Token { get;  set; }
 
         public class Headers
         {

@@ -52,7 +52,7 @@
                 
             </StackLayout>
 
-            <Button Grid.Row="3" Grid.Column="0" Command="{Binding LogOutCommand}" Text="Log Out"></Button>
+            <Button Grid.Row="3" Grid.Column="0" Command="{Binding LogOut}" Text="Log Out"></Button>
 
         </Grid>
     </StackLayout>

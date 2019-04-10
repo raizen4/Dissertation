@@ -16,7 +16,7 @@ namespace Client_Mobile.Interfaces
         Task<bool> Lock();
         Task<bool> Unlock();
         Task<ResponseData<User>> LoginUser(string password, string email);
-        Task<ResponseData<CreatedUserInfo>> CreateUser(string email, string pass, string displayName, string phone);
+        Task<ResponseBase> CreateUser(string email, string pass, string displayName, string phone);
 
         Task<ResponseData<List<HistoryAction>>> GetDeliveryHistory();
 

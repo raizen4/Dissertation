@@ -32,20 +32,22 @@ namespace LockerApp.ViewModels
         private DispatcherTimer _timer;
         private INavigationService _navService;
         private IDialogService _dialogService;
+        private IGpioController controller;
 
 
 
 
 
-        public FinishPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService ) : base(navigationService, facade)
+        public FinishPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService, IGpioController gpioController ) : base(navigationService, facade)
         {
             this._navService = navigationService;
-           this._dialogService = dialogService;
-            FinishCommand = new DelegateCommand(() =>this._navService.Navigate(Constants.NavigationPages.MainPage,null));
-            OpenLocker();
-            Counter = 60;
-            InitializeTimer();
-            StartTimer();
+            this._dialogService = dialogService;
+            this.FinishCommand = new DelegateCommand(() =>this._navService.Navigate(Constants.NavigationPages.MainPage,null));
+            this.controller = gpioController;
+            this.controller.OpenLocker();
+            this.Counter = 60;
+            this.InitializeTimer();
+            this.StartTimer();
           
         }
 
@@ -70,7 +72,7 @@ namespace LockerApp.ViewModels
             if (Counter == 0)
             {
                 this._timer.Stop();
-                CloseLocker();
+                this.controller.CloseLocker();
                 FinishCommand.Execute();
             }
 

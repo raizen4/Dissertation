@@ -26,13 +26,16 @@ namespace Client_Mobile.ViewModels
         private readonly IPageDialogService _dialogService;
         private readonly INavigationService _navService;
         private int _poolingRate = 10000;
+
+        public string DisplayName => Constants.CurrentLoggedInUser.DisplayName;
         public DelegateCommand LockCommand { get; set; }
         public DelegateCommand UnlockCommand { get; set; }
         public DelegateCommand NavigateToActivityHistory { get; set; }
         public DelegateCommand NavigateToPinGenerator { get; set; }
         public DelegateCommand NavigateToCurrentPins { get; set; }
+        public DelegateCommand LogOut{ get; set; }
 
-     
+
         public MainPageViewModel(INavigationService navigationService, IFacade facade, IPageDialogService dialogService)
             : base(navigationService,facade,dialogService)
         {
@@ -45,7 +48,8 @@ namespace Client_Mobile.ViewModels
             NavigateToActivityHistory=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.ActivityHistoryPage)));
             NavigateToPinGenerator = new DelegateCommand(async()=>await SendNewPin());
             NavigateToCurrentPins=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.CurrentPinsPage)));
-          //  this.ListenForMessages(this._poolingRate);
+            LogOut = new DelegateCommand(async () => await this.OnBackButtonPressed());
+            this.ListenForMessages(this._poolingRate);
         }
 
 
@@ -110,13 +114,32 @@ namespace Client_Mobile.ViewModels
                 navParams.Add(LockerAccessEnum.Friend.ToString(), false);
                 await this._navService.NavigateAsync(nameof(Views.PinPage), navParams);
             }
-
-            navParams.Add(LockerAccessEnum.Courier.ToString(), false);
-            navParams.Add(LockerAccessEnum.Friend.ToString(), true);
-            await this._navService.NavigateAsync(nameof(Views.PinPage),navParams);
+            else
+            {
+                navParams.Add(LockerAccessEnum.Courier.ToString(), false);
+                navParams.Add(LockerAccessEnum.Friend.ToString(), true);
+                await this._navService.NavigateAsync(nameof(Views.PinPage), navParams);
+            }
+          
 
         }
 
-  
+        public async Task<bool> OnBackButtonPressed()
+        {
+            var dialogResult = await this._dialogService.DisplayAlertAsync("Warning",
+                "You will now be logged out. Do you agree", "OK", "Cancel");
+            if (dialogResult)
+            {
+                Constants.CurrentLoggedInUser = null;
+                Constants.Token = null;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
     }
 }

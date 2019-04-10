@@ -2,12 +2,13 @@
 const responses = require('../serviceModels/Responses');
 const constants = require('../Constants');
 
-async function GenerateEmailForPicker(email) {
+async function GenerateEmailForPicker(email, pinCode) {
   if (email != null) {
-    const uri = 'http://localhost:4001/EmailApi/emails/GenerateEmailForPicker';
+    const uri = constants.ApiEndpoints.Email.GenerateEmailForPicker;
     const httpVerb = 'POST';
     const body = {
       Email: email,
+      PinCode: pinCode,
     };
     try {
       await responses.RequestServiceMethod(body, uri, httpVerb);
@@ -16,12 +17,16 @@ async function GenerateEmailForPicker(email) {
     }
   }
 }
-async function GenerateSms(phone) {
+async function GenerateSms(phone, action, deliveryCompany, pickerName, pin) {
   if (phone != null) {
-    const uri = constants.ApiEndpoints.Sms;
+    const uri = constants.ApiEndpoints.GenerateSms;
     const httpVerb = 'POST';
     const body = {
       Phone: phone,
+      Action: action,
+      DeliveryCompany: deliveryCompany,
+      PickerName: pickerName,
+      PinCode: pin,
     };
     try {
       await responses.RequestServiceMethod(body, uri, httpVerb);
@@ -32,7 +37,7 @@ async function GenerateSms(phone) {
 }
 async function GenerateConfirmPinCreation(ownerEmail, pinCode) {
   if (ownerEmail != null) {
-    const uri = 'http://localhost:4001/EmailApi/emails/GenerateConfirmPinCreation';
+    const uri = constants.ApiEndpoints.Email.EmailGenerateConfirmPinCreation;
     const httpVerb = 'POST';
     const body = {
       Email: ownerEmail,
@@ -63,10 +68,10 @@ async function SendPowerCutNotificationToOwner(ownerEmail, lockerId) {
 }
 
 async function LockerActionSucceded(ownerEmail, action, pin) {
-  const emailUri = 'http://localhost:4001/EmailApi/emails/LockerActionSucceded';
+  const emailUri = constants.ApiEndpoints.Email.LockerActionSucceded;
   const httpVerb = 'POST';
   const emailServiceBody = {
-    OwnerEmail: ownerEmail,
+    Email: ownerEmail,
     Action: action,
     PinCode: pin,
   };

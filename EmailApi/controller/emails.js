@@ -18,10 +18,10 @@ router.post('/LockerActionSucceded', async (req, res) => {
       },
     });
     // const parsedBody = JSON.parse(req.body);
-    const receiver = req.OwnerEmail;
+    const receiver = req.body.Email;
     const sender = 'bboldurdissertation@gmail.com';
-    const actionRequired = req.Action;
-    const pinUsed = req.PinCode;
+    const actionRequired = req.body.Action;
+    const pinUsed = req.body.PinCode;
     let textMessage;
     let textTitle;
     switch (actionRequired) {
@@ -82,9 +82,9 @@ router.post('/GenerateConfirmPinCreation', async (req, res) => {
       },
     });
     // const parsedBody = JSON.parse(req.body);
-    const receiver = req.Email;
+    const receiver = req.body.Email;
     const sender = 'bboldurdissertation@gmail.com';
-    const pinUsed = req.PinCode;
+    const pinUsed = req.body.PinCode;
     const textTitle = 'Pin Created';
     const textMessage = `The following pin has been created: ${pinUsed} .
        You can see it in the current pins section of the mobile app`;
@@ -130,16 +130,16 @@ router.post('/GenerateEmailForPicker', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'bboldurdissertation@gmail.com',
-        pass: 'Bogdan.95',
+        user: 'bboldurdissertation@gmail.com'.trim(),
+        pass: 'Bogdan.95'.trim(),
       },
     });
     // const parsedBody = JSON.parse(req.body);
-    const receiver = req.Email;
+    const receiver = req.body.Email;
     const sender = 'bboldurdissertation@gmail.com';
-    const pinUsed = req.Pin.Code;
+    const pinUsed = req.body.PinCode;
     const textTitle = 'Pin Created';
-    const textMessage = `The following pin has been created for you to be able to access to content of the locker. The pin is the following${pinUsed}`;
+    const textMessage = `The following pin has been created for you to be able to access to content of the locker. The pin is the following ${pinUsed}`;
 
     // setup email data with unicode symbols
     const mailOptions = {

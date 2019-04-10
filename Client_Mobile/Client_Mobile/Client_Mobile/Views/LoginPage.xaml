@@ -5,7 +5,6 @@
              xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="Client_Mobile.Views.LoginPage"
-             BackgroundImage="bg.jpg"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Help"></ToolbarItem>

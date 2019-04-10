@@ -35,7 +35,7 @@ namespace Client_Mobile.Services
         public async Task<bool> Lock()
         {
            
-            var result = await this._iotHub.Lock("121321", LockerActionEnum.UserAppClose);
+            var result = await this._iotHub.Lock(Constants.CurrentLoggedInUser.LockerId, LockerActionEnum.UserAppClose);
             if (result)
             {
                 return true;
@@ -50,7 +50,7 @@ namespace Client_Mobile.Services
         public async Task<bool> Unlock()
         {
           
-                var result = await this._iotHub.Unlock("121321", LockerActionEnum.UserAppOpen);
+                var result = await this._iotHub.Unlock(Constants.CurrentLoggedInUser.LockerId, LockerActionEnum.UserAppOpen);
                 if (result)
                 {
                     return true;
@@ -97,7 +97,7 @@ namespace Client_Mobile.Services
 
             var responseData = new ResponseBase()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.AddPinForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
@@ -106,28 +106,28 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    if (!deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     return responseData;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     return responseData;
                 }
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }
@@ -142,7 +142,7 @@ namespace Client_Mobile.Services
 
             var responseData = new ResponseBase()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.RemovePinForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
@@ -151,28 +151,28 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    if (!result.IsSuccessStatusCode || !deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     return responseData;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     return responseData;
                 }
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }
@@ -187,7 +187,7 @@ namespace Client_Mobile.Services
 
             var responseData = new ResponseBase()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.AddNewActionForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
@@ -196,28 +196,28 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    if (!result.IsSuccessStatusCode || !deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     return responseData;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     return responseData;
                 }
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }
@@ -232,7 +232,7 @@ namespace Client_Mobile.Services
             newLoginRequest.Email = email;
             var responseData = new ResponseData<User>
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
 
             var result = await this._apiWrapper.LoginUser(newLoginRequest);
@@ -242,15 +242,15 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseData<User>>(content);
-                    if (deserializedContent.IsSuccessful == false)
+                    if (deserializedContent.HasBeenSuccessful == false)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = deserializedContent.Error;
                         responseData.Content = null;
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     responseData.Content = deserializedContent.Content;
                     return responseData;
@@ -258,7 +258,7 @@ namespace Client_Mobile.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     responseData.Content = null;
                     return responseData;
@@ -267,7 +267,7 @@ namespace Client_Mobile.Services
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal server error";
                 responseData.Content = null;
                 return responseData;
@@ -279,7 +279,7 @@ namespace Client_Mobile.Services
 
 
         /// <inheritdoc />
-        public async Task<ResponseData<CreatedUserInfo>> CreateUser(string email, string pass, string displayName, string phone)
+        public async Task<ResponseBase> CreateUser(string email, string pass, string displayName, string phone)
         {
            var request= new RegisterRequest();
             request.DisplayName = displayName;
@@ -288,9 +288,9 @@ namespace Client_Mobile.Services
             request.Phone = phone;
             request.DeviceId = "DeviceMobile" + PinGenerator.GeneratePin();
 
-            var responseData = new ResponseData<CreatedUserInfo>()
+            var responseData = new ResponseBase()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.CreateUser(request);
             string content = await result.Content.ReadAsStringAsync();
@@ -298,33 +298,30 @@ namespace Client_Mobile.Services
             {
                 try
                 {
-                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<CreatedUserInfo>>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
+                    if (!deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
-                        responseData.Content = null;
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
-                    responseData.Content = deserializedContent.Content;
 
                     return responseData;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
-                    responseData.Content = null;
                     return responseData;
                 }
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }
@@ -338,7 +335,7 @@ namespace Client_Mobile.Services
         {
             var responseData = new ResponseData<List<HistoryAction>>
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
 
             var result = await this._apiWrapper.GetDeliveryHistory();
@@ -348,15 +345,15 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseData<List<HistoryAction>>>(content);
-                    if (deserializedContent.IsSuccessful == false)
+                    if (deserializedContent.HasBeenSuccessful == false)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = deserializedContent.Error;
                         responseData.Content = null;
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     responseData.Content = deserializedContent.Content;
                     return responseData;
@@ -364,7 +361,7 @@ namespace Client_Mobile.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     responseData.Content = null;
                     return responseData;
@@ -373,7 +370,7 @@ namespace Client_Mobile.Services
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal server error";
                 responseData.Content = null;
                 return responseData;
@@ -386,7 +383,7 @@ namespace Client_Mobile.Services
           
             var responseData = new ResponseData<List<Pin>>
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
 
             var result = await this._apiWrapper.GetActivePins();
@@ -396,15 +393,15 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseData<List<Pin>>>(content);
-                    if (deserializedContent.IsSuccessful == false)
+                    if (deserializedContent.HasBeenSuccessful == false)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = deserializedContent.Error;
                         responseData.Content = null;
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     responseData.Content = deserializedContent.Content;
                     return responseData;
@@ -412,7 +409,7 @@ namespace Client_Mobile.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     responseData.Content = null;
                     return responseData;
@@ -421,7 +418,7 @@ namespace Client_Mobile.Services
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal server error";
                 responseData.Content = null;
                 return responseData;

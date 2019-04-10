@@ -1,6 +1,6 @@
 ﻿using LockerApp.Models;
 
-namespace LockerApp.Interfaces
+namespace LockerApp.ServiceModels
 {
     public class CheckPinRequest
     {

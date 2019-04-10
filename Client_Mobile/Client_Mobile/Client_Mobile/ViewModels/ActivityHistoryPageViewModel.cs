@@ -43,7 +43,7 @@ namespace Client_Mobile.ViewModels
 		{
 			IsLoading = true;
 			var apiResult = await this._facade.GetDeliveryHistory();
-			if (apiResult.IsSuccessful)
+			if (apiResult.HasBeenSuccessful)
 			{
 				var observableList = new ObservableCollection<HistoryAction>(apiResult.Content);
                 HistoryActions = observableList;
@@ -55,16 +55,20 @@ namespace Client_Mobile.ViewModels
 
 				}
             }
-
-			var dialogResult=await this._dialogService.DisplayAlertAsync("Failed", " Something went wrong. Try again!", "OK", "Cancel");
-			if (dialogResult)
-			{
-				GetHistory();
-			}
 			else
 			{
-				await this._navService.NavigateAsync(nameof(Views.MainPage));
-			}
+				var dialogResult = await this._dialogService.DisplayAlertAsync("Failed", " Something went wrong. Try again!", "OK", "Cancel");
+				if (dialogResult)
+				{
+					GetHistory();
+				}
+				else
+				{
+					await this._navService.NavigateAsync(nameof(Views.MainPage));
+				}
+            }
+
+			
 			
         }
 

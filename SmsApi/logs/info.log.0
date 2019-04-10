@@ -1,1 +1,2 @@
-{"name":"UserApi","hostname":"DESKTOP-LF9LUSV","pid":10336,"level":30,"msg":"EmailApi listening at http://[::]:4004","time":"2018-12-06T13:10:23.070Z","v":0}
+{"name":"UserApi","hostname":"DESKTOP-LF9LUSV","pid":11000,"level":30,"msg":"SmsApi listening at http://192.168.88.30:4005","time":"2019-04-09T21:05:36.383Z","v":0}
+{"name":"UserApi","hostname":"DESKTOP-LF9LUSV","pid":6880,"level":30,"msg":"SmsApi listening at http://192.168.88.30:4005","time":"2019-04-09T23:22:46.818Z","v":0}

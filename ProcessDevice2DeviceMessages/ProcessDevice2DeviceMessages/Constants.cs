@@ -6,7 +6,7 @@ namespace ProcessDevice2DeviceMessages
 {
     public static class Constants
     {
-        public static string UserApiEndpoint = "HostName=Dissertation-IotHub.azure-devices.net;DeviceId=DeviceExplorerTwinSimulator;SharedAccessKey=KOGiKsfUuV+QTTAx3MKInhlBYKhiYYETQ66LXpyyzXw=";
+        public static string UserApiEndpoint ="192.168.88.30:4000";
 
         public class Headers
         {
@@ -16,6 +16,6 @@ namespace ProcessDevice2DeviceMessages
             public const string ContentType = "application/json";
         }
 
-        public static string IotHubConnectionString = "HostName=Dissertation-IotHub.azure-devices.net;DeviceId=DeviceExplorerTwinSimulator;SharedAccessKey=KOGiKsfUuV+QTTAx3MKInhlBYKhiYYETQ66LXpyyzXw=";
+        public static string IotHubConnectionString = "HostName=Dissertation-IotHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=OM1nr8BQfYrrUGk9gMEC8P29t0tqBIxgXGvTYgeUMT4=";
     }
 }

@@ -5,7 +5,10 @@ const BaseResponse = require('../serviceModels/BaseResponse');
 
 // eslint-disable-next-line consistent-return
 function checkToken(req, res, next) {
-  const parsedBody = req.body;
+  let parsedBody = req.body;
+  if (parsedBody === null || parsedBody === undefined) {
+    parsedBody = {};
+  }
   let token = req.headers.authorization; // Express headers are auto converted to lowercase
   if (token) {
     if (token.startsWith('Bearer ')) {
@@ -19,8 +22,11 @@ function checkToken(req, res, next) {
         notValidResp.HasBeenSuccessful = false;
         return res.send(notValidResp);
       }
+
+      parsedBody.User = {};
+      parsedBody.User = decoded;
       req.body = parsedBody;
-      req.body.User = decoded;
+
       return next();
     });
   } else {

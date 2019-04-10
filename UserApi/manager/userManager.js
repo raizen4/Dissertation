@@ -21,11 +21,11 @@ async function register(userToRegister) {
       return null;
     }
     newUser.IoTHubConnectionString = hubIdentityCreated.ConnectionString;
+    newUser.DeviceId = hubIdentityCreated.DeviceId;
     const responseFromDb = await newUser.save();
     if (responseFromDb != null) {
       const dataToSendBack = {
         IoTHubConnectionString: hubIdentityCreated.ConnectionString,
-        Key: hubIdentityCreated.SAK,
         DeviceName: hubIdentityCreated.DeviceId,
 
       };
@@ -48,12 +48,13 @@ async function RegisterLocker(userId, lockerId) {
 
     const newLocker = {
       DeviceId: hubIdentityCreated.DeviceId,
+      IotHubConnectionString: hubIdentityCreated.ConnectionString,
     };
     const result = await User.findOneAndUpdate(
       { _id: userId },
 
       {
-        $push: { AccountLocker: newLocker },
+        $set: { AccountLocker: newLocker },
       },
     );
     if (result != null) {
@@ -70,10 +71,24 @@ async function RegisterLocker(userId, lockerId) {
 async function signToken(user) {
   const jwtToken = await jwt.sign({
     DisplayName: user.DisplayName,
-    LockerId: user.AccountLocker.DeviceId,
+    LockerId: user.AccountLocker === undefined ? null : user.AccountLocker.DeviceId,
     DeviceId: user.DeviceId,
     Email: user.Email,
     Id: user._id,
+  },
+  constants.secret,
+  {
+    expiresIn: '23h',
+
+  });
+  return jwtToken;
+}
+
+async function signTokenLocker(locker) {
+  const jwtToken = await jwt.sign({
+    DeviceId: locker.DeviceId,
+    IotHubConnectionString: locker.IotHubConnectionString,
+    Id: locker._id,
   },
   constants.secret,
   {
@@ -92,7 +107,7 @@ async function login(email, password) {
         const token = await signToken(foundUser);
         const userToSendBack = {
           DisplayName: foundUser.DisplayName,
-          LockerId: foundUser.AccountLocker.DeviceId,
+          LockerId: foundUser.AccountLocker === undefined ? null : foundUser.AccountLocker.DeviceId,
           DeviceId: foundUser.DeviceId,
           IotHubConnectionString: foundUser.IoTHubConnectionString,
           Token: token,
@@ -113,11 +128,11 @@ async function LoginLocker(email, password) {
       const matchPass = foundUser.comparePassword(password);
       if (matchPass) {
         foundUser.HashedPass = null;
-        const token = await signToken(foundUser);
+        const token = await signTokenLocker(foundUser);
         const userToSendBack = {
-          DeviceId: foundUser.AccountLocker.DeviceId,
-          ConnectionString: foundUser.AccountLocker.ConnectionString,
-          SymmetricKey: foundUser.AccountLocker.SymmetricKey,
+          DeviceId: locker.DeviceId,
+          IotHubConnectionString: locker.IotHubConnectionString,
+          Id: locker._id,
           Token: token,
         };
         return userToSendBack;
@@ -139,21 +154,28 @@ async function SendPowerCutNotification(email, lockerId) {
 // eslint-disable-next-line complexity
 async function AddPin(user, pin) {
   try {
-    const result = await User.findOneAndUpdate(
-      { _id: user.Id },
+    const currentDate = new Date().toISOString()
+      .replace(/T/, ' ') // replace T with a space
+      .replace(/\..+/, '');
 
+    const normalizedPin = {
+      Code: pin.Code,
+      Created: currentDate,
+      UserType: pin.UserType,
+      ParcelContactDetails: pin.ParcelContactDetails,
+    };
+    const result = await User.findByIdAndUpdate(user.Id,
       {
-        $push: { 'AccountLocker.ActivePins': pin },
-      },
-    );
-    await helpers.GenerateConfirmPinCreation(user.Email);
+        $push: { 'AccountLocker.ActivePins': normalizedPin },
+      });
     if (result != null) {
-      const forWho = pin.PickerType;
+      await helpers.GenerateConfirmPinCreation(user.Email, normalizedPin.Code);
+      const forWho = normalizedPin.UserType;
       if (forWho === constants.PickerTypes.Friend) {
-        const phone = pin.ContactDetails.Phone;
-        const email = pin.ContactDetails.Email;
-        await helpers.GenerateEmail(email);
-        await helpers.GenerateSms(phone);
+        const phone = normalizedPin.ParcelContactDetails.Phone;
+        const email = normalizedPin.ParcelContactDetails.Email;
+        if (email !== undefined) { await helpers.GenerateEmailForPicker(email, normalizedPin.Code); }
+        if (phone !== undefined) { await helpers.GenerateSms(phone, constants.SmsActions.SendNewPinToUser, undefined, pin.ParcelContactDetails.PickerName, normalizedPin.Code); }
       }
       return true;
     }
@@ -205,6 +227,7 @@ async function CheckPin(userId, pinCode) {
 // action comes from locker. It has the following structure:
 /*
 {
+  user-from json token
   action:Close/Open/Delivery/PickingUp
   Pin:{
     Code:
@@ -219,7 +242,7 @@ async function CheckPin(userId, pinCode) {
 */
 async function AddNewActionForLocker(user, action, pin) {
   try {
-    const currentDate = Date().toISOString()
+    const currentDate = new Date().toISOString()
       .replace(/T/, ' ') // replace T with a space
       .replace(/\..+/, '');
     let newAction = '';
@@ -231,7 +254,7 @@ async function AddNewActionForLocker(user, action, pin) {
       newAction = `Closed at ${currentDate}`;
       break;
     case constants.Actions.Delivery:
-      newAction = `Delivery code used on ${currentDate} by ${pin.ContactDetails.DeliveryCompanyName} courier using pin ${pin.Code}`;
+      newAction = `Delivery on ${currentDate} by ${pin.ContactDetails.DeliveryCompanyName} courier using pin ${pin.Code}`;
       break;
     case constants.Actions.PickingUp:
       newAction = `Picked up code used on ${currentDate} using pin ${pin.Code} by ${pin.ContactDetails.PickerName}`;
@@ -245,8 +268,13 @@ async function AddNewActionForLocker(user, action, pin) {
         $push: { 'AccountLocker.History': newAction },
       },
     );
-    if (result != null && (action === constants.Actions.PickedUp || action === constants.Actions.Delivered)) {
+    if (result != null) {
       helpers.LockerActionSucceded(user.Email, action, pin);
+      if (action === constants.Actions.PickedUp) {
+        helpers.GenerateSms(user.Phone, constants.SmsActions.PickedUp, undefined, pin.ContactDetails.PickerName, pin.Code);
+      } else {
+        helpers.GenerateSms(user.Phone, constants.SmsActions.Delivered, pin.ContactDetails.DeliveryCompanyName, undefined, pin.Code);
+      }
       RemovePin(action.Pin.Code);
       return true;
     }
@@ -275,8 +303,8 @@ async function GetActivePins(userId) {
     const result = await User.findOne({ _id: userId });
 
     if (result != null) {
-      const history = result.ActivePins;
-      return history;
+      const history = result.AccountLocker.ActivePins;
+      return history.map(x => x.toObject());
     }
     return null;
   } catch (err) {

@@ -24,42 +24,9 @@ server.use(restify.plugins.gzipResponse());
 server.use(cors());
 
 
-const session = new smpp.Session({ host: '0.0.0.0', port: 9500 });
-let isConnected = false;
-session.on('connect', () => {
-  isConnected = true;
-
-  session.bind_transceiver({
-    system_id: 'USER_NAME',
-    password: 'USER_PASSWORD',
-    interface_version: 1,
-    system_type: '380666000600',
-    address_range: '+380666000600',
-    addr_ton: 1,
-    addr_npi: 1,
-  }, (pdu) => {
-    if (pdu.command_status === 0) {
-      console.log('Successfully bound');
-    }
-  });
-});
-
-session.on('close', () => {
-  console.log('smpp is now disconnected');
-
-  if (isConnected) {
-    session.connect(); // reconnect again
-  }
-});
-
-session.on('error', (error) => {
-  console.log('smpp error', error);
-  isConnected = false;
-});
-
 const smsController = require('./controller/sms');
 
-router.add('/UserApi/users', smsController);
+router.add('/SmsApi/sms', smsController);
 router.applyRoutes(server);
 
 server.on('after', restify.plugins.metrics({ server }, (err, metrics) => {
@@ -67,12 +34,12 @@ server.on('after', restify.plugins.metrics({ server }, (err, metrics) => {
 }));
 
 if (process.env.PORT != null) {
-  server.listen(process.env.PORT, () => {
+  server.listen(process.env.PORT, '192.168.88.30', () => {
     console.log('%s listening at process.end.port %s', server.name, server.url);
     logger.info('%s listening at %s', server.name, server.url);
   });
 } else {
-  server.listen(port, () => {
+  server.listen(port, '192.168.88.30', () => {
     console.log('%s listening at %s', server.name, server.url);
     logger.info('%s listening at %s', server.name, server.url);
   });

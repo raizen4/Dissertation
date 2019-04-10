@@ -22,10 +22,12 @@ namespace Client_Mobile.ViewModels
         private string _friendEmail;
         private string _friendSms;
         private string _pinCode;
+        private string _friendName;
 
         private readonly IFacade _facade;
         private readonly INavigationService _navService;
         private readonly IPageDialogService _dialogService;
+       
 
 
         public DelegateCommand FinishCommand { get; set; }
@@ -58,6 +60,12 @@ namespace Client_Mobile.ViewModels
             set => this._friendSms = value;
         }
 
+        public string FriendName
+        {
+            get => this._friendName;
+            set => this._friendName = value;
+        }
+
         public string FriendEmail
         {
             get => this._friendEmail;
@@ -75,6 +83,9 @@ namespace Client_Mobile.ViewModels
             : base(navigationService,facade, dialogService)
         {
             Title = "New Pin";
+            this.FriendName = "";
+            this.FriendEmail = "";
+            this.FriendSms = "";
             this._dialogService = dialogService;
             this._navService = navigationService;
             this._facade = facade;
@@ -86,6 +97,8 @@ namespace Client_Mobile.ViewModels
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
+            ForFriend = false;
+            ForCourier = false;
             ForCourier = parameters.GetValue<bool>(LockerAccessEnum.Courier.ToString());
             ForFriend = parameters.GetValue<bool>(LockerAccessEnum.Friend.ToString());
         }
@@ -104,21 +117,31 @@ namespace Client_Mobile.ViewModels
 
         private async Task FinishFriend()
         {
-            IsLoading = true;
+
+            if (FriendName.Length == 0)
+            {
+                await this._dialogService.DisplayAlertAsync("Error",
+                    "You must complete the name field", "OK");
+                return;
+            }
             if (FriendSms.Length == 0 && FriendEmail.Length == 0)
             {
                 await this._dialogService.DisplayAlertAsync("Error",
                     "Email and SMS fields are both empty. Please fill at least one and try again", "OK");
+                return;
             }
-            else
-            {
+         
+            
                 var newPin = new Pin();
                 newPin.Code = PinCode;
                 newPin.UserType = PinUserTypeEnum.Friend;
+                newPin.ParcelContactDetails=new ContactDetails();
+                newPin.ParcelContactDetails.PickerName = FriendName;
                 newPin.ParcelContactDetails.Email = FriendEmail;
                 newPin.ParcelContactDetails.Phone = FriendSms;
+                IsLoading = true;
                 var apiResult = await this._facade.AddPinForLocker(newPin);
-                if (apiResult.IsSuccessful)
+                if (apiResult.HasBeenSuccessful)
                 {
                     await this._dialogService.DisplayAlertAsync("Synced", "The pin has been synced with the servers",
                         "OK");
@@ -138,7 +161,7 @@ namespace Client_Mobile.ViewModels
                         return;
                     }
                 }
-            }
+            
         }
 
         private async Task FinishCourier()
@@ -148,7 +171,7 @@ namespace Client_Mobile.ViewModels
             newPin.Code = PinCode;
             newPin.UserType = PinUserTypeEnum.Courier;
             var apiResult = await this._facade.AddPinForLocker(newPin);
-            if (apiResult.IsSuccessful)
+            if (apiResult.HasBeenSuccessful)
             {
                 await this._dialogService.DisplayAlertAsync("Synced",
                     "The pin has been synced with the servers",
@@ -166,7 +189,7 @@ namespace Client_Mobile.ViewModels
                 }
                 else
                 {
-                    return;
+                    await this._navService.NavigateAsync(nameof(Views.MainPage));
                 }
             } 
         }

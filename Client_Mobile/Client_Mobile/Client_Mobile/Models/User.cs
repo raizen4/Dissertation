@@ -11,6 +11,15 @@ namespace Client_Mobile.Models
         private string _lockerId;
         private string _currentDeviceId;
         private string _iotHubConnectionString;
+        private string _token;
+
+
+        public string Token
+        {
+            get => this._token;
+            set => this._token = value;
+
+        }
         public string DisplayName
         {
             get => this._profileName;

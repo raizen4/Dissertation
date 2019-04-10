@@ -47,13 +47,6 @@ namespace LockerApp.ViewModels
 
       
 
-        public void OpenLocker()
-        {
-
-        }
-        public void CloseLocker()
-        {
-
-        }
+        
     }
 }

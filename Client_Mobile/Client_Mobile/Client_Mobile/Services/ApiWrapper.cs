@@ -80,7 +80,7 @@ namespace Client_Mobile.Services
         {
             var jsonToSend = JsonConvert.SerializeObject(request);
             var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
-            var result = await this._api.LoginUser(Constants.Headers.ContentType, content);
+            var result = await this._api.CreateUser(Constants.Headers.ContentType, content);
             return result;
         }
 
@@ -109,7 +109,7 @@ namespace Client_Mobile.Services
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonToSend = JsonConvert.SerializeObject(req);
             var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
-            var result = await this._api.LoginUser(Constants.Headers.ContentType, content);
+            var result = await this._api.AddPinForLocker(Constants.Headers.ContentType, content);
             return result;
         }
 
@@ -120,7 +120,7 @@ namespace Client_Mobile.Services
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonToSend = JsonConvert.SerializeObject(req);
             var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
-            var result = await this._api.LoginUser(Constants.Headers.ContentType, content);
+            var result = await this._api.RemovePinForLocker(Constants.Headers.ContentType, content);
             return result;
         }
 
@@ -131,7 +131,7 @@ namespace Client_Mobile.Services
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonToSend = JsonConvert.SerializeObject(req);
             var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
-            var result = await this._api.LoginUser(Constants.Headers.ContentType, content);
+            var result = await this._api.AddNewActionForLocker(Constants.Headers.ContentType, content);
             return result;
         }
     }

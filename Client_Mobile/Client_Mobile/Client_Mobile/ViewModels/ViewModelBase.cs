@@ -69,7 +69,7 @@ namespace Client_Mobile.ViewModels
                 {
                     var stringMessage = newMesasgeReceived.ToString();
                     var deserializedMessage = JsonConvert.DeserializeObject<ResponseBase>(stringMessage);
-                    if (deserializedMessage.IsSuccessful)
+                    if (deserializedMessage.HasBeenSuccessful)
                     {
                         await this._dialogService.DisplayAlertAsync("Successful", " Operation has been successful",
                            "OK");

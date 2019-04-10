@@ -12,7 +12,7 @@ namespace Client_Mobile.Models
         private PinUserTypeEnum _userType;
         private ContactDetails _parcelContactDetails;
         private bool isExtendedView = false;
-        private string _dateCreated;
+        private string _created;
 
 
         public string Code
@@ -39,10 +39,10 @@ namespace Client_Mobile.Models
             set => this.isExtendedView = value;
         }
 
-        public string DateCreated
+        public string Created
         {
-            get => this._dateCreated;
-            set => this._dateCreated = value;
+            get => this._created;
+            set => this._created = value;
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Client_Mobile.ViewModels
                 IsLoading = true;
                 var result = await this._facade.CreateUser(Email,Password,DisplayName,Phone);
                 IsLoading = false;
-                if (result.Error == null && result.IsSuccessful)
+                if (result.HasBeenSuccessful)
                 {
                     await this._dialogService.DisplayAlertAsync("Successful", "The registration has been successful", "OK");
                     await NavigationService.NavigateAsync(nameof(Views.LoginPage));

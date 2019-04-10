@@ -15,7 +15,7 @@ namespace LockerApp
         public static string LockerConnectionString =
             "";
         public static string Token ="";
-        public static  string WebApiEndpoint="http://10.2.2.0:4000";
+        public static  string WebApiEndpoint="http://192.168.88.30:4000";
         public class Headers
         {
             /// <summary>

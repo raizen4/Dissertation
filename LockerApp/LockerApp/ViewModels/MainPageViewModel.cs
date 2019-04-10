@@ -50,6 +50,7 @@ namespace LockerApp.ViewModels
             IsLoading = false;
             this._lockerOpenedCounter = 30;
             SendPinForCheckingCommand=new DelegateCommand(SendPinForVerification);
+            ListenForMessages(10000);
 
         }
 

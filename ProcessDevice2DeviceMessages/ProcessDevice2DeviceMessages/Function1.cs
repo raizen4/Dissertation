@@ -26,7 +26,7 @@ namespace ProcessDevice2DeviceMessages
         public static async Task Run([ServiceBusTrigger("d2dmessagesqueue",
             Connection ="MyServiceBusConnection" )]
             string myQueueItem,
-            [Inject] IFacade facade,
+           
             ILogger log)
         {
             try
@@ -55,16 +55,16 @@ namespace ProcessDevice2DeviceMessages
                     if (receivedMessage.Action == LockerActionEnum.Closed ||
                         receivedMessage.Action == LockerActionEnum.Opened)
                     {
-                        var apiResult = await facade.AddNewActionForLocker(LockerActionEnum.Opened, receivedMessage.Token);
-                        if (apiResult.IsSuccessful)
-                        {
-                            // send AMQP message
-                            var reSerializedMessage = JsonConvert.SerializeObject(receivedMessage);
-                            byte[] messageBytes = Encoding.UTF8.GetBytes(reSerializedMessage);
-                            var message = new Microsoft.Azure.Devices.Message(messageBytes);
-                            Console.WriteLine(message);
-                            await client.SendAsync(msgTo, message);
-                        }
+                       // var apiResult = await facade.AddNewActionForLocker(LockerActionEnum.Opened, receivedMessage.Token);
+                        //if (apiResult.IsSuccessful)
+                       // {
+                       //     // send AMQP message
+                       //     var reSerializedMessage = JsonConvert.SerializeObject(receivedMessage);
+                      //      byte[] messageBytes = Encoding.UTF8.GetBytes(reSerializedMessage);
+                      //      var message = new Microsoft.Azure.Devices.Message(messageBytes);
+                      //      Console.WriteLine(message);
+                      //      await client.SendAsync(msgTo, message);
+                     //   }
                     }
                 }
 

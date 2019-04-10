@@ -11,14 +11,25 @@ const Actions = {
   CheckConnection: 8,
 };
 
+const SmsActions = {
+  SendNewPinToUser: 1,
+  Delivered: 2,
+  PickedUp: 3,
+
+
+};
 const ApiEndpoints = {
-  Email: 'http://localhost:4003/EmailApi/SendEmail',
-  Sms: 'http://localhost:4004/SmsApi/SendSmss',
+  Email: {
+    EmailGenerateConfirmPinCreation: 'http://192.168.88.30:4004/EmailApi/emails/GenerateConfirmPinCreation',
+    GenerateEmailForPicker: 'http://192.168.88.30:4004/EmailApi/emails/GenerateEmailForPicker',
+    LockerActionSucceded: 'http://192.168.88.30:4004/EmailApi/emails/LockerActionSucceded',
+  },
+  GenerateSms: 'http://192.168.88.30:4005/SmsApi/sms/SendSms',
 };
 const PickerTypes = {
   Friend: 1,
   Courier: 2,
 };
 module.exports = {
-  secret, Actions, PickerTypes, ApiEndpoints,
+  secret, Actions, PickerTypes, ApiEndpoints, SmsActions,
 };

@@ -40,7 +40,7 @@
                                             <Label FontSize="25" Text="{Binding Code}"></Label>
                                             <StackLayout Orientation="Horizontal">
                                                 <Label FontSize="12" Text="Created: "></Label>
-                                                <Label FontSize="12" Text="{Binding DateCreated}"></Label>
+                                                <Label FontSize="12" Text="{Binding Created}"></Label>
                                             </StackLayout>
                                         </StackLayout>
                                       

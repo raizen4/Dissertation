@@ -44,7 +44,7 @@ namespace Client_Mobile.ViewModels
         {
             IsLoading = true;
             var apiResult = await this.facade.GetActivePins();
-            if (apiResult.IsSuccessful)
+            if (apiResult.HasBeenSuccessful)
             {
                 var observableList = new ObservableCollection<Pin>(apiResult.Content);
                 CurrentPins = observableList;
@@ -56,15 +56,18 @@ namespace Client_Mobile.ViewModels
                     
                 }
             }
-
-            var dialogResult = await this.dialogService.DisplayAlertAsync("Failed", " Something went wrong. Try again!", "OK", "Cancel");
-            if (dialogResult)
-            {
-                GetCurrentPins();
-            }
             else
             {
-                await this.navService.NavigateAsync(nameof(Views.MainPage));
+                var dialogResult = await this.dialogService.DisplayAlertAsync("Failed", " Something went wrong. Try again!", "OK", "Cancel");
+                if (dialogResult)
+                {
+                    GetCurrentPins();
+                }
+                else
+                {
+                    await this.navService.NavigateAsync(nameof(Views.MainPage));
+                }
+
             }
 
         }

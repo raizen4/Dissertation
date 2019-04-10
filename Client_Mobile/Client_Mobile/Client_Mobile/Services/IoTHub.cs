@@ -64,7 +64,9 @@ namespace Client_Mobile.Services
                 
             }
                 LockerMessage req = new LockerMessage();
+                Console.WriteLine(Constants.IotHubConnectionString);
                 req.Action = action;
+                req.SenderDeviceId = Constants.CurrentLoggedInUser.DeviceId;
                 req.TargetedDeviceId = targetedDeviceId;
                 req.IotHubEndpoint = IotEndpointsEnum.D2DEndpoint;       
                 var messageString = JsonConvert.SerializeObject(req);
@@ -105,7 +107,7 @@ namespace Client_Mobile.Services
 
             LockerMessage req = new LockerMessage();
                     req.Action = action;
-                    req.SenderDeviceId=
+                    req.SenderDeviceId = Constants.CurrentLoggedInUser.DeviceId;
                     req.TargetedDeviceId = targetedDeviceId;
                     req.IotHubEndpoint = IotEndpointsEnum.D2DEndpoint;
                     var messageString = JsonConvert.SerializeObject(req);

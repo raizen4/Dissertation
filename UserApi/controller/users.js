@@ -46,22 +46,19 @@ router.post('/register', async (req, res) => {
   try {
     const managerResult = await userManager.register(User);
     if (managerResult) {
-      const newResp = new ResponseData();
+      const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;
-      newResp.Content = managerResult;
       newResp.Errors = null;
       res.send(newResp);
     } else {
-      const newResp = new ResponseData();
+      const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = false;
-      newResp.Content = null;
       newResp.Errors = 'Email already exists. Please change the email';
       res.send(newResp);
     }
   } catch (err) {
     const newResp = new ResponseData();
     newResp.HasBeenSuccessful = false;
-    newResp.Content = null;
     newResp.Errors = 'Internal server error';
     res.send(newResp);
   }
@@ -147,6 +144,8 @@ router.put('/CheckPin', jwtChecker.checkToken, async (req, res) => {
     res.send(newResp);
   }
 });
+
+
 router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
@@ -172,6 +171,7 @@ router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => 
     res.send(newResp);
   }
 });
+
 
 router.put('/AddPinForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
@@ -233,19 +233,22 @@ router.get('/GetActivePins', jwtChecker.checkToken, async (req, res) => {
     const userId = req.body.User.Id;
     const managerResult = await userManager.GetActivePins(userId);
     if (managerResult) {
-      const newResp = new BaseResponse();
+      const newResp = new ResponseData();
       newResp.HasBeenSuccessful = true;
+      newResp.Content = managerResult;
       newResp.Errors = null;
       res.send(newResp);
     } else {
-      const newResp = new BaseResponse();
+      const newResp = new ResponseData();
       newResp.HasBeenSuccessful = false;
+      newResp.Content = managerResult;
       newResp.Errors = 'Internal server error';
       res.send(newResp);
     }
   } catch (err) {
-    const newResp = new BaseResponse();
+    const newResp = new ResponseData();
     newResp.HasBeenSuccessful = false;
+    newResp.Content = managerResult;
     newResp.Errors = err;
     res.send(newResp);
   }

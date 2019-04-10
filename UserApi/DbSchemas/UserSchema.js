@@ -50,16 +50,17 @@ const Pin = new Schema({
     required: true,
   },
   Created: {
-    type: Date,
-    default: Date.now,
+    type: String,
+    default: undefined,
   },
   ParcelContactDetails: {
     type: ContactDetails,
     default: undefined,
     required: false,
   },
-
 });
+
+
 const Locker = new Schema({
   DeviceId: {
     type: String,

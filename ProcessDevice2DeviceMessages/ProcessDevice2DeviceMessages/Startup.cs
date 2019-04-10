@@ -17,7 +17,7 @@ namespace ProcessDevice2DeviceMessages
     {
         public void Configure(IWebJobsBuilder builder) =>
             builder.AddDependencyInjection<ServiceProviderBuilder>();
-     
+         
         
     }
 
@@ -34,8 +34,6 @@ namespace ProcessDevice2DeviceMessages
             
             services.AddSingleton<IFacade, Facade>();
             services.AddSingleton<IApiWrapper, ApiWrapper>();
-
-
             return services.BuildServiceProvider();
         }
     }
