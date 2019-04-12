@@ -150,7 +150,7 @@ router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => 
   try {
     // const parsedBody = JSON.parse(req.body);
     const user = req.body.User;
-    const action = req.body.Action;
+    const action = req.body.ActionType;
     const pin = req.body.Pin;
     const managerResult = await userManager.AddNewActionForLocker(user, action, pin);
     if (managerResult) {
@@ -255,9 +255,7 @@ router.get('/GetActivePins', jwtChecker.checkToken, async (req, res) => {
 });
 router.get('/GetDeliveryHistory', jwtChecker.checkToken, async (req, res) => {
   try {
-    // const parsedBody = JSON.parse(req.body);
     const userId = req.body.User.Id;
-
     const managerResult = await userManager.GetLockerHistory(userId);
     if (managerResult != null) {
       const newResp = new ResponseData();

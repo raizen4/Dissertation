@@ -28,7 +28,7 @@ namespace Client_Mobile.Interfaces
         [Put("/UserApi/users/AddPinForLocker")]
         Task<HttpResponseMessage> AddPinForLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)]  StringContent body);
 
-        [Put("/UserApi/users/RemovePinForLocker")]
+        [Post("/UserApi/users/RemovePinForLocker")]
         Task<HttpResponseMessage> RemovePinForLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)]  StringContent body);
 
         [Put("/UserApi/users/AddNewActionForLocker")]

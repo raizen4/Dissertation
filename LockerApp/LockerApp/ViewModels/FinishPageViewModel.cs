@@ -24,7 +24,11 @@ namespace LockerApp.ViewModels
         public int Counter
         {
             get => this._counter;
-            set => this._counter = value;
+            set
+            {
+                this._counter = value;
+                RaisePropertyChanged();
+            }
         }
 
         private bool _showGoodbayMessage;
@@ -45,7 +49,6 @@ namespace LockerApp.ViewModels
             this.FinishCommand = new DelegateCommand(() =>this._navService.Navigate(Constants.NavigationPages.MainPage,null));
             this.controller = gpioController;
             this.controller.OpenLocker();
-            this.Counter = 60;
             this.InitializeTimer();
             this.StartTimer();
           
@@ -53,6 +56,7 @@ namespace LockerApp.ViewModels
 
         void InitializeTimer()
         {
+            this.Counter = 60;
             this._timer = new DispatcherTimer();
             this._timer.Interval = new TimeSpan(0, 0, 1);
             this._timer.Tick += TimerTick;

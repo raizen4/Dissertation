@@ -30,6 +30,7 @@ namespace Client_Mobile.ViewModels
        
 
 
+      
         public DelegateCommand FinishCommand { get; set; }
 
         public bool ForCourier

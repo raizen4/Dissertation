@@ -6,6 +6,7 @@
              xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              xmlns:converters="clr-namespace:Client_Mobile.Converters"
              x:Class="Client_Mobile.Views.CurrentPinsPage"
+             x:Name="CurrentPinsPageLayout"
              Title="{Binding Title}">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -50,7 +51,7 @@
                                              
                                             </StackLayout>
 
-                                            <StackLayout Orientation="Vertical" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}">
+                                            <StackLayout Orientation="Vertical">
 
                                                 <StackLayout Orientation="Horizontal">
                                                     <Label FontSize="12" Text="Pin generated to be used by: "></Label>
@@ -68,11 +69,12 @@
                                                                     <ColumnDefinition Width="50*"></ColumnDefinition>
                                                                     <ColumnDefinition Width="50*"></ColumnDefinition>
                                                                     </Grid.ColumnDefinitions>
-                                                        <Button  HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" TextColor="White" Text="Edit Details" BackgroundColor="CornflowerBlue"></Button>
-                                                                <Button HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" BackgroundColor="Red" TextColor="White" Text="Remove"></Button>
+                                                        <Button  IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}" HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" TextColor="White" Text="Edit Details" BackgroundColor="CornflowerBlue"></Button>
+                                                        <Button Command="{Binding Path=BindingContext.RemovePinCommand, Source={x:Reference CurrentPinsPageLayout}}"
+                                                                CommandParameter="{Binding}"  HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" BackgroundColor="Red" TextColor="White" Text="Remove"></Button>
                                                     </Grid>
 
-                                                   
+                                                  
 
                                                 </StackLayout>
                                             </StackLayout>
@@ -91,7 +93,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Button Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CornerRadius="40" Text="Back"></Button>
+                <Button Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="CornflowerBlue" Command="{Binding BackCommand}" Text="Back"></Button>
             </Grid>
 
 

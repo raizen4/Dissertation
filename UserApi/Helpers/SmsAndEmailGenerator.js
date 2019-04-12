@@ -67,13 +67,15 @@ async function SendPowerCutNotificationToOwner(ownerEmail, lockerId) {
   }
 }
 
-async function LockerActionSucceded(ownerEmail, action, pin) {
+async function LockerActionSucceded(ownerEmail, action, pin, pickerName, deliveryCompanyName) {
   const emailUri = constants.ApiEndpoints.Email.LockerActionSucceded;
   const httpVerb = 'POST';
   const emailServiceBody = {
     Email: ownerEmail,
-    Action: action,
+    ActionType: action,
     PinCode: pin,
+    PickerName: pickerName,
+    DeliveryCompanyName: deliveryCompanyName,
   };
   try {
     await responses.RequestServiceMethod(emailServiceBody, emailUri, httpVerb);

@@ -129,7 +129,7 @@ namespace LockerApp.Services
 
         }
 
-        public async Task<ResponseBase> AddNewActionForLocker(LockerActionRequestsEnum actionRequested, Pin pin)
+        public async Task<ResponseBase> AddNewActionForLocker(LockerActionEnum actionRequested, Pin pin)
         {
 
 

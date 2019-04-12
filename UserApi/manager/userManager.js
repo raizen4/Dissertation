@@ -74,6 +74,7 @@ async function signToken(user) {
     LockerId: user.AccountLocker === undefined ? null : user.AccountLocker.DeviceId,
     DeviceId: user.DeviceId,
     Email: user.Email,
+    Phone: user.Phone,
     Id: user._id,
   },
   constants.secret,
@@ -109,6 +110,7 @@ async function login(email, password) {
           DisplayName: foundUser.DisplayName,
           LockerId: foundUser.AccountLocker === undefined ? null : foundUser.AccountLocker.DeviceId,
           DeviceId: foundUser.DeviceId,
+
           IotHubConnectionString: foundUser.IoTHubConnectionString,
           Token: token,
         };
@@ -246,36 +248,41 @@ async function AddNewActionForLocker(user, action, pin) {
       .replace(/T/, ' ') // replace T with a space
       .replace(/\..+/, '');
     let newAction = '';
+
     switch (action) {
-    case constants.Actions.Open:
+    case constants.Actions.Opened:
       newAction = `Opened at ${currentDate}`;
       break;
-    case constants.Actions.Close:
+    case constants.Actions.Closed:
       newAction = `Closed at ${currentDate}`;
       break;
-    case constants.Actions.Delivery:
-      newAction = `Delivery on ${currentDate} by ${pin.ContactDetails.DeliveryCompanyName} courier using pin ${pin.Code}`;
+    case constants.Actions.Delivered:
+      newAction = `Delivery on ${currentDate} by ${pin.ParcelContactDetails.DeliveryCompanyName} courier using pin ${pin.Code}`;
       break;
-    case constants.Actions.PickingUp:
-      newAction = `Picked up code used on ${currentDate} using pin ${pin.Code} by ${pin.ContactDetails.PickerName}`;
+    case constants.Actions.PickedUp:
+      newAction = `Picked up code used on ${currentDate} using pin ${pin.Code} by ${pin.ParcelContactDetails.PickerName}`;
       break;
     default:
       break;
     }
+    const LockerAction = {
+      ActionType: action,
+      Message: newAction,
+    };
     const result = await User.findByIdAndUpdate(
       user.Id,
       {
-        $push: { 'AccountLocker.History': newAction },
+        $push: { 'AccountLocker.History': LockerAction },
       },
     );
     if (result != null) {
-      helpers.LockerActionSucceded(user.Email, action, pin);
+      await helpers.LockerActionSucceded(user.Email, action, pin.Code, pin.ParcelContactDetails.PickerName, pin.ParcelContactDetails.DeliveryCompanyName);
       if (action === constants.Actions.PickedUp) {
-        helpers.GenerateSms(user.Phone, constants.SmsActions.PickedUp, undefined, pin.ContactDetails.PickerName, pin.Code);
+        await helpers.GenerateSms(user.Phone, constants.SmsActions.PickedUp, undefined, pin.ParcelContactDetails.PickerName, pin.Code);
       } else {
-        helpers.GenerateSms(user.Phone, constants.SmsActions.Delivered, pin.ContactDetails.DeliveryCompanyName, undefined, pin.Code);
+        await helpers.GenerateSms(user.Phone, constants.SmsActions.Delivered, pin.ParcelContactDetails.DeliveryCompanyName, undefined, pin.Code);
       }
-      RemovePin(action.Pin.Code);
+      await RemovePin(user.Id, pin.Code);
       return true;
     }
     return false;
@@ -289,7 +296,7 @@ async function GetLockerHistory(userId) {
     const result = await User.findOne({ _id: userId });
 
     if (result != null) {
-      const history = result.History;
+      const history = result.AccountLocker.History;
       return history;
     }
     return null;

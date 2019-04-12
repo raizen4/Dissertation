@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 
 const LockerActions = {
-  Delivered: 3,
-  PickedUp: 4,
+  Delivered: 2,
+  PickedUp: 3,
 };
 module.exports = LockerActions;

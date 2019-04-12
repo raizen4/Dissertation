@@ -18,7 +18,7 @@ namespace LockerApp.Interfaces
 
         Task<ResponseData<Locker>> AddNewLocker(string newLockerId);
 
-        Task<ResponseBase> AddNewActionForLocker(LockerActionRequestsEnum actionRequested, Pin pin);
+        Task<ResponseBase> AddNewActionForLocker(LockerActionEnum actionRequested, Pin pin);
 
         Task<ResponseBase> SendBackupBatteryNotification();
 

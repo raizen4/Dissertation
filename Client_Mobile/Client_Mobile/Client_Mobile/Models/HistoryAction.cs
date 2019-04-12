@@ -8,16 +8,17 @@ namespace Client_Mobile.Models
 
     public class HistoryAction
     {
-        private LockerActionEnum _action;
-        private string _description;
-        public LockerActionEnum Action {
-            get =>this._action;
-            set => this._action = value;
-        }
-        public string Description
+        private LockerActionEnum _actionType;
+        private string _message;
+        public LockerActionEnum ActionType
         {
-            get => this._description;
-            set => this._description = value;
+            get =>this._actionType;
+            set => this._actionType = value;
+        }
+        public string Message
+        {
+            get => this._message;
+            set => this._message = value;
         }
         
     }

@@ -32,20 +32,7 @@ namespace Client_Mobile.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((string)value=="Closed")
-            {
-                return LockerActionEnum.UserAppClosed;
-            }
-            if ((string)value == "Opened")
-            {
-                return LockerActionEnum.UserAppOpened;
-            }
-            if ((string)value == "Delivered")
-            {
-                return LockerActionEnum.Delivered;
-            }
-
-            return LockerActionEnum.PickedUp;
+            return null;
         }
     }
 }

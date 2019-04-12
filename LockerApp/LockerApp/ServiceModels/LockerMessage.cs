@@ -9,8 +9,8 @@ namespace LockerApp.ServiceModels
 
     public class LockerMessage
     {
-        public LockerActionRequestsEnum ActionRequest { get; set; }
-        public LockerActionRequestsEnum ActionResult { get; set; }
+        public LockerActionEnum Action { get; set; }
+        public LockerActionEnum ActionResult { get; set; }
 
         public string SenderDeviceId { get; set; }
         public bool HasBeenSuccessful { get; set; }

@@ -9,9 +9,9 @@ namespace LockerApp.Models
     public class Pin
     {
         private string _code;
-        private string _ttl;
-        private PickerTypeEnum _pickerType;
-        private ContactDetails _pickerDetails;
+        private PickerTypeEnum _userType;
+        private ContactDetails _parcelContactDetails;
+        private string _created;
 
 
         public string Code
@@ -20,18 +20,24 @@ namespace LockerApp.Models
             set => this._code = value;
         }
 
-        public ContactDetails PickerDetails
+        public ContactDetails ParcelContactDetails
         {
-            get => this._pickerDetails;
-            set => this._pickerDetails = value;
+            get => this._parcelContactDetails;
+            set => this._parcelContactDetails = value;
         }
 
-        public PickerTypeEnum PickerType
+        public PickerTypeEnum UserType
         {
-            get => this._pickerType;
-            set => this._pickerType = value;
+            get => this._userType;
+            set => this._userType = value;
         }
 
- 
+        public string Created
+        {
+            get => this._created;
+            set => this._created = value;
+        }
+
+
     }
 }

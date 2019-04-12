@@ -15,7 +15,9 @@ namespace LockerApp.ViewModels
 {
     using System.ComponentModel;
     using Windows.UI.Popups;
+    using Windows.UI.Xaml.Controls;
     using MvvmDialogs;
+    using Views;
 
     public class StartPageViewModel :ViewModelBase
     {
@@ -31,22 +33,33 @@ namespace LockerApp.ViewModels
 
 
         public DelegateCommand LoginCommand { get; set; }
-        public string Password {
+        public string Password
+        {
             get => this._password;
-            set => this._password = value;
-        }
-        public  string Username {
-            get => this._username;
-            set => this._username = value;
+            set
+            {
+                this._password = value;
+                RaisePropertyChanged();
+            }
         }
 
-           public StartPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService) : base(navigationService,facade)
+        public  string Username
+        {
+            get => this._username;
+            set
+            {
+                this._username = value; 
+                RaisePropertyChanged();
+            }
+        }
+
+        public StartPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService) : base(navigationService,facade)
            {
            this._dialogService = dialogService;
             this._facade = facade;
             this._navService = navigationService;
             this._vault = new PasswordVault();
-            LoginCommand = new DelegateCommand(async()=> await LoginUser(Password,Username));
+            LoginCommand = new DelegateCommand(TextContentDialog);
             var savedCredentials = this._vault.RetrieveAll();
             if (savedCredentials.Count != 0)
             {
@@ -63,6 +76,15 @@ namespace LockerApp.ViewModels
 
         }
 
+        private async void TextContentDialog()
+        {
+            var viewModel=new DeliveryCompanyPageViewModel(this._navService,this._facade,this._dialogService);
+            await this._dialogService.ShowContentDialogAsync(viewModel);
+           
+           
+        }
+
+         
         private async Task<bool> InitializeLocker(string pass, string user)
         {
            var lockerId ="Locker"+PinGenerator.GeneratePin();
@@ -82,14 +104,7 @@ namespace LockerApp.ViewModels
 
         public async Task LoginUser(string pass, string user)
         {
-            if (this._vault.RetrieveAll().Count == 0)
-            {
-                var result=await InitializeLocker(pass, user);
-                if (!result)
-                {
-                    return;
-                }
-            }
+           
 
                 if (pass.Length == 0 || user.Length == 0)
             {
@@ -118,7 +133,12 @@ namespace LockerApp.ViewModels
                     this._navService.Navigate(Constants.NavigationPages.MainPage, null);
                 }
                 else
-                {
+                {               
+                        var result = await InitializeLocker(pass, user);
+                        if (!result)
+                        {
+                            return;
+                        }
                     PasswordCredential credentials = new PasswordCredential();
                     credentials.Resource = PreferencesEnum.AppCredentials;
                     credentials.Password = pass;
@@ -148,5 +168,15 @@ namespace LockerApp.ViewModels
 
         }
 
+        /// <inheritdoc />
+        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        {
+            base.OnNavigatedTo(e, viewModelState);
+
+
+            string company = e.Parameter as string;
+            
+
+        }
     }
 }

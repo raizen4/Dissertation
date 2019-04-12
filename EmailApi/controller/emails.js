@@ -3,7 +3,6 @@ const NewRouter = require('restify-router').Router;
 const nodemailer = require('nodemailer');
 const BaseResponse = require('../serviceModels/BaseResponse');
 const actions = require('../serviceModels/LockerActionsEnum');
-const messages = require('../serviceModels/PredefinedMessages');
 
 const router = new NewRouter();
 
@@ -20,18 +19,23 @@ router.post('/LockerActionSucceded', async (req, res) => {
     // const parsedBody = JSON.parse(req.body);
     const receiver = req.body.Email;
     const sender = 'bboldurdissertation@gmail.com';
-    const actionRequired = req.body.Action;
+    const pickerName = req.body.PickerName;
+    const deliveryCompanyName = req.body.DeliveryCompanyName;
+    const actionRequired = req.body.ActionType;
     const pinUsed = req.body.PinCode;
     let textMessage;
     let textTitle;
+    const currentDate = new Date().toISOString()
+      .replace(/T/, ' ') // replace T with a space
+      .replace(/\..+/, '');
     switch (actionRequired) {
-    case actions.MessageDelivered:
+    case actions.Delivered:
       textTitle = 'Delivered';
-      textMessage = messages.MessageDelivered + pinUsed;
+      textMessage = `One of your parcels has been delivered at ${currentDate} by ${deliveryCompanyName} using the following pin: ${pinUsed}`;
       break;
     case actions.PickedUp:
       textTitle = 'Picked Up';
-      textMessage = messages.PickedUp + pinUsed;
+      textMessage = `One of your parcels has been picked up at ${currentDate} by ${pickerName} using the following pin: ${pinUsed}`;
       break;
     default:
     }

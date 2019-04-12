@@ -151,7 +151,7 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.HasBeenSuccessful)
+                    if (!deserializedContent.HasBeenSuccessful)
                     {
                         responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
@@ -196,7 +196,7 @@ namespace Client_Mobile.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.HasBeenSuccessful)
+                    if ( !deserializedContent.HasBeenSuccessful)
                     {
                         responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";

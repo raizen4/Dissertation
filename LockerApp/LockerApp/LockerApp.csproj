@@ -131,7 +131,7 @@
     <Compile Include="Converters\BoolToEnumConverter.cs" />
     <Compile Include="Enums\IotEndpointsEnum.cs" />
     <Compile Include="Enums\LockerAccessEnum.cs" />
-    <Compile Include="Enums\LockerActionRequestsEnum.cs" />
+    <Compile Include="Enums\LockerActionEnum.cs" />
     <Compile Include="Enums\PickerTypeEnum.cs" />
     <Compile Include="Enums\PreferencesEnum.cs" />
     <Compile Include="Helpers\PiGpioController.cs" />
@@ -159,11 +159,15 @@
     <Compile Include="Services\IToastNotificationsService.cs" />
     <Compile Include="Services\ToastNotificationsService.cs" />
     <Compile Include="Services\ToastNotificationsService.Samples.cs" />
+    <Compile Include="ViewModels\DeliveryCompanyPageViewModel.cs" />
     <Compile Include="ViewModels\FinishPageViewModel.cs" />
     <Compile Include="ViewModels\LockerInfoPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\StartPageViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\DeliveryCompanyPage.xaml.cs">
+      <DependentUpon>DeliveryCompanyPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FinishPage.xaml.cs">
       <DependentUpon>FinishPage.xaml</DependentUpon>
     </Compile>
@@ -195,6 +199,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\TextBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeliveryCompanyPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -26,7 +26,7 @@
         <TextBlock Grid.Column="0" Grid.Row="0" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Locker Is Currently Open For"></TextBlock>
         
         <StackPanel  Orientation="Vertical"  Grid.Column="0" Grid.Row="1">
-            <TextBlock FontSize="100" HorizontalAlignment="Center" VerticalAlignment="Center" Text="25"></TextBlock>
+            <TextBlock  FontSize="100" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Counter, Mode=TwoWay}"></TextBlock>
             <TextBlock  Visibility="{Binding ShowGoodbayMessage, Converter={StaticResource BoolToEnumConverter}}" FontSize="45" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Thank you for using this service"></TextBlock>
         </StackPanel>
         

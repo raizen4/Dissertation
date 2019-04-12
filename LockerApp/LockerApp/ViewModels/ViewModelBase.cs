@@ -37,14 +37,7 @@ namespace LockerApp.ViewModels
 
         
 
-        public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
-        {
-        }
-
-        public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
-        {
-        }
-
+       
       
 
         

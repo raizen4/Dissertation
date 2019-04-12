@@ -71,6 +71,13 @@ namespace Client_Mobile.ViewModels
                 if (currentUser.HasBeenSuccessful && currentUser.Content.DisplayName != null)
                 {
                     Constants.CurrentLoggedInUser = currentUser.Content;
+                    if (currentUser.Content.LockerId == null)
+                    {
+                        await this._dialogService.DisplayAlertAsync("We are getting there",
+                            "Your account doesn't have a locker attached to it. In order to be able to login and use our app, " +
+                            "please link your locker to this account by simply logging in in the locker application. When you finish, re-log here", "OK");
+                        return;
+                    }
                     Constants.Token = currentUser.Content.Token;
                     Constants.DeviceName = currentUser.Content.DeviceId;
                     Constants.IotHubConnectionString = currentUser.Content.IotHubConnectionString;

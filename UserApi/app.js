@@ -37,7 +37,7 @@ server.on('after', restify.plugins.metrics({ server }, (err, metrics) => {
 }));
 
 if (process.env.PORT != null) {
-  server.listen(process.env.PORT, '192.168.88.30', () => {
+  server.listen(process.env.PORT, () => {
     console.log('%s listening at process.end.port %s', server.name, server.url);
     logger.info('%s listening at %s', server.name, server.url);
   });

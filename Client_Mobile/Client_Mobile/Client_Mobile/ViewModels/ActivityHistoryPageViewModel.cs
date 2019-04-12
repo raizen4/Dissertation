@@ -22,7 +22,9 @@ namespace Client_Mobile.ViewModels
 		private readonly IPageDialogService _dialogService;
 		private ObservableCollection<HistoryAction> _historyActions;
 
-		public ObservableCollection<HistoryAction> HistoryActions
+
+        public DelegateCommand BackCommand { get; set; }
+        public ObservableCollection<HistoryAction> HistoryActions
 		{
 			get => this._historyActions;
 			set => this._historyActions = value;
@@ -35,8 +37,11 @@ namespace Client_Mobile.ViewModels
 	        this._facade = facade;
 	        this._navService = navigationService;
 	        this._dialogService = dialogService;
-			GetHistory();
+	        this.BackCommand = new DelegateCommand(async () => await this._navService.GoBackAsync());
+            GetHistory();
         }
+
+		
 
 
 		private async void GetHistory()

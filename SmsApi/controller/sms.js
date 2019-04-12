@@ -31,11 +31,14 @@ router.post('/SendSms', async (req, res) => {
     }
     case Constants.SmsActions.PickedUp: {
       smsBody = `Hi, your parcel(s) has been picked up by your friend ${pickerName} at ${currentDate} using the following pin ${pinCode}`;
-
       break;
     }
     case Constants.SmsActions.Delivered: {
-      smsBody = `Hi, your parcel(s) has been delivered by ${deliveryCompany} at ${currentDate} using the following pin ${pinCode}`;
+      if (deliveryCompany === 'OTHER') {
+        smsBody = `Hi, your parcel(s) has been delivered  at ${currentDate} using the following pin ${pinCode}`;
+      } else {
+        smsBody = `Hi, your parcel(s) has been delivered by ${deliveryCompany} at ${currentDate} using the following pin ${pinCode}`;
+      }
       break;
     }
     default:

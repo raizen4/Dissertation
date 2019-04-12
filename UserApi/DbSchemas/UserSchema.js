@@ -6,8 +6,12 @@ const bcrypt = require('bcrypt');
 // eslint-disable-next-line prefer-destructuring
 const Schema = mongoose.Schema;
 const LockerActivity = new Schema({
-  Action: {
+  Message: {
     type: String,
+    required: true,
+  },
+  ActionType: {
+    type: Number,
     required: true,
   },
   Created: {

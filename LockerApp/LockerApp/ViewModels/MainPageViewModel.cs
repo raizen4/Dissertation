@@ -25,7 +25,7 @@ namespace LockerApp.ViewModels
         private readonly INavigationService _navService;
         private readonly IFacade _facade;
         private  IDialogService _dialogService;
-        private readonly IGpioController _gpioController;
+        private readonly IGpioController _gpioControllerService;
         private string _pin;
         private int _lockerOpenedCounter;
         private static DeviceClient _deviceClient;
@@ -39,9 +39,9 @@ namespace LockerApp.ViewModels
             set => this._pin = value;
         }
 
-        public MainPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService, IGpioController gpioController) : base(navigationService,facade)
+        public MainPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService, IGpioController gpioControllerService) : base(navigationService,facade)
         {
-            this._gpioController = gpioController;
+            this._gpioControllerService = gpioControllerService;
             this._dialogService = dialogService;
             this._navService = navigationService;
             this._facade = facade;
@@ -83,9 +83,9 @@ namespace LockerApp.ViewModels
                 if (result.IsSuccessful)
                 {
                     var resultedPin = result.Content;
-                    if (resultedPin.PickerType == PickerTypeEnum.Courier)
+                    if (resultedPin.UserType == PickerTypeEnum.Courier)
                     {
-                        var actionResult = await this._facade.AddNewActionForLocker(LockerActionRequestsEnum.Delivered, resultedPin);
+                        var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.Delivered, resultedPin);
                         if (!actionResult.IsSuccessful)
                         {
                             SendPinForVerification();
@@ -96,9 +96,9 @@ namespace LockerApp.ViewModels
                         }
 
                     }
-                    else if (resultedPin.PickerType== PickerTypeEnum.Friend)
+                    else if (resultedPin.UserType== PickerTypeEnum.Friend)
                     {
-                        var actionResult = await this._facade.AddNewActionForLocker(LockerActionRequestsEnum.PickedUp, resultedPin);
+                        var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.PickedUp, resultedPin);
                         if (!actionResult.IsSuccessful)
                         {
                             SendPinForVerification();
@@ -134,7 +134,7 @@ namespace LockerApp.ViewModels
             if (this._lockerOpenedCounter == 0 || this._resetTimer) 
             {
                 this._timer.Stop();
-                this._gpioController.CloseLocker();
+                this._gpioControllerService.CloseLocker();
                 this._lockerOpenedCounter = 30;
                
             }
@@ -152,13 +152,13 @@ namespace LockerApp.ViewModels
                 {
                     var stringMessage = newMesasgeReceived.ToString();
                     var deserializedMessage = JsonConvert.DeserializeObject<LockerMessage>(stringMessage);
-                    if (deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppClose
+                    if (deserializedMessage.Action == LockerActionEnum.UserAppClose
                         ||
-                        deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppOpen)
+                        deserializedMessage.Action == LockerActionEnum.UserAppOpen)
                     {
-                        if(deserializedMessage.ActionRequest == LockerActionRequestsEnum.UserAppOpen)
+                        if(deserializedMessage.Action == LockerActionEnum.UserAppOpen)
                         {
-                            deserializedMessage.ActionResult = LockerActionRequestsEnum.UserAppOpened;
+                            deserializedMessage.ActionResult = LockerActionEnum.UserAppOpened;
                             deserializedMessage.TargetedDeviceId = deserializedMessage.SenderDeviceId;
                             deserializedMessage.SenderDeviceId = Constants.UserLocker.DeviceId;
 
@@ -166,7 +166,7 @@ namespace LockerApp.ViewModels
                         }
                         else
                         {
-                            deserializedMessage.ActionResult = LockerActionRequestsEnum.UserAppClosed;
+                            deserializedMessage.ActionResult = LockerActionEnum.UserAppClosed;
                             deserializedMessage.TargetedDeviceId = deserializedMessage.SenderDeviceId;
                             deserializedMessage.SenderDeviceId = Constants.UserLocker.DeviceId;
                             shouldClose = true;
@@ -182,11 +182,11 @@ namespace LockerApp.ViewModels
                             await _deviceClient.SendEventAsync(message);
                             if (shouldClose)
                             {
-                                this._gpioController.CloseLocker();
+                                this._gpioControllerService.CloseLocker();
                             }
                             else
                             {
-                                this._gpioController.OpenLocker();
+                                this._gpioControllerService.OpenLocker();
                                 InitializeTimer();
                             }
 

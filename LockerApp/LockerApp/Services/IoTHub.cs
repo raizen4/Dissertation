@@ -66,7 +66,7 @@ namespace LockerApp.Services
                 InitializeConnectionToHub();
             }
             LockerMessage req = new LockerMessage();
-            req.ActionRequest = lockerMessage.ActionRequest;
+            req.Action = lockerMessage.Action;
             req.TargetedDeviceId = lockerMessage.TargetedDeviceId;
             req.IotHubEndpoint = IotEndpointsEnum.D2DEndpoint;
             var messageString = JsonConvert.SerializeObject(req);

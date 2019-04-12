@@ -9,7 +9,7 @@ namespace LockerApp.ServiceModels
 
     class ActionRequest
     {
-        public LockerActionRequestsEnum Action { get; set; }
+        public LockerActionEnum Action { get; set; }
         public Pin Pin { get; set; } 
 
 
