@@ -132,6 +132,7 @@
     <Compile Include="Enums\IotEndpointsEnum.cs" />
     <Compile Include="Enums\LockerAccessEnum.cs" />
     <Compile Include="Enums\LockerActionEnum.cs" />
+    <Compile Include="Enums\OpenLockerTypes.cs" />
     <Compile Include="Enums\PickerTypeEnum.cs" />
     <Compile Include="Enums\PreferencesEnum.cs" />
     <Compile Include="Helpers\PiGpioController.cs" />
@@ -142,7 +143,7 @@
     <Compile Include="Interfaces\IGpioController.cs" />
     <Compile Include="Interfaces\IIoTHub.cs" />
     <Compile Include="Models\ContactDetails.cs" />
-    <Compile Include="Models\Locker.cs" />
+    <Compile Include="Models\LockerInfo.cs" />
     <Compile Include="Models\Pin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceModels\ActionRequest.cs" />

@@ -17,6 +17,7 @@ using Windows.UI.Xaml;
 namespace LockerApp.ViewModels
 {
     using Windows.UI.Popups;
+    using Windows.UI.Xaml.Controls;
     using MvvmDialogs;
     using Prism.Commands;
 
@@ -39,7 +40,7 @@ namespace LockerApp.ViewModels
             set => this._pin = value;
         }
 
-        public MainPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService, IGpioController gpioControllerService) : base(navigationService,facade)
+        public  MainPageViewModel(INavigationService navigationService, IFacade facade, IDialogService dialogService, IGpioController gpioControllerService) : base(navigationService,facade)
         {
             this._gpioControllerService = gpioControllerService;
             this._dialogService = dialogService;
@@ -50,7 +51,10 @@ namespace LockerApp.ViewModels
             IsLoading = false;
             this._lockerOpenedCounter = 30;
             SendPinForCheckingCommand=new DelegateCommand(SendPinForVerification);
-            ListenForMessages(10000);
+            var listenForMessagesThread = new Thread(async()=>await this.ListenForMessages(10000));
+            listenForMessagesThread.Start();
+           
+            
 
         }
 
@@ -79,14 +83,25 @@ namespace LockerApp.ViewModels
             try
             {
 
-               var result= await this._facade.CheckPin(pinToCheck);
-                if (result.IsSuccessful)
+               var result= await this._facade.CheckPin(pinToCheck.Code);
+                if (result.HasBeenSuccessful)
                 {
                     var resultedPin = result.Content;
                     if (resultedPin.UserType == PickerTypeEnum.Courier)
                     {
+                      
+                            var viewModel = new DeliveryCompanyPageViewModel(this._navService, this._facade, this._dialogService);
+                            var dialogResult = await this._dialogService.ShowContentDialogAsync(viewModel);
+                            if (dialogResult == ContentDialogResult.Primary)
+                            {
+                                var currentCompanyChosen = viewModel.CompanySelected;
+                                resultedPin.ParcelContactDetails.DeliveryCompanyName = currentCompanyChosen;
+                            }
+
+
+                        
                         var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.Delivered, resultedPin);
-                        if (!actionResult.IsSuccessful)
+                        if (!actionResult.HasBeenSuccessful)
                         {
                             SendPinForVerification();
                         }
@@ -99,7 +114,7 @@ namespace LockerApp.ViewModels
                     else if (resultedPin.UserType== PickerTypeEnum.Friend)
                     {
                         var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.PickedUp, resultedPin);
-                        if (!actionResult.IsSuccessful)
+                        if (!actionResult.HasBeenSuccessful)
                         {
                             SendPinForVerification();
                         }
@@ -109,6 +124,14 @@ namespace LockerApp.ViewModels
                             this._navService.Navigate(Constants.NavigationPages.PinAcceptedPage, null);
                         }
                     }
+                }
+                else
+                {
+                    await this._dialogService.ShowMessageDialogAsync("This pin is invalid. Please try again or contact the owner in case this is a pickup pin", "Error", new[]
+                    {
+                        new UICommand { Label = "OK" },
+
+                    });
                 }
 
             }catch(Exception e)
@@ -142,8 +165,10 @@ namespace LockerApp.ViewModels
 
         }
 
-        private async void ListenForMessages(int poolingRate)
+        private async Task ListenForMessages(int poolingRate)
         {
+            
+                
             var shouldClose = false;
             while (true)
             {

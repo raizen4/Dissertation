@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LockerApp.Models
+namespace LockerAppXamarin.Models
 {
-    public class Locker
+    public class LockerInfo
     {
-        public string ConnectionString { get; set; }
-        public string SymmetricKey { get; set; }
+        public string IotHubConnectionString { get; set; }
         public string DeviceId { get; set; }
+     
         public string Token { get; set; }
     }
 }

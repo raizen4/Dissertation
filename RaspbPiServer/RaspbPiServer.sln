@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaspbPiServer", "RaspbPiServer\RaspbPiServer.csproj", "{408091A1-0F8F-498D-BEB1-DFF19464350C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{408091A1-0F8F-498D-BEB1-DFF19464350C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{408091A1-0F8F-498D-BEB1-DFF19464350C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{408091A1-0F8F-498D-BEB1-DFF19464350C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{408091A1-0F8F-498D-BEB1-DFF19464350C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5860AE8F-0886-4D8B-A5F2-083C6810A62A}
+	EndGlobalSection
+EndGlobal

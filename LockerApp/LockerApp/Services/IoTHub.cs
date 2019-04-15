@@ -27,7 +27,7 @@ namespace LockerApp.Services
         {
             this._transportProtocol = TransportType.Http1; ;
             _deviceClient =
-                DeviceClient.CreateFromConnectionString(Constants.LockerConnectionString, this._transportProtocol);
+                DeviceClient.CreateFromConnectionString(Constants.UserLocker.IotHubConnectionString, this._transportProtocol);
         }
         
         /// <inheritdoc />

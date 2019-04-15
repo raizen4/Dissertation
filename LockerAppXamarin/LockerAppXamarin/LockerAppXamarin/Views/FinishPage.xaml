@@ -1,0 +1,36 @@
+﻿<ContentPage
+    x:Class="LockerAppXamarin.Views.FinishPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    xmlns:converters1="clr-namespace:LockerAppXamarin.Converters;assembly=LockerAppXamarin"
+       >
+    <Page.Resources>
+        <converters1:BoolToEnumConverter x:Key="BoolToEnumConverter"></converters1:BoolToEnumConverter>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30*"></RowDefinition>
+            <RowDefinition  Height="30*"></RowDefinition>
+            <RowDefinition  Height="30*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <StackLayout>
+            <Label Grid.Column="0" Grid.Row="0" FontSize="45" HorizontalOptions="Center" VerticalOptions="Center" Text="Locker Is Currently Open For"></Label>
+
+            <StackLayout  Orientation="Vertical"  Grid.Column="0" Grid.Row="1">
+                <Label  FontSize="100" HorizontalOptions="Center" VerticalOptions="Center" Text="{Binding Counter, Mode=TwoWay}"></Label>
+                <Label  IsVisible="{Binding ShowGoodbayMessage, Converter={StaticResource BoolToEnumConverter}}" FontSize="45" HorizontalOptions="Center" VerticalOptions="Center" Text="Thank you for using this service"></Label>
+            </StackLayout>
+
+            <Button BackgroundColor="ForestGreen" Grid.Column="0" Grid.Row="2" FontSize="45" HorizontalOptions="Center" VerticalOptions="Center" 
+                    Command="{Binding FinishCommand}" Text="Finish Delivery"></Button>
+
+        </StackLayout>
+        
+    </Grid>
+</ContentPage>

@@ -33,27 +33,32 @@ namespace LockerApp.Views
             this.InitializeComponent();
             this.viewModel = DataContext as DeliveryCompanyPageViewModel;
             this.contentDialog = this;
-          
+            this.contentDialog.IsPrimaryButtonEnabled =false;
         }
 
         private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
         {
 
             var company = e.ClickedItem as string;
+            if (company == this.viewModel.CompanySelected)
+            {
+                this.contentDialog.IsPrimaryButtonEnabled = false;
+
+            }
+            else
+            {
+                this.contentDialog.IsPrimaryButtonEnabled = true;
+
+            }
+
             this.viewModel.CompanySelected = company;
           
         }
 
-        private void ButtonFinish(object sender, RoutedEventArgs e)
-        {
-            this.contentDialog.Hide();
-            this.viewModel.FinalUserChoiceCommand.Execute();
+      
+          
+           
         }
+    }
+ 
 
-        private void ButtonCancel(object sender, RoutedEventArgs e)
-        {
-            this.contentDialog.Hide();
-            this.viewModel.CancelPressedCommand.Execute();
-        }
-} 
-}

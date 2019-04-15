@@ -77,7 +77,7 @@ namespace LockerApp.Helpers
                 try
                 {
                     var facadeResult = await this._facade.SendBackupBatteryNotification();
-                    if (!facadeResult.IsSuccessful)
+                    if (!facadeResult.HasBeenSuccessful)
                     {
                         await this._dialogService.ShowMessageDialogAsync("Power cut notification did not work.", "Warning", new[]
                         {

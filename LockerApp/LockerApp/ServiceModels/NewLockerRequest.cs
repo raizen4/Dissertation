@@ -4,6 +4,6 @@ namespace LockerApp.ServiceModels
 {
     public class NewLockerRequest
     {
-        public string NewLockerId { get; set; }
+        public string LockerId { get; set; }
     }
 }

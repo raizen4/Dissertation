@@ -28,14 +28,14 @@ namespace LockerApp.Services
         }
 
 
-        public async Task<ResponseData<Locker>> AddNewLocker(string newLockerId)
+        public async Task<ResponseData<LockerInfo>> AddNewLocker(string newLockerId)
         {
             var newLockerRequest = new NewLockerRequest();
-            newLockerRequest.NewLockerId = newLockerId;
+            newLockerRequest.LockerId = newLockerId;
 ;
-            var responseData = new ResponseData<Locker>
+            var responseData = new ResponseData<LockerInfo>
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
 
             var result = await this._apiWrapper.AddNewLocker(newLockerRequest);
@@ -44,16 +44,16 @@ namespace LockerApp.Services
             {
                 try
                 {
-                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<Locker>>(content);
-                    if (deserializedContent.IsSuccessful == false)
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<LockerInfo>>(content);
+                    if (deserializedContent.HasBeenSuccessful == false)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = deserializedContent.Error;
                         responseData.Content = null;
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     responseData.Content = deserializedContent.Content;
                     return responseData;
@@ -61,7 +61,7 @@ namespace LockerApp.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     responseData.Content = null;
                     return responseData;
@@ -70,7 +70,7 @@ namespace LockerApp.Services
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal server error";
                 responseData.Content = null;
                 return responseData;
@@ -79,14 +79,14 @@ namespace LockerApp.Services
         }
 
 
-        public async Task<ResponseData<Locker>> LoginUser(string password, string email)
+        public async Task<ResponseData<LockerInfo>> LoginUser(string password, string email)
         {
             var newLoginRequest = new LoginRequest();
             newLoginRequest.Password = password;
             newLoginRequest.Email = email;
-            var responseData = new ResponseData<Locker>
+            var responseData = new ResponseData<LockerInfo>
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
 
             var result = await this._apiWrapper.LoginUser(newLoginRequest);
@@ -95,16 +95,16 @@ namespace LockerApp.Services
             {
                 try
                 {
-                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<Locker>>(content);
-                    if (deserializedContent.IsSuccessful == false)
+                    var deserializedContent = JsonConvert.DeserializeObject<ResponseData<LockerInfo>>(content);
+                    if (deserializedContent.HasBeenSuccessful == false)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = deserializedContent.Error;
                         responseData.Content = null;
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     responseData.Content = deserializedContent.Content;
                     return responseData;
@@ -112,7 +112,7 @@ namespace LockerApp.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     responseData.Content = null;
                     return responseData;
@@ -121,7 +121,7 @@ namespace LockerApp.Services
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal server error";
                 responseData.Content = null;
                 return responseData;
@@ -139,7 +139,7 @@ namespace LockerApp.Services
 
             var responseData = new ResponseBase()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.AddNewActionForLocker(request);
             string content = await result.Content.ReadAsStringAsync();
@@ -148,28 +148,28 @@ namespace LockerApp.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    if ( !deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     return responseData;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     return responseData;
                 }
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }
@@ -182,7 +182,7 @@ namespace LockerApp.Services
             
             var responseData = new ResponseBase()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.SendBackupBatteryNotification();
             string content = await result.Content.ReadAsStringAsync();
@@ -191,41 +191,41 @@ namespace LockerApp.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseBase>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    if (!deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Error = "Internal Server Error";
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Error = null;
                     return responseData;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Error = "Deserialization Error";
                     return responseData;
                 }
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }
         }
 
-        public async Task<ResponseData<Pin>> CheckPin(Pin pin)
+        public async Task<ResponseData<Pin>> CheckPin(string pin)
         {
             var request = new CheckPinRequest();
-            request.PinToBeChecked = pin;
+            request.PinCode = pin;
 
             var responseData = new ResponseData<Pin>()
             {
-                IsSuccessful = false
+                HasBeenSuccessful = false
             };
             var result = await this._apiWrapper.CheckPin(request);
             string content = await result.Content.ReadAsStringAsync();
@@ -234,15 +234,15 @@ namespace LockerApp.Services
                 try
                 {
                     var deserializedContent = JsonConvert.DeserializeObject<ResponseData<Pin>>(content);
-                    if (!result.IsSuccessStatusCode || !deserializedContent.IsSuccessful)
+                    if (!deserializedContent.HasBeenSuccessful)
                     {
-                        responseData.IsSuccessful = false;
+                        responseData.HasBeenSuccessful = false;
                         responseData.Content = null;
                         responseData.Error = "Internal Server Error";
                         return responseData;
                     }
 
-                    responseData.IsSuccessful = true;
+                    responseData.HasBeenSuccessful = true;
                     responseData.Content = deserializedContent.Content;
                     responseData.Error = null;
                     return responseData;
@@ -250,7 +250,7 @@ namespace LockerApp.Services
                 catch (Exception e)
                 {
                     Console.WriteLine(e.StackTrace);
-                    responseData.IsSuccessful = false;
+                    responseData.HasBeenSuccessful = false;
                     responseData.Content = null;
                     responseData.Error = "Deserialization Error";
                     return responseData;
@@ -258,7 +258,7 @@ namespace LockerApp.Services
             }
             else
             {
-                responseData.IsSuccessful = false;
+                responseData.HasBeenSuccessful = false;
                 responseData.Error = "Internal Error" + result.StatusCode.ToString(); ;
                 return responseData;
             }

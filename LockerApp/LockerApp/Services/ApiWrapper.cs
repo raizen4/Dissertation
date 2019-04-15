@@ -75,7 +75,8 @@ namespace LockerApp.Services
         {
             request.LoginType = "LOCKER";
             var jsonToSend = JsonConvert.SerializeObject(request);
-            var result = await this._api.LoginUser(Constants.Headers.ContentType, jsonToSend);
+            var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
+            var result = await this._api.LoginUser(Constants.Headers.ContentType, content);
             return result;
         }
 
@@ -85,7 +86,8 @@ namespace LockerApp.Services
 
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
-            var result = await this._api.CheckPin(Constants.Headers.ContentType, jsonToSend);
+            var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
+            var result = await this._api.CheckPin(Constants.Headers.ContentType, content);
             return result;
         }
 
@@ -96,7 +98,8 @@ namespace LockerApp.Services
 
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
-            var result = await this._api.SendRequestToLocker(Constants.Headers.ContentType, jsonToSend);
+            var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
+            var result = await this._api.SendRequestToLocker(Constants.Headers.ContentType, content);
             return result;
         }
 
@@ -106,7 +109,8 @@ namespace LockerApp.Services
 
             this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.Token);
             var jsonToSend = JsonConvert.SerializeObject(req);
-            var result = await this._api.SendRequestToLocker(Constants.Headers.ContentType, jsonToSend);
+            var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
+            var result = await this._api.AddNewLocker(Constants.Headers.ContentType, content);
             return result;
         }
 

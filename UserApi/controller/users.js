@@ -120,7 +120,7 @@ router.post('/SendPowerCutNotification', jwtChecker.checkToken, async (req, res)
 router.put('/CheckPin', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
-    const userId = req.body.User.Id;
+    const userId = req.body.User.UserId;
     const pinToCheck = req.body.PinCode;
     const managerResult = await userManager.CheckPin(userId, pinToCheck);
     if (managerResult != null) {
@@ -201,7 +201,7 @@ router.put('/AddPinForLocker', jwtChecker.checkToken, async (req, res) => {
 router.post('/CreateLocker', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
-    const userId = req.body.User.Id;
+    const userId = req.body.User.UserId;
     const newLockerId = req.body.LockerId;
     const managerResult = await userManager.RegisterLocker(userId, newLockerId);
     if (managerResult) {

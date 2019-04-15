@@ -12,11 +12,11 @@ namespace LockerApp.Interfaces
 {
     public interface IFacade
     {
-        Task<ResponseData<Locker>> LoginUser(string password, string email);
+        Task<ResponseData<LockerInfo>> LoginUser(string password, string email);
 
-        Task<ResponseData<Pin>> CheckPin(Pin pin);
+        Task<ResponseData<Pin>> CheckPin(string pinCode);
 
-        Task<ResponseData<Locker>> AddNewLocker(string newLockerId);
+        Task<ResponseData<LockerInfo>> AddNewLocker(string newLockerId);
 
         Task<ResponseBase> AddNewActionForLocker(LockerActionEnum actionRequested, Pin pin);
 

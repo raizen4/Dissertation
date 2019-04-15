@@ -10,7 +10,7 @@ namespace LockerApp
     static class Constants
     {
 
-        public static Locker UserLocker{ get; set; }
+        public static LockerInfo UserLocker{ get; set; }
 
         public static string LockerConnectionString =
             "";

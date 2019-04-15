@@ -13,18 +13,18 @@ namespace LockerApp.Interfaces
     {
 
         [Post("/UserApi/users/login")]
-        Task<HttpResponseMessage> LoginUser([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] string body);
+        Task<HttpResponseMessage> LoginUser([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
 
         [Post("/UserApi/users/AddActionToLocker")]
-        Task<HttpResponseMessage> SendRequestToLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] string body);
+        Task<HttpResponseMessage> SendRequestToLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
 
         [Post("/UserApi/users/CreateLocker")]
-        Task<HttpResponseMessage> AddNewLocker(NewLockerRequest req);
+        Task<HttpResponseMessage> AddNewLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
 
 
 
-        [Post("/UserApi/users/CheckPin")]
-        Task<HttpResponseMessage> CheckPin([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] string body);
+        [Put("/UserApi/users/CheckPin")]
+        Task<HttpResponseMessage> CheckPin([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
 
 
 

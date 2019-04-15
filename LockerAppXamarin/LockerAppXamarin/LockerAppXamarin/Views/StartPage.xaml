@@ -1,0 +1,29 @@
+﻿<ContentPage
+    
+    x:Class="LockerAppXamarin.Views.StartPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    prism:ViewModelLocator.AutowireViewModel="True"
+   >
+
+    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Margin="0,80,0,60">
+       
+        <Label Text="Login" FontSize="40" Margin="0,0,0,10" HorizontalTextAlignment="Center"></Label>
+        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="0,35,0,15">
+            <Label HorizontalOptions="Start" Opacity="0.5" FontSize="20" Text="Username: "></Label>
+            <Entry Placeholder="Username goes here" Text="{Binding Username, Mode=TwoWay}" Height="50" Width="350" FontSize="25"></Entry>
+        </StackLayout>
+        <StackLayout Orientation="Vertical" HorizontalOptions="Center">
+            <Label HorizontalOptions="Start" Opacity="0.5" FontSize="20" Text="Password"></Label>
+            <Entry Placeholder="Password goes here" Height="50" Text="{Binding Password, Mode=TwoWay}" FontSize="25" Width="350"></Entry>
+        </StackLayout>
+        <StackLayout Orientation="Vertical" HorizontalOptions="Center" VerticalOptions="End" Margin="0,80,0,0">
+            <Button Height="100" TextColor="WhiteSmoke" Command="{Binding LoginCommand}" BackgroundColor="ForestGreen" FontSize="20" Width="300" Text="Link the account to this locker"></Button>
+
+        </StackLayout>
+
+        
+    </StackLayout>
+
+</ContentPage>

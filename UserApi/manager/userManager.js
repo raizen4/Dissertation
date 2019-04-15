@@ -85,11 +85,11 @@ async function signToken(user) {
   return jwtToken;
 }
 
-async function signTokenLocker(locker) {
+async function signTokenLocker(userFound, locker) {
   const jwtToken = await jwt.sign({
-    DeviceId: locker.DeviceId,
-    IotHubConnectionString: locker.IotHubConnectionString,
-    Id: locker._id,
+    LockerDeviceId: locker.DeviceId,
+    LockerIotHubConnectionString: locker.IotHubConnectionString,
+    UserId: userFound._id,
   },
   constants.secret,
   {
@@ -110,7 +110,6 @@ async function login(email, password) {
           DisplayName: foundUser.DisplayName,
           LockerId: foundUser.AccountLocker === undefined ? null : foundUser.AccountLocker.DeviceId,
           DeviceId: foundUser.DeviceId,
-
           IotHubConnectionString: foundUser.IoTHubConnectionString,
           Token: token,
         };
@@ -130,11 +129,11 @@ async function LoginLocker(email, password) {
       const matchPass = foundUser.comparePassword(password);
       if (matchPass) {
         foundUser.HashedPass = null;
-        const token = await signTokenLocker(foundUser);
+        const locker = foundUser.AccountLocker;
+        const token = await signTokenLocker(foundUser, foundUser.AccountLocker);
         const userToSendBack = {
           DeviceId: locker.DeviceId,
           IotHubConnectionString: locker.IotHubConnectionString,
-          Id: locker._id,
           Token: token,
         };
         return userToSendBack;
@@ -210,9 +209,9 @@ async function CheckPin(userId, pinCode) {
     const result = await User.findOne({ _id: userId });
 
     if (result != null) {
-      const history = result.ActivePins;
+      const currentPins = result.AccountLocker.ActivePins;
       let found = null;
-      history.forEach((Pin) => {
+      currentPins.forEach((Pin) => {
         if (Pin.Code === pinCode) {
           found = Pin;
         }

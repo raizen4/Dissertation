@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace LockerApp.ViewModels
 {
     using System.Runtime.CompilerServices;
+    using Windows.UI.Popups;
     using Interfaces;
     using MvvmDialogs;
     using Prism.Commands;
@@ -22,17 +23,7 @@ namespace LockerApp.ViewModels
         private bool anyItemSelected;
 
 
-        public bool AnyItemSelected
-        {
-            get => this.anyItemSelected;
-            set
-            {
-                this.anyItemSelected = value;
-                RaisePropertyChanged("AnyItemSelected");
-            }
-
        
-        }
        
         public string CompanySelected
         {
@@ -49,14 +40,14 @@ namespace LockerApp.ViewModels
                 if (this.companySelected != value)
                 {
                     this.companySelected = value;
-                    AnyItemSelected = true;    
+                   
                     RaisePropertyChanged();
 
                 }
                 else
                 {
                     this.companySelected = "";
-                    AnyItemSelected = false;
+                  
                 }
 
 
@@ -65,8 +56,7 @@ namespace LockerApp.ViewModels
         }
 
        
-        public DelegateCommand FinalUserChoiceCommand { get; set; }
-        public DelegateCommand CancelPressedCommand { get; set; }
+      
         public List<string> DeliveryCompanies
         {
             get => this.deliveryCompanies;
@@ -81,12 +71,7 @@ namespace LockerApp.ViewModels
             this.navService = navigationService;
             this.facade = facade;
             this.dialogService = dialogService;
-            FinalUserChoiceCommand=new DelegateCommand(Finish);
-            CancelPressedCommand = new DelegateCommand(()=>
-            {
-                this.navService.Navigate(Constants.NavigationPages.GettingStartedPage, null);
-                
-            });
+           
 
 
 
@@ -102,11 +87,6 @@ namespace LockerApp.ViewModels
             };
         }
 
-        public void Finish()
-        {
-            var dataToSendBack = this.CompanySelected;
-            this.navService.Navigate(Constants.NavigationPages.GettingStartedPage, dataToSendBack);
-            
-        }
+       
     }
 }

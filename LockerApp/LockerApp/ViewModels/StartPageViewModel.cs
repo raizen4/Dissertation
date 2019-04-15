@@ -59,7 +59,7 @@ namespace LockerApp.ViewModels
             this._facade = facade;
             this._navService = navigationService;
             this._vault = new PasswordVault();
-            LoginCommand = new DelegateCommand(TextContentDialog);
+            LoginCommand = new DelegateCommand(async()=>await this.LoginUser(Password,Username));
             var savedCredentials = this._vault.RetrieveAll();
             if (savedCredentials.Count != 0)
             {
@@ -76,21 +76,16 @@ namespace LockerApp.ViewModels
 
         }
 
-        private async void TextContentDialog()
-        {
-            var viewModel=new DeliveryCompanyPageViewModel(this._navService,this._facade,this._dialogService);
-            await this._dialogService.ShowContentDialogAsync(viewModel);
-           
-           
-        }
+       
 
          
         private async Task<bool> InitializeLocker(string pass, string user)
         {
            var lockerId ="Locker"+PinGenerator.GeneratePin();
            var lockerInit = await this._facade.AddNewLocker(lockerId);
-            if (lockerInit.IsSuccessful)
+            if (lockerInit.HasBeenSuccessful)
             {
+                Constants.UserLocker = lockerInit.Content;
                 return true;
             }
                 await this._dialogService.ShowMessageDialogAsync("Couldn't register locker. Please try again", "Error", new[]
@@ -116,14 +111,18 @@ namespace LockerApp.ViewModels
               
                 return;
             }
+
+
             var loginResult = await this._facade.LoginUser(pass, user);
-            if (loginResult.IsSuccessful)
+            if (loginResult.HasBeenSuccessful)
             {
+                Constants.Token = loginResult.Content.Token;
+                Constants.UserLocker = loginResult.Content;
                 var savedCredentials = this._vault.RetrieveAll();
                 if (savedCredentials.Count != 0)
                 {
-                    Constants.Token = loginResult.Content.Token;
-                    Constants.UserLocker = loginResult.Content;
+                   
+                   
                     await this._dialogService.ShowMessageDialogAsync("Auto Logging has been successful", "Successful", new[]
                     {
                         new UICommand { Label = "OK" },
@@ -143,7 +142,6 @@ namespace LockerApp.ViewModels
                     credentials.Resource = PreferencesEnum.AppCredentials;
                     credentials.Password = pass;
                     credentials.UserName = user;
-                    Constants.Token = loginResult.Content.Token;
                     this._vault.Add(credentials);
                     await this._dialogService.ShowMessageDialogAsync("The account has been linked to this locker.", "Linked", new[]
                     {
@@ -168,15 +166,7 @@ namespace LockerApp.ViewModels
 
         }
 
-        /// <inheritdoc />
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
-        {
-            base.OnNavigatedTo(e, viewModelState);
-
-
-            string company = e.Parameter as string;
-            
-
-        }
+       
+       
     }
 }
