@@ -1,0 +1,41 @@
+﻿<ContentPage
+    x:Class="XamarinLockerApp.Views.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    NavigationPage.HasNavigationBar="False"
+    >
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30*"></RowDefinition>
+            <RowDefinition Height="50*"></RowDefinition>
+            <RowDefinition Height="20*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackLayout Grid.Column="0" Grid.Row="0" Margin="0,120,0,0">
+
+            <Label HorizontalOptions="Center" TextColor="Black" FontSize="40"  VerticalOptions="Center" Text="PLEASE INSERT THE PIN IN THE FOLLOWING BOX"></Label>
+
+        </StackLayout>
+        <StackLayout Grid.Column="0" Grid.Row="1" Margin="0,80,0,0">
+
+            <Entry HorizontalOptions="Center" Width="520" Text="{Binding Pin, Mode=TwoWay}" MaxLength="6" Placeholder="123456" TextColor="Black" FontSize="150"  VerticalOptions="Center" ></Entry>
+
+        </StackLayout>
+        <StackLayout Grid.Column="0" Grid.Row="2" Margin="0,0,0,0">
+           
+                <Button BackgroundColor="ForestGreen" 
+                        TextColor="WhiteSmoke" Text="Open Locker using this pin" FontSize="25" HeightRequest="120" WidthRequest="350" VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Command="{Binding SendPinForCheckingCommand}"></Button>
+
+ 
+        </StackLayout>
+    </Grid>
+   
+</ContentPage>

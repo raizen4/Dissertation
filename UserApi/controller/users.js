@@ -91,12 +91,12 @@ router.post('/RemovePinForLocker', jwtChecker.checkToken, async (req, res) => {
 });
 
 
-router.post('/SendPowerCutNotification', jwtChecker.checkToken, async (req, res) => {
+router.put('/SendPowerStatusChanged', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
-    const email = req.body.User.Email;
-    const lockerId = req.body.User.AccountLocker.DeviceId;
-    const managerResult = await userManager.SendPowerCutNotification(email, lockerId);
+    const phone = req.body.User.Phone;
+    const currentPowerStatus = req.body.PowerStatus;
+    const managerResult = await userManager.SendPowerStatusChanged(phone, currentPowerStatus);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;

@@ -144,9 +144,13 @@ async function LoginLocker(email, password) {
   }
   return null;
 }
-async function SendPowerCutNotification(email, lockerId) {
+async function SendPowerStatusChanged(phone, NewStatus) {
   try {
-    await helpers.SendPowerCutNotificationToOwner(email, lockerId);
+    if (NewStatus === constants.PowerStatuses.MainPower) {
+      await helpers.GenerateSms(phone, constants.SmsActions.PowerStatusChangedToMain, null, null, null);
+    } else {
+      await helpers.GenerateSms(phone, constants.SmsActions.PowerStatusChangedToBackup, null, null, null);
+    }
   } catch (exception) {
     console.log(exception);
   }
@@ -329,5 +333,5 @@ module.exports = {
   CheckPin,
   RegisterLocker,
   LoginLocker,
-  SendPowerCutNotification,
+  SendPowerStatusChanged,
 };

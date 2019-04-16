@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable no-undef */
 const NewRouter = require('restify-router').Router;
 const twilio = require('twilio');
@@ -39,6 +40,16 @@ router.post('/SendSms', async (req, res) => {
       } else {
         smsBody = `Hi, your parcel(s) has been delivered by ${deliveryCompany} at ${currentDate} using the following pin ${pinCode}`;
       }
+      break;
+    }
+    case Constants.SmsActions.PowerStatusChangedToMain: {
+      smsBody = 'Hi, main power was restored. The locker is running normally.';
+
+      break;
+    }
+    case Constants.SmsActions.PowerStatusChangedToBackup: {
+      smsBody = 'Hi, there has been a power outrage and the locker is on the backup battery. Please ENSURE that your parcels are picked up in a maximum of 6 hours. ';
+
       break;
     }
     default:

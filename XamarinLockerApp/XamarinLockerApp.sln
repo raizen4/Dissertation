@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinLockerApp", "XamarinLockerApp\XamarinLockerApp\XamarinLockerApp.csproj", "{2437C070-6445-4C06-80C7-D6C5E287259A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinLockerApp.Android", "XamarinLockerApp\XamarinLockerApp.Android\XamarinLockerApp.Android.csproj", "{873A5D47-18DE-48DC-A6C5-72E57059768D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2437C070-6445-4C06-80C7-D6C5E287259A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2437C070-6445-4C06-80C7-D6C5E287259A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2437C070-6445-4C06-80C7-D6C5E287259A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2437C070-6445-4C06-80C7-D6C5E287259A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{873A5D47-18DE-48DC-A6C5-72E57059768D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{873A5D47-18DE-48DC-A6C5-72E57059768D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{873A5D47-18DE-48DC-A6C5-72E57059768D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{873A5D47-18DE-48DC-A6C5-72E57059768D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{873A5D47-18DE-48DC-A6C5-72E57059768D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{873A5D47-18DE-48DC-A6C5-72E57059768D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68A377BE-5A5D-4BEA-AC0A-94FCE03583B5}
+	EndGlobalSection
+EndGlobal
