@@ -13,6 +13,7 @@ namespace XamarinLockerApp.Views
     /// </summary>
     public sealed partial class MainPage : ContentPage
     {
+       
         private MainPageViewModel ViewModel => BindingContext as MainPageViewModel;
         public MainPage()
         {
@@ -27,5 +28,7 @@ namespace XamarinLockerApp.Views
                 // Handle exception }
             }
         }
+        
+      
     }
 }

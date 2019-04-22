@@ -5,7 +5,7 @@
 
     class ActionRequest
     {
-        public LockerActionEnum Action { get; set; }
+        public LockerActionEnum ActionType { get; set; }
         public Pin Pin { get; set; } 
 
 

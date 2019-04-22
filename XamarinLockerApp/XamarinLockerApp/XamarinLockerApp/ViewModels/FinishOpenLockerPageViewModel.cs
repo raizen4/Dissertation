@@ -5,6 +5,7 @@
     using Prism.Commands;
     using Prism.Navigation;
     using Views;
+    using Xamarin.Forms;
 
     class FinishOpenLockerPageViewModel : ViewModelBase
     {
@@ -33,10 +34,12 @@
             this._navService = navigationService;
 
      
-            FinishCommand = new DelegateCommand(() =>this._navService.NavigateAsync(nameof(MainPage),null));
+            FinishCommand = new DelegateCommand(async() =>await this._navService.NavigateAsync(nameof(FinishCloseLockerPage),null));
             this.facade = facade;
-            Counter = 200;
-            //InitializeTimer();
+            Counter = 30;
+            IsLoading = false;
+
+            InitializeTimer();
 
         }
 
@@ -52,25 +55,25 @@
         {
             while (true)
             {
-                if (Counter != 0)
+                IsLoading = true;
+                var openLockerResult = await this.facade.OpenLocker();
+                IsLoading = false;
+                if (openLockerResult.HasBeenSuccessful)
                 {
-                    Thread.Sleep(2000);
-                    while (Counter != 0)
-                    {
-                        Thread.Sleep(1000);
-                        Counter--;
-                    }
+                   
+                        Thread.Sleep(2000);
+                        while (Counter >0)
+                        {
+                            Thread.Sleep(1000);
+                            Counter--;
+                        }
+                        Device.BeginInvokeOnMainThread(async()=> await this._navService.NavigateAsync(nameof(FinishCloseLockerPage))); 
+                    
+              
+               
                 }
                 else
                 {
-                    IsLoading = true;
-                    var closedLockerResult = await this.facade.CloseLocker();
-                    IsLoading = false;
-                    if (closedLockerResult.HasBeenSuccessful)
-                    {
-                        await this._navService.NavigateAsync(nameof(FinishCloseLockerPage));
-                    }
-
                     continue;
                 }
 

@@ -32,7 +32,7 @@
         {
             try
             {
-                LockerConnectionString = Constants.LockerConnectionString;
+                LockerConnectionString = Constants.UserLocker.IotHubConnectionString;
                 LockerId = Constants.UserLocker.DeviceId;
             }
             catch (Exception e)

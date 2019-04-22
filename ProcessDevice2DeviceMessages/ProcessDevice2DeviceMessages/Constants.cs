@@ -6,7 +6,7 @@ namespace ProcessDevice2DeviceMessages
 {
     public static class Constants
     {
-        public static string UserApiEndpoint ="192.168.88.30:4000";
+        public static string UserApiEndpoint ="http://192.168.88.30:4000";
 
         public class Headers
         {

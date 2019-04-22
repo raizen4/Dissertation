@@ -2,13 +2,19 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="XamarinLockerApp.Views.FinishCloseLockerPage"
              NavigationPage.HasNavigationBar="False">
 
-   
 
-    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                        AnimationType="Animation4"
+                                        AnimationContentHeightRequest="100"
+                                        AnimationContentWidthRequest="100"
+                                        IsBusy="{Binding IsLoading}">
+        <primitives:RadBusyIndicator.Content >
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="80*"></RowDefinition>
@@ -35,4 +41,12 @@
         </StackLayout>
         <Label HorizontalOptions="Center" Margin="0,0,0,20" Grid.Row="1" Grid.Column="0" FontSize="35" Text="Thank you for using this service"></Label>
     </Grid>
+        </primitives:RadBusyIndicator.Content>
+        <primitives:RadBusyIndicator.BusyContent>
+            <Label HorizontalOptions="Center" 
+                   Text="Loading..."
+                   VerticalOptions="Center" 
+            />
+        </primitives:RadBusyIndicator.BusyContent>
+    </primitives:RadBusyIndicator>
 </ContentPage>

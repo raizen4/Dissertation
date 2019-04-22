@@ -6,6 +6,8 @@ using Prism.Ioc;
 
 namespace XamarinLockerApp.Droid
 {
+    using System;
+    using Prism.Services;
 
     [Activity(Label = "XamarinLockerApp", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
@@ -19,7 +21,12 @@ namespace XamarinLockerApp.Droid
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
             LoadApplication(new App(new AndroidInitializer()));
+          
+
+         
         }
+
+       
     }
 
     public class AndroidInitializer : IPlatformInitializer

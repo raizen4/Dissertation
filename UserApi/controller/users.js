@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-undef */
 const NewRouter = require('restify-router').Router;
 const userManager = require('../manager/userManager');
@@ -94,9 +95,9 @@ router.post('/RemovePinForLocker', jwtChecker.checkToken, async (req, res) => {
 router.put('/SendPowerStatusChanged', jwtChecker.checkToken, async (req, res) => {
   try {
     // const parsedBody = JSON.parse(req.body);
-    const phone = req.body.User.Phone;
+    const userId = req.body.User.UserId;
     const currentPowerStatus = req.body.PowerStatus;
-    const managerResult = await userManager.SendPowerStatusChanged(phone, currentPowerStatus);
+    const managerResult = await userManager.SendPowerStatusChanged(userId, currentPowerStatus);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;
@@ -148,11 +149,26 @@ router.put('/CheckPin', jwtChecker.checkToken, async (req, res) => {
 
 router.put('/AddNewActionForLocker', jwtChecker.checkToken, async (req, res) => {
   try {
-    // const parsedBody = JSON.parse(req.body);
-    const user = req.body.User;
+    // small issue here which will be solved later. The userObject is sent from the phone where I have all
+    // the data in the token, the userId is sent by the locker when it tries to add a new action and so I
+    // need to retrieve the whole user before accessing the method
+    let userObject = req.body.User;
+    if (userObject.Id === undefined) {
+      const userId = req.body.User.UserId;
+      const userFound = await userManager.GetUser(userId);
+      if (userFound != null) {
+        userObject = userFound;
+        userObject.Id = userFound.id;
+      } else {
+        const newResp = new BaseResponse();
+        newResp.HasBeenSuccessful = false;
+        newResp.Errors = 'Internal server error';
+        res.send(newResp);
+      }
+    }
     const action = req.body.ActionType;
     const pin = req.body.Pin;
-    const managerResult = await userManager.AddNewActionForLocker(user, action, pin);
+    const managerResult = await userManager.AddNewActionForLocker(userObject, action, pin);
     if (managerResult) {
       const newResp = new BaseResponse();
       newResp.HasBeenSuccessful = true;

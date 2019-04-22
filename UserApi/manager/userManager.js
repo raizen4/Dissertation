@@ -144,12 +144,16 @@ async function LoginLocker(email, password) {
   }
   return null;
 }
-async function SendPowerStatusChanged(phone, NewStatus) {
+async function SendPowerStatusChanged(userId, NewStatus) {
   try {
-    if (NewStatus === constants.PowerStatuses.MainPower) {
-      await helpers.GenerateSms(phone, constants.SmsActions.PowerStatusChangedToMain, null, null, null);
-    } else {
-      await helpers.GenerateSms(phone, constants.SmsActions.PowerStatusChangedToBackup, null, null, null);
+    const foundUser = await User.findById(userId);
+    if (foundUser != null) {
+      const phone = foundUser.Phone;
+      if (NewStatus === constants.PowerStatuses.MainPower) {
+        await helpers.GenerateSms(phone, constants.SmsActions.PowerStatusChangedToMain, undefined, undefined, undefined);
+      } else {
+        await helpers.GenerateSms(phone, constants.SmsActions.PowerStatusChangedToBackup, undefined, undefined, undefined);
+      }
     }
   } catch (exception) {
     console.log(exception);
@@ -245,18 +249,37 @@ async function CheckPin(userId, pinCode) {
   }
 }
 */
+
+async function GetUser(userId) {
+  try {
+    const result = await User.findOne({ _id: userId });
+    if (result != null) {
+      return result;
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
 async function AddNewActionForLocker(user, action, pin) {
   try {
     const currentDate = new Date().toISOString()
       .replace(/T/, ' ') // replace T with a space
       .replace(/\..+/, '');
     let newAction = '';
+    let userId = '';
+    if (user.Id != null) {
+      userId = user.Id;
+    } else {
+      userId = user.id;
+    }
 
     switch (action) {
-    case constants.Actions.Opened:
+    case constants.Actions.UserAppOpened:
+
       newAction = `Opened at ${currentDate}`;
       break;
-    case constants.Actions.Closed:
+    case constants.Actions.UserAppClosed:
       newAction = `Closed at ${currentDate}`;
       break;
     case constants.Actions.Delivered:
@@ -268,26 +291,32 @@ async function AddNewActionForLocker(user, action, pin) {
     default:
       break;
     }
+
     const LockerAction = {
       ActionType: action,
       Message: newAction,
     };
     const result = await User.findByIdAndUpdate(
-      user.Id,
+      userId,
       {
         $push: { 'AccountLocker.History': LockerAction },
       },
     );
     if (result != null) {
-      await helpers.LockerActionSucceded(user.Email, action, pin.Code, pin.ParcelContactDetails.PickerName, pin.ParcelContactDetails.DeliveryCompanyName);
-      if (action === constants.Actions.PickedUp) {
-        await helpers.GenerateSms(user.Phone, constants.SmsActions.PickedUp, undefined, pin.ParcelContactDetails.PickerName, pin.Code);
-      } else {
-        await helpers.GenerateSms(user.Phone, constants.SmsActions.Delivered, pin.ParcelContactDetails.DeliveryCompanyName, undefined, pin.Code);
+      if (action !== constants.Actions.UserAppOpened && action !== constants.Actions.UserAppClosed) {
+        await helpers.LockerActionSucceded(user.Email, action, pin.Code, pin.ParcelContactDetails.PickerName, pin.ParcelContactDetails.DeliveryCompanyName);
+        if (action === constants.Actions.PickedUp) {
+          await helpers.GenerateSms(user.Phone, constants.SmsActions.PickedUp, undefined, pin.ParcelContactDetails.PickerName, pin.Code);
+        } else {
+          await helpers.GenerateSms(user.Phone, constants.SmsActions.Delivered, pin.ParcelContactDetails.DeliveryCompanyName, undefined, pin.Code);
+        }
+        await RemovePin(user.Id, pin.Code);
       }
-      await RemovePin(user.Id, pin.Code);
+
+
       return true;
     }
+
     return false;
   } catch (err) {
     return false;
@@ -334,4 +363,5 @@ module.exports = {
   RegisterLocker,
   LoginLocker,
   SendPowerStatusChanged,
+  GetUser,
 };

@@ -130,7 +130,7 @@
 
 
             var request = new ActionRequest();
-            request.Action = actionRequested;
+            request.ActionType = actionRequested;
             request.Pin = pin;
 
             var responseData = new ResponseBase()
@@ -172,13 +172,16 @@
         }
 
         /// <inheritdoc />
-        public async Task<ResponseBase> SendPowerStatusChangedNotification()
+        public async Task<ResponseBase> SendPowerStatusChangedNotification(PowerTypeEnum powerStatus)
         {
             var responseData = new ResponseBase()
             {
                 HasBeenSuccessful = false
             };
-            var result = await this._apiWrapper.SendPowerStatusChangedNotification();
+
+            var request=new NewPowerStatusRequest();
+            request.PowerStatus = powerStatus;
+            var result = await this._apiWrapper.SendPowerStatusChangedNotification(request);
             string content = await result.Content.ReadAsStringAsync();
             if (result.StatusCode == HttpStatusCode.OK)
             {

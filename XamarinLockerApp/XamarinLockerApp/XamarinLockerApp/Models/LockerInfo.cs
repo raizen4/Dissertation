@@ -6,5 +6,7 @@
         public string DeviceId { get; set; }
      
         public string Token { get; set; }
+
+        public  string PowerStatus { get; set; }
     }
 }

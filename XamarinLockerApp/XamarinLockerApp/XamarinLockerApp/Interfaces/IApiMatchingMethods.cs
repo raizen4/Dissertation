@@ -10,7 +10,7 @@
         [Post("/UserApi/users/login")]
         Task<HttpResponseMessage> LoginUser([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
 
-        [Post("/UserApi/users/AddActionToLocker")]
+        [Put("/UserApi/users/AddNewActionForLocker")]
         Task<HttpResponseMessage> SendRequestToLocker([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
 
         [Post("/UserApi/users/CreateLocker")]
@@ -40,6 +40,6 @@
 
 
         [Put("/UserApi/users/SendPowerStatusChanged")]
-        Task<HttpResponseMessage> SendPowerStatusChangedNotification();
+        Task<HttpResponseMessage> SendPowerStatusChangedNotification([Header("Accept")] string applicationJson, [Body(BodySerializationMethod.Json)] StringContent body);
     }
 }

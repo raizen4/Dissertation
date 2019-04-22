@@ -3,11 +3,17 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
     prism:ViewModelLocator.AutowireViewModel="True"
     NavigationPage.HasNavigationBar="False">
 
-
-    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                 AnimationType="Animation4"
+                                 AnimationContentHeightRequest="100"
+                                 AnimationContentWidthRequest="100"
+                                 IsBusy="{Binding IsLoading}">
+        <primitives:RadBusyIndicator.Content >
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="80*"></RowDefinition>
@@ -32,4 +38,12 @@
         <Button Margin="0,0,0,40" Grid.Row="1" Grid.Column="0" BackgroundColor="ForestGreen" FontSize="24"  HorizontalOptions="Center"
                 WidthRequest="350" HeightRequest="150"  Command="{Binding FinishCommand}" Text="Finish Delivery/Picking Up"></Button>
     </Grid>
+        </primitives:RadBusyIndicator.Content>
+        <primitives:RadBusyIndicator.BusyContent>
+            <Label HorizontalOptions="Center" 
+                   Text="Loading..."
+                   VerticalOptions="Center" 
+            />
+        </primitives:RadBusyIndicator.BusyContent>
+    </primitives:RadBusyIndicator>
 </ContentPage>

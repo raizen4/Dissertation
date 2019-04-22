@@ -11,6 +11,7 @@
     using Prism.Services;
     using Views;
     using Xamarin.Essentials;
+    using Xamarin.Forms;
 
     public class StartPageViewModel :ViewModelBase
     {
@@ -53,7 +54,7 @@
             this._facade = facade;
             this._navService = navigationService;
          
-            LoginCommand = new DelegateCommand(async()=> await this._navService.NavigateAsync("DeliveryCompanyPage"));
+            LoginCommand = new DelegateCommand(async()=> await this.LoginUser(Password,Username));
           
             if (SecureStorage.GetAsync("PASSWORD").GetAwaiter().GetResult() != null)
             {
@@ -62,8 +63,9 @@
 
                  Password =  SecureStorage.GetAsync("PASSWORD").GetAwaiter().GetResult(); 
                  Username = SecureStorage.GetAsync("USERNAME").GetAwaiter().GetResult();
+                 var autoLoginCommand = new Command(async () => await LoginUser(Password, Username));
+                 autoLoginCommand.Execute(null);
 
-                LoginUser(Password, Username);
 
             }
           
@@ -77,7 +79,9 @@
         private async Task<bool> InitializeLocker(string pass, string user)
         {
            var lockerId ="Locker"+PinGenerator.GeneratePin();
+            IsLoading = true;
            var lockerInit = await this._facade.AddNewLocker(lockerId);
+            IsLoading = false;
             if (lockerInit.HasBeenSuccessful)
             {
                 Constants.UserLocker = lockerInit.Content;
@@ -104,8 +108,9 @@
                 return;
             }
 
-
+            IsLoading = true;
             var loginResult = await this._facade.LoginUser(pass, user);
+            IsLoading = false;
             if (loginResult.HasBeenSuccessful)
             {
                 Constants.Token = loginResult.Content.Token;
@@ -114,11 +119,7 @@
                 if (await SecureStorage.GetAsync("PASSWORD")!=null)
                 {
 
-                    await this._dialogService.DisplayAlertAsync("Successful",
-                        "Auto Logging has been successful", "OK"
-                    );
-
-                 
+                
                   
                    await this._navService.NavigateAsync(nameof(MainPage), null);
                 }

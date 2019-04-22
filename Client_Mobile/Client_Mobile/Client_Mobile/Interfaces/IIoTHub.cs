@@ -18,7 +18,7 @@ namespace Client_Mobile.Interfaces
         Task<bool> Unlock(string deviceId, LockerActionEnum action);
      
 
-        Task<Message> GetPendingMessages();
+        Task<LockerMessage> GetPendingMessages();
 
 
 

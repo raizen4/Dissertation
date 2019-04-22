@@ -53,28 +53,66 @@
 
                                             <StackLayout Orientation="Vertical">
 
-                                                <StackLayout Orientation="Horizontal">
+                                                <StackLayout Orientation="Horizontal" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}">
                                                     <Label FontSize="12" Text="Pin generated to be used by: "></Label>
                                                     <Label FontSize="12" Text="{Binding ParcelContactDetails.PickerName}"></Label>
 
                                                 </StackLayout>
                                                 <StackLayout HeightRequest="50"  HorizontalOptions="FillAndExpand">
-                                                            <Grid>
-                                                               
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="100*"></RowDefinition>
-                                                                </Grid.RowDefinitions>
 
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="50*"></ColumnDefinition>
-                                                                    <ColumnDefinition Width="50*"></ColumnDefinition>
-                                                                    </Grid.ColumnDefinitions>
-                                                        <Button  IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}" HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" TextColor="White" Text="Edit Details" BackgroundColor="CornflowerBlue"></Button>
-                                                        <Button Command="{Binding Path=BindingContext.RemovePinCommand, Source={x:Reference CurrentPinsPageLayout}}"
-                                                                CommandParameter="{Binding}"  HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="1" BackgroundColor="Red" TextColor="White" Text="Remove"></Button>
-                                                    </Grid>
 
-                                                  
+                                                              <StackLayout BackgroundColor="Aquamarine" Orientation="Horizontal" HorizontalOptions="FillAndExpand" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForCourier}}">
+                                                                    <Grid>
+
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="100*"></RowDefinition>
+                                                                        </Grid.RowDefinitions>
+
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="100*"></ColumnDefinition>
+                                                                          
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                  
+                                                                    <Button Command="{Binding Path=BindingContext.RemovePinCommand,
+                                                                            Source={x:Reference CurrentPinsPageLayout}}"
+                                                                            CommandParameter="{Binding}"  HorizontalOptions="FillAndExpand"  VerticalOptions="FillAndExpand"
+                                                                            Grid.Row="0" Grid.Column="0" BackgroundColor="Red" WidthRequest="400" TextColor="White" Text="Remove">
+
+                                                                    </Button>
+
+                                                                    </Grid>
+
+                                                            </StackLayout>
+                                                    <StackLayout Orientation="Horizontal" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}">
+                                                        <Grid>
+
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="100*"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="50*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="50*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Button 
+                                                                             HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" TextColor="White" Text="Edit Details"
+                                                                             BackgroundColor="CornflowerBlue"></Button>
+                                                            <Button Command="{Binding Path=BindingContext.RemovePinCommand,
+                                                                            Source={x:Reference CurrentPinsPageLayout}}"
+                                                                            CommandParameter="{Binding}"  HorizontalOptions="FillAndExpand" 
+                                                                            Grid.Row="0" Grid.Column="1" BackgroundColor="Red" TextColor="White" Text="Remove">
+
+                                                            </Button>
+
+                                                        </Grid>
+
+                                                    </StackLayout>
+
+
+
+
 
                                                 </StackLayout>
                                             </StackLayout>

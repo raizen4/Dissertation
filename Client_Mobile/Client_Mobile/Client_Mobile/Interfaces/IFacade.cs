@@ -23,7 +23,7 @@ namespace Client_Mobile.Interfaces
         Task<ResponseData<List<Pin>>> GetActivePins();
 
       
-        Task<Message> GetPendingMessagesFromHub();
+        Task<LockerMessage> GetPendingMessagesFromHub();
 
         Task<ResponseBase> AddPinForLocker(Pin newPin);
 

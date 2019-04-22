@@ -16,7 +16,7 @@ namespace Client_Mobile.Helpers
             byte[] buffer = new byte[sizeof(ulong)];
             cryptoRng.GetBytes(buffer);
             var num = BitConverter.ToUInt64(buffer, 0);
-            var pin = num % 100000;
+            var pin = num % 1000000;
             return pin.ToString();
         }
     }

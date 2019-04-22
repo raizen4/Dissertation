@@ -33,7 +33,7 @@ namespace Client_Mobile.ViewModels
         }
 
         public DelegateCommand<Pin> RemovePinCommand { get; set; }
-        public DelegateCommand BackCommand;
+        public DelegateCommand BackCommand { get; set; }
 
         public CurrentPinsPageViewModel(INavigationService navigationService, IFacade facade,
             IPageDialogService dialogService) : base(navigationService, facade, dialogService)

@@ -66,7 +66,7 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
     
 
-        public async Task<Message> GetPendingMessagesFromHub()
+        public async Task<LockerMessage> GetPendingMessagesFromHub()
         {
             try
             {

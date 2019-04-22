@@ -52,7 +52,7 @@
 
             <StackLayout Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="StartAndExpand"  >
                 <Label TextColor="Black" HorizontalOptions="StartAndExpand" Text="Password:" VerticalOptions="Center" FontSize="17" FontAttributes="Bold"></Label>
-                <Entry TextColor="Black"
+                <Entry TextColor="Black" IsPassword="True"
                        WidthRequest="350"
                        HorizontalOptions="Center" 
                        Opacity="0.8" 

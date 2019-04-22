@@ -108,9 +108,13 @@
         }
 
         /// <inheritdoc />
-        public async Task<HttpResponseMessage> SendPowerStatusChangedNotification()
+        public async Task<HttpResponseMessage> SendPowerStatusChangedNotification(NewPowerStatusRequest req)
         {
-            var result = await this._api.SendPowerStatusChangedNotification();
+
+            this._client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Constants.Token);
+            var jsonToSend = JsonConvert.SerializeObject(req);
+            var content = new StringContent(jsonToSend, Encoding.UTF8, Constants.Headers.ContentType);
+            var result = await this._api.SendPowerStatusChangedNotification(Constants.Headers.ContentType, content);
             return result;
         }
 

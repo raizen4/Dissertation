@@ -16,9 +16,11 @@ namespace Client_Mobile.ViewModels
     using Microsoft.Azure.Devices.Client;
     using Models;
     using Newtonsoft.Json;
+    using Plugin.Toasts;
     using Prism.Services;
     using Services;
     using Xamarin.Forms;
+    using DependencyService = Xamarin.Forms.DependencyService;
 
     public class MainPageViewModel : ViewModelBase
     {
@@ -26,6 +28,8 @@ namespace Client_Mobile.ViewModels
         private readonly IPageDialogService _dialogService;
         private readonly INavigationService _navService;
         private int _poolingRate = 10000;
+        private Thread listenForMessagesThread;
+
 
         public string DisplayName => Constants.CurrentLoggedInUser.DisplayName;
         public DelegateCommand LockCommand { get; set; }
@@ -49,10 +53,32 @@ namespace Client_Mobile.ViewModels
             NavigateToPinGenerator = new DelegateCommand(async()=>await SendNewPin());
             NavigateToCurrentPins=new DelegateCommand(async()=>await this._navService.NavigateAsync(nameof(Views.CurrentPinsPage)));
             LogOut = new DelegateCommand(async () => await this.OnBackButtonPressed());
-            this.ListenForMessages(this._poolingRate);
+            this.listenForMessagesThread = new Thread(async () => await ListenForMessages(this._poolingRate));
+            this.listenForMessagesThread.Start();
+          
         }
 
+        /// <inheritdoc />
+        public override void OnNavigatedFrom(INavigationParameters parameters)
+        {
+            base.OnNavigatedFrom(parameters);
+            Destroy();
+        }
 
+        public override void Destroy()
+        {
+            base.Destroy();
+            try
+            {
+                this.listenForMessagesThread.Abort();
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+        }
         public async void Lock()
         {
             try
@@ -82,7 +108,7 @@ namespace Client_Mobile.ViewModels
         {
             try
             {
-                var result = await this._facade.Lock();
+                var result = await this._facade.Unlock();
                 if (result)
                 {
                     await this._dialogService.DisplayAlertAsync("Successful", "Message successfully sent!",
@@ -139,7 +165,43 @@ namespace Client_Mobile.ViewModels
                 return false;
             }
         }
+        public async Task ListenForMessages(int poolingRate)
+        {
+            while (true)
+            {
+                var newMesasgeReceived = await this._facade.GetPendingMessagesFromHub();
+                if (newMesasgeReceived != null &&
+                    newMesasgeReceived.TargetedDeviceId == Constants.CurrentLoggedInUser.DeviceId)
+                {
+                    if (newMesasgeReceived.Action == LockerActionEnum.UserAppClosed)
+                    {
+                        var notificator = DependencyService.Get<IToastNotificator>();
 
+                        var options = new NotificationOptions()
+                        {
+                            Title = "Closed",
+                            Description = "Locker successfully closed"
+                        };
+
+                     await notificator.Notify(options);
+                    }
+                    else if (newMesasgeReceived.Action == LockerActionEnum.UserAppOpened)
+                    {
+                        var notificator = DependencyService.Get<IToastNotificator>();
+
+                        var options = new NotificationOptions()
+                        {
+                            Title = "Opened",
+                            Description = "Locker will be opened for 30 seconds after which it will automatically close."
+                        };
+
+                       await notificator.Notify(options);
+                    }
+                }
+
+                Thread.Sleep(poolingRate);
+            }
+        }
 
     }
 }

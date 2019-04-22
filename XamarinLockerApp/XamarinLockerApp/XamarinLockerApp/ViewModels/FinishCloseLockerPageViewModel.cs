@@ -4,10 +4,12 @@
 	using Interfaces;
 	using Prism.Navigation;
 	using Views;
+	using Xamarin.Forms;
 
 	public class FinishCloseLockerPageViewModel : ViewModelBase
 	{
 		private INavigationService _navService;
+		private IFacade facade;
 		private int _counter;
 
 
@@ -25,9 +27,12 @@
 		public FinishCloseLockerPageViewModel(INavigationService navigationService, IFacade facade) : base(navigationService, facade)
 		{
 			
-			Counter = 100;
+			Counter = 10;
 			this._navService = navigationService;
+			IsLoading = false;
+			this.facade = facade;
 			InititalizeTimer();
+			
 
 
 
@@ -41,16 +46,26 @@
         }
 		private async void Run()
 		{
+			IsLoading = true;
+			var lockerClosedResult = await this.facade.CloseLocker();
+			IsLoading = false;
+			if (lockerClosedResult.HasBeenSuccessful)
+			{
 			Thread.Sleep(2000);
-			while (Counter != 0)
+			while (Counter > 0)
 			{
 				this.Counter--;
                 Thread.Sleep(1000);
 
 			
             }
-
-			await this._navService.NavigateAsync(nameof(MainPage));
+				Device.BeginInvokeOnMainThread(async () => await this._navService.NavigateAsync(nameof(MainPage)));
+            }
+			else
+			{
+				Run();
+			}
+          
 
 		}
 

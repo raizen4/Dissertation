@@ -60,12 +60,8 @@
             {
                 InitializeConnectionToHub();
             }
-            LockerMessage req = new LockerMessage();
-            req.Action = lockerMessage.Action;
-            req.TargetedDeviceId = lockerMessage.TargetedDeviceId;
-            req.IotHubEndpoint = IotEndpointsEnum.D2DEndpoint;
-            var messageString = JsonConvert.SerializeObject(req);
-
+            lockerMessage.HasBeenSuccessful = true;
+            var messageString = JsonConvert.SerializeObject(lockerMessage);
             byte[] messageBytes = Encoding.UTF8.GetBytes(messageString);
             var message = new Message(messageBytes);
             message.Properties.Add("IotHubEndpoint", IotEndpointsEnum.D2DEndpoint);

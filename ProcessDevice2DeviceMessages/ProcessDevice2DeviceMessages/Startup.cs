@@ -6,7 +6,6 @@ using Microsoft.Azure.WebJobs.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProcessDevice2DeviceMessages;
-using ProcessDevice2DeviceMessages.Services;
 using System;
 using Willezone.Azure.WebJobs.Extensions.DependencyInjection;
 
@@ -32,8 +31,6 @@ namespace ProcessDevice2DeviceMessages
         {
             var services = new ServiceCollection();
             
-            services.AddSingleton<IFacade, Facade>();
-            services.AddSingleton<IApiWrapper, ApiWrapper>();
             return services.BuildServiceProvider();
         }
     }

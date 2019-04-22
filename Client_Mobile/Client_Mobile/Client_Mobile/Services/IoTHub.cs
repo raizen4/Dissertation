@@ -134,11 +134,11 @@ namespace Client_Mobile.Services
         /// <inheritdoc />
         
         /// <inheritdoc />
-        public async Task<Message> GetPendingMessages()
+        public async Task<LockerMessage> GetPendingMessages()
         {
             Message receivedMessage;
+            LockerMessage normalizedMessage = new LockerMessage();
             string messageData;
-
 
             if (this._deviceClient == null)
             {
@@ -154,10 +154,11 @@ namespace Client_Mobile.Services
                 {
 
                     messageData = Encoding.UTF8.GetString(receivedMessage.GetBytes());
-                    await this._deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false); 
+                    normalizedMessage = JsonConvert.DeserializeObject<LockerMessage>(messageData);
+                    await _deviceClient.CompleteAsync(receivedMessage).ConfigureAwait(false);
                     Console.WriteLine(messageData);
-                    return receivedMessage;
-                }
+                    return normalizedMessage;
+            }
 
             return null;
 

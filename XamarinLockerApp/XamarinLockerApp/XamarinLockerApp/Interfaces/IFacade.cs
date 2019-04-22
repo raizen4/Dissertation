@@ -15,11 +15,13 @@
 
         Task<ResponseBase> AddNewActionForLocker(LockerActionEnum actionRequested, Pin pin);
 
-        Task<ResponseBase> SendPowerStatusChangedNotification();
+        Task<ResponseBase> SendPowerStatusChangedNotification(PowerTypeEnum newPowerStatus);
 
 
         Task<ResponseData<PowerTypeEnum?>> GetLockerPowerStatus();
         Task<ResponseBase> CloseLocker();
+
+        Task<ResponseBase> OpenLocker();
 
         Task<LockerMessage> GetPendingMessagesFromHub();
 

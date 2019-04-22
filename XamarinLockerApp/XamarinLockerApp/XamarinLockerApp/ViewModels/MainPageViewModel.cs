@@ -14,6 +14,7 @@
     using Prism.Services;
     using ServiceModels;
     using Views;
+    using Xamarin.Forms;
 
     class MainPageViewModel :ViewModelBase
     {
@@ -25,7 +26,9 @@
         private static DeviceClient _deviceClient;
         private Timer _timer;
         private bool _resetTimer;
-
+        private Thread listenForMessagesThread;
+        private Thread listenForChangesInPowerStatus;
+        private IIoTHub hub;
         public DelegateCommand SendPinForCheckingCommand { get; set; }
         public string Pin
         {
@@ -33,34 +36,89 @@
             set => this._pin = value;
         }
 
-        public  MainPageViewModel(INavigationService navigationService, IFacade facade, IPageDialogService dialogService) : base(navigationService,facade)
+        public  MainPageViewModel(INavigationService navigationService, IFacade facade, IPageDialogService dialogService, IIoTHub hub) : base(navigationService,facade)
         {
             this._dialogService = dialogService;
             this._navService = navigationService;
             this._facade = facade;
             Pin = "";
+            this.hub = hub;
             this._resetTimer = false;
             IsLoading = false;
             this._lockerOpenedCounter = 30;
             SendPinForCheckingCommand=new DelegateCommand(SendPinForVerification);
-            var listenForMessagesThread = new Thread(async()=>await ListenForMessages(10000));
-            listenForMessagesThread.Start();
-           
-            
+       
+
+
+            this.listenForMessagesThread = new Thread(async()=>await ListenForMessages(5000));
+            this.listenForMessagesThread.Start();
+            this.listenForChangesInPowerStatus = new Thread(async () => await GetPowerStatus(10000));
+            this.listenForChangesInPowerStatus.Start();
+
+
 
         }
 
+        public async Task GetPowerStatus(int poolingRateMiliseconds)
+        {
+            try
+            {
+                while (true)
+                {
+                    var currentPowerStatus = await this._facade.GetLockerPowerStatus();
+                    if (Constants.UserLocker.PowerStatus == null)
+                    {
+                        if (currentPowerStatus.Content == PowerTypeEnum.MainPower)
+                        {
+                            Constants.UserLocker.PowerStatus = PowerStatusEnum.MainPower;
+                        }
+                        else
+                        {
+                            Constants.UserLocker.PowerStatus = PowerStatusEnum.BackupPower;
+                            await this._facade.SendPowerStatusChangedNotification(PowerTypeEnum.BackupPower);
+                        }
+                    }
 
+
+                    else
+                    {
+                        if (currentPowerStatus.Content == PowerTypeEnum.BackupPower &&
+                            Constants.UserLocker.PowerStatus == PowerStatusEnum.MainPower)
+                        {
+                            Constants.UserLocker.PowerStatus = PowerStatusEnum.BackupPower;
+                            await this._facade.SendPowerStatusChangedNotification(PowerTypeEnum.BackupPower);
+                        }
+                        else if (currentPowerStatus.Content == PowerTypeEnum.MainPower &&
+                                 Constants.UserLocker.PowerStatus == PowerStatusEnum.BackupPower)
+                        {
+                            Constants.UserLocker.PowerStatus = PowerStatusEnum.MainPower;
+
+                            await this._facade.SendPowerStatusChangedNotification(PowerTypeEnum.MainPower);
+                        }
+                    }
+                 
+                  
+
+                    Thread.Sleep(poolingRateMiliseconds);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine();
+            }
+        }
+      
         public async void SendPinForVerification()
         {
-            if (Pin.Length < 6)
+            if (Pin.Length < 5)
             {
                 await this._dialogService.DisplayActionSheetAsync("Error",
-                    "The pin must be at least 6 digits. Please try again", "OK"
+                    "The pin must be at least 5 digits. Please try again", "OK"
                 );
                 Pin = "";
                 return;
             }
+
             var pinToCheck = new Pin()
             {
                 Code = Pin
@@ -72,8 +130,10 @@
             }
             try
             {
-
+                IsLoading = true;
                var result= await this._facade.CheckPin(pinToCheck.Code);
+                IsLoading = false;
+
                 if (result.HasBeenSuccessful)
                 {
                     var resultedPin = result.Content;
@@ -87,7 +147,11 @@
                     }
                     else if (resultedPin.UserType== PickerTypeEnum.Friend)
                     {
-                       await this.RunFriendCase(resultedPin);
+                        IsLoading = true;
+
+                        await this.RunFriendCase(resultedPin);
+                        IsLoading = false;
+
                     }
                 }
                 else
@@ -103,10 +167,30 @@
             }
         }
 
+        /// <inheritdoc />
+        public override void Destroy()
+        {
+            base.Destroy();
+            try
+            {
+                this.listenForMessagesThread.Abort();
+                this.listenForChangesInPowerStatus.Abort();
+               
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+       
+        }
+
         private async Task RunCourierCase(Pin resultedPin)
         {
+            IsLoading = true;
 
             var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.Delivered, resultedPin);
+            IsLoading = false;
+
             if (!actionResult.HasBeenSuccessful)
             {
                 SendPinForVerification();
@@ -119,7 +203,11 @@
 
         private async Task RunFriendCase(Pin resultedPin)
         {
+            IsLoading = true;
+
             var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.PickedUp, resultedPin);
+            IsLoading = false;
+
             if (!actionResult.HasBeenSuccessful)
             {
                 SendPinForVerification();
@@ -158,6 +246,13 @@
             }
         }
 
+        /// <inheritdoc />
+        public override void OnNavigatedFrom(INavigationParameters parameters)
+        {
+            base.OnNavigatedFrom(parameters);
+            Destroy();
+        }
+
         private async Task ListenForMessages(int poolingRate)
         {
             
@@ -166,47 +261,58 @@
             while (true)
             {
                 var newMesasgeReceived = await this._facade.GetPendingMessagesFromHub();
-                if (newMesasgeReceived != null)
+                if (newMesasgeReceived != null && newMesasgeReceived.TargetedDeviceId==Constants.UserLocker.DeviceId)
                 {
-                    var stringMessage = newMesasgeReceived.ToString();
-                    var deserializedMessage = JsonConvert.DeserializeObject<LockerMessage>(stringMessage);
-                    if (deserializedMessage.Action == LockerActionEnum.UserAppClose
+                   
+                  
+                    if (newMesasgeReceived.Action == LockerActionEnum.UserAppClose
                         ||
-                        deserializedMessage.Action == LockerActionEnum.UserAppOpen)
+                        newMesasgeReceived.Action == LockerActionEnum.UserAppOpen)
                     {
-                        if(deserializedMessage.Action == LockerActionEnum.UserAppOpen)
+                        if(newMesasgeReceived.Action == LockerActionEnum.UserAppOpen)
                         {
-                            deserializedMessage.ActionResult = LockerActionEnum.UserAppOpened;
-                            deserializedMessage.TargetedDeviceId = deserializedMessage.SenderDeviceId;
-                            deserializedMessage.SenderDeviceId = Constants.UserLocker.DeviceId;
+                            newMesasgeReceived.Action = LockerActionEnum.UserAppOpened;
+                            newMesasgeReceived.TargetedDeviceId = newMesasgeReceived.SenderDeviceId;
+                            newMesasgeReceived.SenderDeviceId = Constants.UserLocker.DeviceId;
 
 
                         }
                         else
                         {
-                            deserializedMessage.ActionResult = LockerActionEnum.UserAppClosed;
-                            deserializedMessage.TargetedDeviceId = deserializedMessage.SenderDeviceId;
-                            deserializedMessage.SenderDeviceId = Constants.UserLocker.DeviceId;
+                            newMesasgeReceived.Action = LockerActionEnum.UserAppClosed;
+                            newMesasgeReceived.TargetedDeviceId = newMesasgeReceived.SenderDeviceId;
+                            newMesasgeReceived.SenderDeviceId = Constants.UserLocker.DeviceId;
                             shouldClose = true;
                         }
-                        
-                        deserializedMessage.HasBeenSuccessful = true;
-                        var messageString = JsonConvert.SerializeObject(deserializedMessage);
-                        byte[] messageBytes = Encoding.UTF8.GetBytes(messageString);
-                        var message = new Message(messageBytes);
-                        message.Properties.Add("IotHubEndpoint", IotEndpointsEnum.D2DEndpoint);
+
+                       
+                        await this.hub.SendMessageToLocker(newMesasgeReceived);
                         try
                         {
-                            await _deviceClient.SendEventAsync(message);
+                           
                             if (shouldClose)
                             {
+
+                                var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.UserAppClosed, new Pin());
+
+                                if (actionResult.HasBeenSuccessful)
+                                {
+                                    Device.BeginInvokeOnMainThread(async () => await this._navService.NavigateAsync(nameof(FinishCloseLockerPage)));
+
+                                 
+                                }
                              
-                                await this._navService.NavigateAsync(nameof(FinishCloseLockerPage));
                             }
                             else
                             {
-                               
-                                await this._navService.NavigateAsync(nameof(FinishOpenLockerPage));
+                                var actionResult = await this._facade.AddNewActionForLocker(LockerActionEnum.UserAppOpened, new Pin());
+
+                                if (actionResult.HasBeenSuccessful)
+                                {
+                                    Device.BeginInvokeOnMainThread(async () => await this._navService.NavigateAsync(nameof(FinishOpenLockerPage), null));
+                                  
+                                }
+                            
 
                               
                                 

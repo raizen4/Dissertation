@@ -17,7 +17,7 @@
         Task<HttpResponseMessage> AddNewLocker(NewLockerRequest req);
 
 
-        Task<HttpResponseMessage> SendPowerStatusChangedNotification();
+        Task<HttpResponseMessage> SendPowerStatusChangedNotification(NewPowerStatusRequest req);
 
       
 

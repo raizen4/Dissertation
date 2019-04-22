@@ -46,9 +46,9 @@
         }
 
         /// <inheritdoc />
-        public void Destroy()
+        public virtual void Destroy()
         {
-            throw new NotImplementedException();
+          
         }
 
         

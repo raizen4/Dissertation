@@ -17,7 +17,7 @@ namespace Client_Mobile.Converters
                 return "locked.png";
             }
 
-            if ((LockerActionEnum)value == LockerActionEnum.UserAppOpen)
+            if ((LockerActionEnum)value == LockerActionEnum.UserAppOpened)
             {
                 return "opened.png";
             }
