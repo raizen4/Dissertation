@@ -5,13 +5,19 @@ using System.Text;
 namespace Client_Mobile.Helpers
 {
     using System.CodeDom.Compiler;
+    using System.Security.Cryptography;
 
     public static class PinGenerator
     {
 
         public static string GeneratePin()
         {
-            return null;
+            var cryptoRng = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[sizeof(ulong)];
+            cryptoRng.GetBytes(buffer);
+            var num = BitConverter.ToUInt64(buffer, 0);
+            var pin = num % 1000000;
+            return pin.ToString();
         }
     }
 }

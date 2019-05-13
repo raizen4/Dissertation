@@ -4,26 +4,45 @@ using System.Text;
 
 namespace Client_Mobile.Models
 {
+    using Enums;
+
     public class Pin
     {
-        private string code;
-        private string issuerId;
-        private string ttl;
+        private string _code;
+        private PinUserTypeEnum _userType;
+        private ContactDetails _parcelContactDetails;
+        private bool isExtendedView = false;
+        private string _created;
+
 
         public string Code
         {
-            get => this.code;
-            set => this.code = value;
+            get => this._code;
+            set => this._code = value;
         }
-        public string IssuerId
+
+        public ContactDetails ParcelContactDetails
         {
-            get => this.issuerId;
-            set => this.issuerId = value;
+            get => this._parcelContactDetails;
+            set => this._parcelContactDetails = value;
         }
-        public string Ttl
+
+        public PinUserTypeEnum UserType
         {
-            get => this.ttl;
-            set => this.ttl = value;
+            get => this._userType;
+            set => this._userType = value;
+        }
+
+        public bool IsExtendedView
+        {
+            get => this.isExtendedView;
+            set => this.isExtendedView = value;
+        }
+
+        public string Created
+        {
+            get => this._created;
+            set => this._created = value;
         }
     }
 }

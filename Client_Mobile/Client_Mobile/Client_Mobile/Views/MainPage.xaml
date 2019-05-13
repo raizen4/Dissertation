@@ -3,14 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="Client_Mobile.Views.MainPage">
+             x:Class="Client_Mobile.Views.MainPage"
+            Title="Main Page">
 
-    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Label Text="Welcome to Xamarindd  and Prism!" />
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15*"></RowDefinition>
+                <RowDefinition Height="65*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-        <Label Text="Welcome to Xamarin Forms    !" />
+            <StackLayout Grid.Row="0"  Grid.Column="0" Orientation="Vertical" HorizontalOptions="StartAndExpand" Spacing="10">
 
-       
+                <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
+                    <Label FontAttributes="Bold" Text="Welcome," TextColor="Black" FontSize="Large"></Label>
+                    <Label Text="{Binding DisplayName}" TextColor="Black" FontSize="Large"></Label>
+                </StackLayout>
+
+             
+
+            </StackLayout>
+            <StackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="33*"></RowDefinition>
+                        <RowDefinition Height="33*"></RowDefinition>
+                        <RowDefinition Height="33*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+                        <ColumnDefinition Width="50*"></ColumnDefinition>
+
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="0" Grid.Column="0" Command="{Binding LockCommand}" Text="Lock"></Button>
+                    <Button Grid.Row="0" Grid.Column="1" Command="{Binding UnlockCommand}"  Text="Unlock"></Button>
+                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding NavigateToPinGenerator}" Text="Send New Pin"></Button>
+                    <Button Grid.Row="2" Grid.Column="0" Command="{Binding NavigateToActivityHistory}" Text="Locker History"></Button>
+                    <Button Grid.Row="2" Grid.Column="1" Command="{Binding NavigateToCurrentPins}" Text="Pin History"></Button>
+                </Grid>
+                
+            </StackLayout>
+
+            <Button Grid.Row="3" Grid.Column="0" Command="{Binding LogOut}" Text="Log Out"></Button>
+
+        </Grid>
     </StackLayout>
 
 </ContentPage>

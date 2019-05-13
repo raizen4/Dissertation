@@ -1,0 +1,45 @@
+﻿<ContentPage
+    
+    x:Class="XamarinLockerApp.Views.StartPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    NavigationPage.HasNavigationBar="False"
+   >
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                 AnimationType="Animation4"
+                                 AnimationContentHeightRequest="100"
+                                 AnimationContentWidthRequest="100"
+                                 IsBusy="{Binding IsLoading}">
+
+        <primitives:RadBusyIndicator.Content >
+    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Margin="0,20,0,60">
+       
+        <Label Text="Login" FontSize="40" Margin="0,0,0,10" HorizontalTextAlignment="Center"></Label>
+        <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="0,35,0,15">
+            <Label HorizontalOptions="Start" Opacity="0.5" FontSize="20" Text="Username: "></Label>
+            <Entry Placeholder="Username goes here" Text="{Binding Username, Mode=TwoWay}" HeightRequest="50" WidthRequest="350" FontSize="25"></Entry>
+        </StackLayout>
+        <StackLayout Orientation="Vertical" HorizontalOptions="Center">
+            <Label HorizontalOptions="Start" Opacity="0.5" FontSize="20" Text="Password"></Label>
+            <Entry Placeholder="Password goes here" IsPassword="True" HeightRequest="50" Text="{Binding Password, Mode=TwoWay}" FontSize="25" WidthRequest="350"></Entry>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End" >
+            <Button HeightRequest="100" TextColor="WhiteSmoke" Command="{Binding LoginCommand}" BackgroundColor="ForestGreen" FontSize="20" WidthRequest="300" Text="Link the account to this locker"></Button>
+           
+        </StackLayout>
+
+        
+    </StackLayout>
+
+        </primitives:RadBusyIndicator.Content>
+        <primitives:RadBusyIndicator.BusyContent>
+            <Label HorizontalOptions="Center" 
+                   Text="Loading..."
+                   VerticalOptions="Center" 
+            />
+        </primitives:RadBusyIndicator.BusyContent>
+    </primitives:RadBusyIndicator>
+</ContentPage>

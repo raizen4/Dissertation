@@ -6,6 +6,8 @@ namespace Client_Mobile.Interfaces
 {
     using System.Net.Http;
     using System.Threading.Tasks;
+    using Enums;
+    using Models;
     using ServiceModels;
 
     interface IApiWrapper
@@ -17,9 +19,21 @@ namespace Client_Mobile.Interfaces
 
         Task<HttpResponseMessage> CreateUser(RegisterRequest request);
 
-        Task<HttpResponseMessage> UpdatePost(Post postToUpdate);
+       
 
-        Task<HttpResponseMessage> CreatePost(Post newPost);
+        Task<HttpResponseMessage> GetDeliveryHistory();
+
+        Task<HttpResponseMessage> GetActivePins();
+
+
+       
+
+        Task<HttpResponseMessage> AddPinForLocker(PinRequest req);
+
+        Task<HttpResponseMessage> RemovePinForLocker(PinRequest req);
+
+        Task<HttpResponseMessage> AddNewActionForLocker(ActionRequest req);
+
 
     }
 }

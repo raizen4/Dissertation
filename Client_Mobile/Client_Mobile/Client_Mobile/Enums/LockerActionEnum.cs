@@ -6,12 +6,16 @@ namespace Client_Mobile.Enums
 {
     public enum LockerActionEnum
     {
-        Opened=1,
-        Closed=0,
-        NewPinGenerated=2,
+
+        UserAppClose = 6,
+        UserAppOpen = 7,
+        UserAppOpened = 1,
+        UserAppClosed = 0,
+        Delivered = 2,
+        PickedUp = 3,
 
 
 
-        
+
     }
 }

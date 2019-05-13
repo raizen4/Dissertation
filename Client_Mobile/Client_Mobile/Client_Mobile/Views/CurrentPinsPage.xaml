@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:converters="clr-namespace:Client_Mobile.Converters"
+             x:Class="Client_Mobile.Views.CurrentPinsPage"
+             x:Name="CurrentPinsPageLayout"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IntToBoolConverterForCourier x:Key="IntToBoolConverterForCourier"></converters:IntToBoolConverterForCourier>
+            <converters:IntToBoolConverterForFriend x:Key="IntToBoolConverterForFriend"></converters:IntToBoolConverterForFriend>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                        AnimationType="Animation4"
+                                        AnimationContentHeightRequest="100"
+                                        AnimationContentWidthRequest="100"
+                                        IsBusy="{Binding IsLoading}">
+        <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="90*"></RowDefinition>
+                    <RowDefinition Height="10*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ListView  ItemTapped="ListView_OnItemTapped"  Grid.Row="0" Grid.Column="0"  HasUnevenRows="True"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"  ItemsSource="{Binding CurrentPins}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout VerticalOptions="Center">
+                                  
+
+                                    <StackLayout Orientation="Vertical"  >
+                                        <StackLayout Orientation="Vertical">
+                                            <Label FontSize="25" Text="{Binding Code}"></Label>
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label FontSize="12" Text="Created: "></Label>
+                                                <Label FontSize="12" Text="{Binding Created}"></Label>
+                                            </StackLayout>
+                                        </StackLayout>
+                                      
+                                        <StackLayout IsVisible="{Binding IsExtendedView}">
+                                            <StackLayout Orientation="Vertical" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForCourier}}">
+                                                <Label FontSize="12" Text="Delivery by courier company expected"></Label>
+                                             
+                                            </StackLayout>
+
+                                            <StackLayout Orientation="Vertical">
+
+                                                <StackLayout Orientation="Horizontal" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}">
+                                                    <Label FontSize="12" Text="Pin generated to be used by: "></Label>
+                                                    <Label FontSize="12" Text="{Binding ParcelContactDetails.PickerName}"></Label>
+
+                                                </StackLayout>
+                                                <StackLayout HeightRequest="50"  HorizontalOptions="FillAndExpand">
+
+
+                                                              <StackLayout BackgroundColor="Aquamarine" Orientation="Horizontal" HorizontalOptions="FillAndExpand" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForCourier}}">
+                                                                    <Grid>
+
+                                                                        <Grid.RowDefinitions>
+                                                                            <RowDefinition Height="100*"></RowDefinition>
+                                                                        </Grid.RowDefinitions>
+
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="100*"></ColumnDefinition>
+                                                                          
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                  
+                                                                    <Button Command="{Binding Path=BindingContext.RemovePinCommand,
+                                                                            Source={x:Reference CurrentPinsPageLayout}}"
+                                                                            CommandParameter="{Binding}"  HorizontalOptions="FillAndExpand"  VerticalOptions="FillAndExpand"
+                                                                            Grid.Row="0" Grid.Column="0" BackgroundColor="Red" WidthRequest="400" TextColor="White" Text="Remove">
+
+                                                                    </Button>
+
+                                                                    </Grid>
+
+                                                            </StackLayout>
+                                                    <StackLayout Orientation="Horizontal" IsVisible="{Binding UserType, Converter={StaticResource IntToBoolConverterForFriend}}">
+                                                        <Grid>
+
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="100*"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="50*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="50*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Button 
+                                                                             HorizontalOptions="FillAndExpand" Grid.Row="0" Grid.Column="0" TextColor="White" Text="Edit Details"
+                                                                             BackgroundColor="CornflowerBlue"></Button>
+                                                            <Button Command="{Binding Path=BindingContext.RemovePinCommand,
+                                                                            Source={x:Reference CurrentPinsPageLayout}}"
+                                                                            CommandParameter="{Binding}"  HorizontalOptions="FillAndExpand" 
+                                                                            Grid.Row="0" Grid.Column="1" BackgroundColor="Red" TextColor="White" Text="Remove">
+
+                                                            </Button>
+
+                                                        </Grid>
+
+                                                    </StackLayout>
+
+
+
+
+
+                                                </StackLayout>
+                                            </StackLayout>
+
+                                        </StackLayout>
+                                       
+
+
+                                    </StackLayout>
+
+                                  
+
+
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Button Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="CornflowerBlue" Command="{Binding BackCommand}" Text="Back"></Button>
+            </Grid>
+
+
+        </StackLayout>
+        <primitives:RadBusyIndicator.BusyContent>
+            <Label HorizontalOptions="Center" 
+                   Text="Loading data..."
+                   VerticalOptions="Center" 
+            />
+        </primitives:RadBusyIndicator.BusyContent>
+    </primitives:RadBusyIndicator>
+</ContentPage>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+             xmlns:input="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="Client_Mobile.Views.PinPage"
+             Title="{Binding Title}">
+    <primitives:RadBusyIndicator x:Name="radBusyIndicator"  
+                                 AnimationType="Animation4"
+                                 AnimationContentHeightRequest="100"
+                                 AnimationContentWidthRequest="100"
+                                 IsBusy="{Binding IsLoading}">
+        <primitives:RadBusyIndicator.Content>
+            <StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"></RowDefinition>
+             
+                <RowDefinition Height="10*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <StackLayout Margin="10,40,0,0"  IsVisible="{Binding ForCourier}" Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+                    <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" Text="Make sure you copy this pin to the courier's delivery instructions."></Label>
+                    <Label Margin="0,40,0,0" FontSize="35" HorizontalOptions="Center" Text="{Binding PinCode}"></Label>
+                    <Label Margin="0,120,0,0" FontSize="20" HorizontalOptions="Center"  Text="Do not lose this pin!"></Label>
+                </StackLayout>
+
+            </StackLayout>
+
+                    <StackLayout Margin="10,0,0,0"  IsVisible="{Binding ForFriend}" Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand">
+
+                    <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Center" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" 
+                           Text="Make sure you don't lose this pin in case your contact lost it."></Label>
+                    <Label Margin="0,10,0,0" FontSize="35" HorizontalOptions="Center" Text="{Binding PinCode}"></Label>
+
+
+                            <StackLayout Margin="0,20,0,0" Orientation="Vertical">
+                                <Label VerticalTextAlignment="Center" HorizontalTextAlignment="Start" FontSize="18" Text="Friend's Details:"></Label>
+                                <StackLayout Orientation="Vertical" Margin="0,10,0,0">
+                                    <Label FontAttributes="Bold" FontSize="15" Text="Picker Name: "></Label>
+                                    <Entry  Placeholder="Picker name goes here" Text="{Binding FriendName}"/>
+                                </StackLayout>
+                                <Label FontSize="16" Text="At least one field completed from the below fields is required:"></Label>
+                                <StackLayout Orientation="Vertical" Margin="0,10,0,0">
+                                    <Label FontAttributes="Bold" FontSize="15" Text="Email: "></Label>
+                                    <Entry  Placeholder="Email goes here" Text="{Binding FriendEmail}"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Vertical" Margin="0,20,0,0">
+                                    <Label FontAttributes="Bold" FontSize="15" Text="Phone number (including country code):"></Label>
+                                    <Entry Placeholder="Phone goes here" Text="{Binding FriendSms}"/>
+
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+            </StackLayout>
+
+                    <Button HeightRequest="60" VerticalOptions="End" Grid.Row="1" Grid.Column="0" Command="{Binding FinishCommand}" Text="Finish"></Button>
+        </Grid>
+    </StackLayout>
+    </primitives:RadBusyIndicator.Content>
+        <primitives:RadBusyIndicator.BusyContent>
+            <StackLayout  >
+                <Label HorizontalOptions="Center"
+                       Text="Working hard on it..."
+                       VerticalOptions="Center" />
+            </StackLayout>
+
+        </primitives:RadBusyIndicator.BusyContent>
+
+    </primitives:RadBusyIndicator>
+</ContentPage>

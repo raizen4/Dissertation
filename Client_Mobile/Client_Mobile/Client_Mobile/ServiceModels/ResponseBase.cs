@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Client_Mobile.ServiceModels
 {
-    class ResponseBase
+    public class ResponseBase
     {
-        public string IsSuccessful { get; set; }
+        public bool HasBeenSuccessful { get; set; }
         public string Error { get; set; }
     }
 }
